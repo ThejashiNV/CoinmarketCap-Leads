@@ -35,7 +35,6 @@ def extract_email_from_page(driver):
 
 
 def extract_linkedin_links(driver):
-    """Extract all unique LinkedIn URLs found on the page."""
     linkedin_links = []
 
     try:
@@ -45,14 +44,35 @@ def extract_linkedin_links(driver):
             href = link.get_attribute("href")
 
             if href and "linkedin.com" in href.lower():
-                if href not in linkedin_links:
+                if (
+                    href not in linkedin_links
+                    and "/company/" in href.lower()
+                    or "/in/" in href.lower()
+                ):
                     linkedin_links.append(href)
 
     except:
         pass
 
-    return " | ".join(linkedin_links)
+    return " | ".join(linkedin_links[:10]) 
 
+def extract_telegram_links(driver):
+    telegram_links = []
+
+    try:
+        links = driver.find_elements(By.TAG_NAME, "a")
+
+        for link in links:
+            href = link.get_attribute("href")
+
+            if href and "telegram" in href.lower():
+                if href not in telegram_links:
+                    telegram_links.append(href)
+
+    except:
+        pass
+
+    return " | ".join(telegram_links[:10])
 
 # ---------- Setup Chrome Driver ----------
 
@@ -155,6 +175,9 @@ for link in project_links:
 
                 official_email = extract_email_from_page(driver)
                 linkedin_profiles = extract_linkedin_links(driver)
+
+                if telegram == "":
+                    telegram = extract_telegram_links(driver)
 
             except:
                 pass
