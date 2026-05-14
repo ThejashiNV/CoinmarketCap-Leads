@@ -2,30 +2,36 @@ import re
 import time
 import pandas as pd
 
+from googlesearch import search
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 
 
-# ---------- Helper Functions ----------
+# -----------------------------
+# Helper Functions
+# -----------------------------
 
 def extract_email_from_page(driver):
-    """Extract the first email address found in the page source."""
     try:
         page_source = driver.page_source
+
         emails = re.findall(
             r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}",
             page_source
         )
 
-        # Filter out obvious non-contact emails
+        ignored_domains = [
+            "example.com",
+            "wixpress.com",
+            "sentry.io"
+        ]
+
         for email in emails:
             email_lower = email.lower()
-            if not any(
-                bad in email_lower
-                for bad in ["example.com", "wixpress.com", "sentry.io"]
-            ):
+
+            if not any(domain in email_lower for domain in ignored_domains):
                 return email
 
     except:
@@ -44,17 +50,43 @@ def extract_linkedin_links(driver):
             href = link.get_attribute("href")
 
             if href and "linkedin.com" in href.lower():
+                href_lower = href.lower()
+
                 if (
-                    href not in linkedin_links
-                    and "/company/" in href.lower()
-                    or "/in/" in href.lower()
+                    "/company/" in href_lower
+                    or "/in/" in href_lower
                 ):
-                    linkedin_links.append(href)
+                    if href not in linkedin_links:
+                        linkedin_links.append(href)
 
     except:
         pass
 
-    return " | ".join(linkedin_links[:10]) 
+    return " | ".join(linkedin_links[:10])
+
+
+def search_linkedin_on_google(project_name):
+    """
+    Fallback method:
+    Search Google for the project's LinkedIn page.
+    """
+    try:
+        query = f"{project_name} LinkedIn"
+
+        for url in search(query, num_results=10):
+            url_lower = url.lower()
+
+            if (
+                "linkedin.com/company/" in url_lower
+                or "linkedin.com/in/" in url_lower
+            ):
+                return url
+
+    except:
+        pass
+
+    return ""
+
 
 def extract_telegram_links(driver):
     telegram_links = []
@@ -66,6 +98,15 @@ def extract_telegram_links(driver):
             href = link.get_attribute("href")
 
             if href and "telegram" in href.lower():
+                href_lower = href.lower()
+
+                # Ignore generic Telegram home/download pages
+                if (
+                    href_lower == "https://telegram.org/"
+                    or "telegram.org/dl" in href_lower
+                ):
+                    continue
+
                 if href not in telegram_links:
                     telegram_links.append(href)
 
@@ -74,13 +115,45 @@ def extract_telegram_links(driver):
 
     return " | ".join(telegram_links[:10])
 
-# ---------- Setup Chrome Driver ----------
+
+def is_valid_website(href):
+    if not href:
+        return False
+
+    href_lower = href.lower()
+
+    blocked_domains = [
+        "coinmarketcap.com",
+        "twitter.com",
+        "x.com",
+        "telegram",
+        "linkedin.com",
+        "youtube.com",
+        "facebook.com",
+        "instagram.com",
+        "medium.com",
+        "docs.google.com",
+        "sensors.saasexch.com"
+    ]
+
+    for domain in blocked_domains:
+        if domain in href_lower:
+            return False
+
+    return href.startswith("http")
+
+
+# -----------------------------
+# Setup Chrome Driver
+# -----------------------------
 
 driver = webdriver.Chrome(
     service=Service(ChromeDriverManager().install())
 )
 
-# ---------- Open CoinMarketCap New Listings ----------
+# -----------------------------
+# Open CoinMarketCap New Listings
+# -----------------------------
 
 url = "https://coinmarketcap.com/new/"
 driver.get(url)
@@ -109,7 +182,9 @@ for row in rows[:15]:  # Process first 15 projects
 print("Collected Project Links:")
 print(project_links)
 
-# ---------- Extract Project Details ----------
+# -----------------------------
+# Extract Project Details
+# -----------------------------
 
 coins = []
 
@@ -123,14 +198,14 @@ for link in project_links:
         telegram = ""
         twitter = ""
 
-        # Get project name
+        # Extract project name
         try:
             h1 = driver.find_element(By.TAG_NAME, "h1")
             project_name = h1.text.split("\n")[0]
         except:
             pass
 
-        # Get all links from CoinMarketCap project page
+        # Extract links from CoinMarketCap page
         all_links = driver.find_elements(By.TAG_NAME, "a")
 
         for item in all_links:
@@ -141,33 +216,23 @@ for link in project_links:
 
             href_lower = href.lower()
 
-            if "telegram" in href_lower:
+            if "telegram" in href_lower and telegram == "":
                 telegram = href
 
-            elif "twitter.com" in href_lower or "x.com" in href_lower:
+            elif (
+                ("twitter.com" in href_lower or "x.com" in href_lower)
+                and twitter == ""
+            ):
                 twitter = href
 
-            elif (
-                href.startswith("http")
-                and "coinmarketcap.com" not in href_lower
-                and "twitter.com" not in href_lower
-                and "x.com" not in href_lower
-                and "telegram" not in href_lower
-                and "linkedin.com" not in href_lower
-                and "youtube.com" not in href_lower
-                and "facebook.com" not in href_lower
-                and "instagram.com" not in href_lower
-                and "medium.com" not in href_lower
-                and "sensors.saasexch.com" not in href_lower
-            ):
-                if website == "":
-                    website = href
+            elif website == "" and is_valid_website(href):
+                website = href
 
-        # Initialize fields
+        # Initialize extracted fields
         official_email = ""
         linkedin_profiles = ""
 
-        # Visit official website and extract email + LinkedIn
+        # Visit official website
         if website:
             try:
                 driver.get(website)
@@ -176,13 +241,20 @@ for link in project_links:
                 official_email = extract_email_from_page(driver)
                 linkedin_profiles = extract_linkedin_links(driver)
 
+                # If Telegram not found on CoinMarketCap page,
+                # try to find it on the website
                 if telegram == "":
                     telegram = extract_telegram_links(driver)
 
             except:
                 pass
 
-        # Save result
+        # Fallback: search Google for LinkedIn
+        if linkedin_profiles == "" and project_name:
+            print(f"Searching LinkedIn for: {project_name}")
+            linkedin_profiles = search_linkedin_on_google(project_name)
+
+        # Save results
         coins.append({
             "Project Name": project_name,
             "Project Website URL": website,
@@ -198,7 +270,9 @@ for link in project_links:
     except Exception as e:
         print("Error:", e)
 
-# ---------- Save to CSV ----------
+# -----------------------------
+# Save Results
+# -----------------------------
 
 driver.quit()
 

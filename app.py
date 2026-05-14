@@ -4,7 +4,7 @@ from pathlib import Path
 
 st.set_page_config(page_title="CoinMarketCap Leads Dashboard", layout="wide")
 
-st.title("📊 CoinMarketCap Leads Dashboard")
+st.title("CoinMarketCap Leads Dashboard")
 
 csv_path = Path("output/leads.csv")
 
