@@ -66,7 +66,7 @@ def extract_projects():
     seen_urls = set()
 
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=False)
+        browser = p.chromium.launch(headless=True)
         page = browser.new_page()
 
         page.goto(
@@ -74,7 +74,10 @@ def extract_projects():
             wait_until="domcontentloaded",
             timeout=60000
         )
-        page.wait_for_timeout(5000)
+        try:
+            page.wait_for_load_state("networkidle", timeout=5000)
+        except:
+            pass
 
         html = page.content()
         browser.close()

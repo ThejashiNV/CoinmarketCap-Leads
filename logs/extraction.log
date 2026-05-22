@@ -1185,3 +1185,1173 @@ Call log:
 2026-05-20 10:07:30,556 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
 2026-05-20 10:07:36,114 - INFO - Completed GICAT100 | Email: N/A | Source: Not Found
 2026-05-20 10:07:43,156 - INFO - Extraction completed successfully. Total projects processed: 102
+2026-05-21 13:12:15,894 - INFO - Processing project: Lido Staked
+2026-05-21 13:12:15,895 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 13:12:22,264 - INFO - Opening https://whitebit.com/about-us (Attempt 1)
+2026-05-21 13:12:27,498 - INFO - Opening https://whitebit.com/m/careers (Attempt 1)
+2026-05-21 13:12:32,682 - INFO - Completed Lido Staked | Email: N/A | Source: Not Found
+2026-05-21 13:12:32,683 - INFO - Processing project: USDSUSDS
+2026-05-21 13:12:32,683 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 13:12:37,863 - INFO - Completed USDSUSDS | Email: N/A | Source: Not Found
+2026-05-21 13:12:37,863 - INFO - Processing project: Lido wst
+2026-05-21 13:12:37,864 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 13:12:43,037 - INFO - Completed Lido wst | Email: N/A | Source: Not Found
+2026-05-21 13:12:43,038 - INFO - Processing project: Wrapped BitcoinWBTC
+2026-05-21 13:12:43,038 - INFO - Opening https://www.slowmist.com/en/security-audit-certificate.html?id=19b0299be6f8f7bc6fc7a701aed5a28bae5c2225c122b3637c593420a4070c55 (Attempt 1)
+2026-05-21 13:12:49,570 - INFO - Completed Wrapped BitcoinWBTC | Email: N/A | Source: Not Found
+2026-05-21 13:12:49,571 - INFO - Processing project: Wrapped Beacon
+2026-05-21 13:12:49,571 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 13:12:54,727 - INFO - Completed Wrapped Beacon | Email: N/A | Source: Not Found
+2026-05-21 13:12:54,727 - INFO - Processing project: WETHWETH
+2026-05-21 13:12:54,728 - INFO - Opening https://hacken.io/audits/singularitydao/ (Attempt 1)
+2026-05-21 13:13:01,293 - INFO - Opening https://hacken.io/services/red-teaming/ (Attempt 1)
+2026-05-21 13:13:06,767 - INFO - Opening https://hacken.io/about/ (Attempt 1)
+2026-05-21 13:13:12,314 - INFO - Opening https://hacken.io/careers/ (Attempt 1)
+2026-05-21 13:13:18,007 - INFO - Completed WETHWETH | Email: N/A | Source: Not Found
+2026-05-21 13:13:18,008 - INFO - Processing project: Coinbase Wrapped
+2026-05-21 13:13:18,008 - INFO - Opening https://usethebitcoin.com/news/usdc-hyperliquid-coinbase-treasury/ (Attempt 1)
+2026-05-21 13:13:24,544 - INFO - Opening https://usethebitcoin.com/about-us/ (Attempt 1)
+2026-05-21 13:13:30,825 - INFO - Opening https://usethebitcoin.com/utb-careers/ (Attempt 1)
+2026-05-21 13:13:37,478 - INFO - Opening https://usethebitcoin.com/contact-us/ (Attempt 1)
+2026-05-21 13:13:44,573 - INFO - Completed Coinbase Wrapped | Email: N/A | Source: Not Found
+2026-05-21 13:13:44,574 - INFO - Processing project: Bitcoin BEP2BTCB
+2026-05-21 13:13:44,574 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 13:13:50,089 - INFO - Completed Bitcoin BEP2BTCB | Email: N/A | Source: Not Found
+2026-05-21 13:13:50,090 - INFO - Processing project: USDT0USDT0
+2026-05-21 13:13:50,090 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 13:13:55,329 - INFO - Completed USDT0USDT0 | Email: N/A | Source: Not Found
+2026-05-21 13:13:55,329 - INFO - Processing project: Aave Ethereum W
+2026-05-21 13:13:55,329 - INFO - Opening https://www.huobi.com/en-us/exchange/aethweth_eth?inviter_id=11345710&invite_code=zh5i6223 (Attempt 1)
+2026-05-21 13:14:16,476 - WARNING - Attempt 1 failed for https://www.huobi.com/en-us/exchange/aethweth_eth?inviter_id=11345710&invite_code=zh5i6223: Page.goto: net::ERR_CONNECTION_TIMED_OUT at https://www.huobi.com/en-us/exchange/aethweth_eth?inviter_id=11345710&invite_code=zh5i6223
+Call log:
+  - navigating to "https://www.huobi.com/en-us/exchange/aethweth_eth?inviter_id=11345710&invite_code=zh5i6223", waiting until "domcontentloaded"
+
+2026-05-21 13:14:16,476 - INFO - Opening https://www.huobi.com/en-us/exchange/aethweth_eth?inviter_id=11345710&invite_code=zh5i6223 (Attempt 2)
+2026-05-21 13:14:16,729 - WARNING - Attempt 2 failed for https://www.huobi.com/en-us/exchange/aethweth_eth?inviter_id=11345710&invite_code=zh5i6223: Page.goto: net::ERR_CONNECTION_TIMED_OUT at https://www.huobi.com/en-us/exchange/aethweth_eth?inviter_id=11345710&invite_code=zh5i6223
+Call log:
+  - navigating to "https://www.huobi.com/en-us/exchange/aethweth_eth?inviter_id=11345710&invite_code=zh5i6223", waiting until "domcontentloaded"
+
+2026-05-21 13:14:16,729 - INFO - Opening https://www.huobi.com/en-us/exchange/aethweth_eth?inviter_id=11345710&invite_code=zh5i6223 (Attempt 3)
+2026-05-21 13:14:37,518 - WARNING - Attempt 3 failed for https://www.huobi.com/en-us/exchange/aethweth_eth?inviter_id=11345710&invite_code=zh5i6223: Page.goto: net::ERR_CONNECTION_TIMED_OUT at https://www.huobi.com/en-us/exchange/aethweth_eth?inviter_id=11345710&invite_code=zh5i6223
+Call log:
+  - navigating to "https://www.huobi.com/en-us/exchange/aethweth_eth?inviter_id=11345710&invite_code=zh5i6223", waiting until "domcontentloaded"
+
+2026-05-21 13:14:37,518 - ERROR - Failed to open https://www.huobi.com/en-us/exchange/aethweth_eth?inviter_id=11345710&invite_code=zh5i6223 after 3 attempts.
+2026-05-21 13:14:37,520 - INFO - Completed Aave Ethereum W | Email: N/A | Source: Not Found
+2026-05-21 13:14:37,520 - INFO - Processing project: Wrapped e
+2026-05-21 13:14:37,520 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 13:14:42,882 - INFO - Completed Wrapped e | Email: N/A | Source: Not Found
+2026-05-21 13:14:42,882 - INFO - Processing project: Aave Ethereum U
+2026-05-21 13:14:42,882 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 13:14:48,019 - INFO - Completed Aave Ethereum U | Email: N/A | Source: Not Found
+2026-05-21 13:14:48,019 - INFO - Processing project: Ethena Staked
+2026-05-21 13:14:48,019 - INFO - Opening https://app.ethena.fi/dashboards/backing-assets (Attempt 1)
+2026-05-21 13:14:53,803 - INFO - Completed Ethena Staked | Email: N/A | Source: Not Found
+2026-05-21 13:14:53,804 - INFO - Processing project: syrupUSDCsyrupUSDC
+2026-05-21 13:14:53,804 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 13:14:58,948 - INFO - Completed syrupUSDCsyrupUSDC | Email: N/A | Source: Not Found
+2026-05-21 13:14:58,948 - INFO - Processing project: Wrapped TRONWTRX
+2026-05-21 13:14:58,948 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 13:15:04,067 - INFO - Completed Wrapped TRONWTRX | Email: N/A | Source: Not Found
+2026-05-21 13:15:04,068 - INFO - Processing project: Kelp DAO Restaked
+2026-05-21 13:15:04,068 - INFO - Opening https://t.co/qJ8W4BAiRm (Attempt 1)
+2026-05-21 13:15:11,027 - INFO - Opening https://t.co/aboutus (Attempt 1)
+2026-05-21 13:15:16,516 - INFO - Opening https://t.co/contactus (Attempt 1)
+2026-05-21 13:15:21,946 - INFO - Opening https://t.co/careers (Attempt 1)
+2026-05-21 13:15:28,840 - INFO - Opening https://t.co/contactusadvertise (Attempt 1)
+2026-05-21 13:15:34,281 - INFO - Completed Kelp DAO Restaked | Email: N/A | Source: Not Found
+2026-05-21 13:15:34,281 - INFO - Processing project: Bitcoin TRC20BTCT
+2026-05-21 13:15:34,282 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 13:15:39,862 - INFO - Completed Bitcoin TRC20BTCT | Email: N/A | Source: Not Found
+2026-05-21 13:15:39,863 - INFO - Processing project: BFUSDBFUSD
+2026-05-21 13:15:39,863 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 13:15:45,118 - INFO - Completed BFUSDBFUSD | Email: N/A | Source: Not Found
+2026-05-21 13:15:45,118 - INFO - Processing project: BounceBit BTCBBTC
+2026-05-21 13:15:45,118 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 13:15:50,332 - INFO - Completed BounceBit BTCBBTC | Email: N/A | Source: Not Found
+2026-05-21 13:15:50,333 - INFO - Processing project: USD Coin BridgedUSDC.e
+2026-05-21 13:15:50,333 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 13:15:55,535 - INFO - Completed USD Coin BridgedUSDC.e | Email: N/A | Source: Not Found
+2026-05-21 13:15:55,535 - INFO - Processing project: Ethena Labs (USDtb)
+2026-05-21 13:15:55,535 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 13:16:00,730 - INFO - Completed Ethena Labs (USDtb) | Email: N/A | Source: Not Found
+2026-05-21 13:16:00,730 - INFO - Processing project: Wrapped BNBWBNB
+2026-05-21 13:16:00,730 - INFO - Opening https://www.qielend.qie.digital/ (Attempt 1)
+2026-05-21 13:16:08,508 - INFO - Completed Wrapped BNBWBNB | Email: N/A | Source: Not Found
+2026-05-21 13:16:08,508 - INFO - Processing project: Kinetiq Staked
+2026-05-21 13:16:08,508 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 13:16:13,702 - INFO - Completed Kinetiq Staked | Email: N/A | Source: Not Found
+2026-05-21 13:16:13,703 - INFO - Processing project: Binance Staked
+2026-05-21 13:16:13,703 - INFO - Opening https://www.binance.com/en/trade/BNSOL_SOL?ref=40896146 (Attempt 1)
+2026-05-21 13:16:19,568 - INFO - Completed Binance Staked | Email: sensorsdata@1.26.12.js | Source: Website
+2026-05-21 13:16:19,569 - INFO - Processing project: Lombard Staked
+2026-05-21 13:16:19,569 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 13:16:24,814 - INFO - Completed Lombard Staked | Email: N/A | Source: Not Found
+2026-05-21 13:16:24,815 - INFO - Processing project: Jito Staked
+2026-05-21 13:16:24,815 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 13:16:30,011 - INFO - Completed Jito Staked | Email: N/A | Source: Not Found
+2026-05-21 13:16:30,011 - INFO - Processing project: FunctionFBTC
+2026-05-21 13:16:30,011 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 13:16:35,200 - INFO - Completed FunctionFBTC | Email: N/A | Source: Not Found
+2026-05-21 13:16:35,200 - INFO - Processing project: Rocket Pool
+2026-05-21 13:16:35,200 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 13:16:40,389 - INFO - Completed Rocket Pool | Email: N/A | Source: Not Found
+2026-05-21 13:16:40,389 - INFO - Processing project: Wrapped FlareWFLR
+2026-05-21 13:16:40,389 - INFO - Opening https://openocean.finance/ (Attempt 1)
+2026-05-21 13:16:46,078 - INFO - Completed Wrapped FlareWFLR | Email: N/A | Source: Not Found
+2026-05-21 13:16:46,079 - INFO - Processing project: Liquid Staked
+2026-05-21 13:16:46,079 - INFO - Opening https://exchange.coinbase.com/trade/LSETH-ETH (Attempt 1)
+2026-05-21 13:16:55,430 - INFO - Completed Liquid Staked | Email: N/A | Source: Not Found
+2026-05-21 13:16:55,431 - INFO - Processing project: Lista Staked
+2026-05-21 13:16:55,431 - INFO - Opening https://lista.org/lista-holder (Attempt 1)
+2026-05-21 13:17:01,767 - INFO - Completed Lista Staked | Email: N/A | Source: Not Found
+2026-05-21 13:17:01,767 - INFO - Processing project: syrupUSDTsyrupUSDT
+2026-05-21 13:17:01,767 - INFO - Opening https://openocean.finance/ (Attempt 1)
+2026-05-21 13:17:07,049 - INFO - Completed syrupUSDTsyrupUSDT | Email: N/A | Source: Not Found
+2026-05-21 13:17:07,050 - INFO - Processing project: tBTCTBTC
+2026-05-21 13:17:07,050 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 13:17:12,631 - INFO - Completed tBTCTBTC | Email: N/A | Source: Not Found
+2026-05-21 13:17:12,632 - INFO - Processing project: Bond USD0bUSD0
+2026-05-21 13:17:12,632 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 13:17:17,869 - INFO - Completed Bond USD0bUSD0 | Email: N/A | Source: Not Found
+2026-05-21 13:17:17,869 - INFO - Processing project: slisBNBxslisBNBx
+2026-05-21 13:17:17,870 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 13:17:23,078 - INFO - Completed slisBNBxslisBNBx | Email: N/A | Source: Not Found
+2026-05-21 13:17:23,078 - INFO - Processing project: SolvBTCSolvBTC
+2026-05-21 13:17:23,079 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 13:17:28,267 - INFO - Completed SolvBTCSolvBTC | Email: N/A | Source: Not Found
+2026-05-21 13:17:28,267 - INFO - Processing project: Mantle Staked
+2026-05-21 13:17:28,267 - INFO - Opening https://www.bybit.com/en-US/trade/spot/METH/USDT?affiliate_id=157132 (Attempt 1)
+2026-05-21 13:17:34,472 - INFO - Completed Mantle Staked | Email: N/A | Source: Not Found
+2026-05-21 13:17:34,472 - INFO - Processing project: Jupiter Staked
+2026-05-21 13:17:34,472 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 13:17:39,670 - INFO - Completed Jupiter Staked | Email: N/A | Source: Not Found
+2026-05-21 13:17:39,670 - INFO - Processing project: Venus BTCvBTC
+2026-05-21 13:17:39,670 - INFO - Opening https://app.venus.io (Attempt 1)
+2026-05-21 13:17:45,503 - INFO - Completed Venus BTCvBTC | Email: N/A | Source: Not Found
+2026-05-21 13:17:45,504 - INFO - Processing project: Wrapped ChilizWCHZ
+2026-05-21 13:17:45,504 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 13:17:50,700 - INFO - Completed Wrapped ChilizWCHZ | Email: N/A | Source: Not Found
+2026-05-21 13:17:50,700 - INFO - Processing project: Venus BNBvBNB
+2026-05-21 13:17:50,700 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 13:17:55,874 - INFO - Completed Venus BNBvBNB | Email: N/A | Source: Not Found
+2026-05-21 13:17:55,874 - INFO - Processing project: Wrapped HYPEWHYPE
+2026-05-21 13:17:55,875 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 13:18:01,048 - INFO - Completed Wrapped HYPEWHYPE | Email: N/A | Source: Not Found
+2026-05-21 13:18:01,048 - INFO - Processing project: Wrapped XTZWXTZ
+2026-05-21 13:18:01,048 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 13:18:06,213 - INFO - Completed Wrapped XTZWXTZ | Email: N/A | Source: Not Found
+2026-05-21 13:18:06,213 - INFO - Processing project: ether.fi Staked
+2026-05-21 13:18:06,214 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 13:18:11,370 - INFO - Completed ether.fi Staked | Email: N/A | Source: Not Found
+2026-05-21 13:18:11,370 - INFO - Processing project: StakeWise Staked
+2026-05-21 13:18:11,370 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 13:18:16,526 - INFO - Completed StakeWise Staked | Email: N/A | Source: Not Found
+2026-05-21 13:18:16,526 - INFO - Processing project: Coinbase Wrapped Staked
+2026-05-21 13:18:16,526 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 13:18:21,675 - INFO - Completed Coinbase Wrapped Staked | Email: N/A | Source: Not Found
+2026-05-21 13:18:21,676 - INFO - Processing project: Stader ETHxETHX
+2026-05-21 13:18:21,676 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 13:18:26,833 - INFO - Completed Stader ETHxETHX | Email: N/A | Source: Not Found
+2026-05-21 13:18:26,833 - INFO - Processing project: Marinade Staked
+2026-05-21 13:18:26,833 - INFO - Opening https://github.com/certusone/wormhole-token-list/blob/main/content/by_source.csv (Attempt 1)
+2026-05-21 13:18:33,510 - INFO - Opening https://github.com/team (Attempt 1)
+2026-05-21 13:18:39,135 - INFO - Completed Marinade Staked | Email: N/A | Source: Not Found
+2026-05-21 13:18:39,136 - INFO - Processing project: GTBTCGTBTC
+2026-05-21 13:18:39,136 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 13:18:44,756 - INFO - Completed GTBTCGTBTC | Email: N/A | Source: Not Found
+2026-05-21 13:18:44,756 - INFO - Processing project: BENQI Liquid Staked
+2026-05-21 13:18:44,756 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 13:18:50,263 - INFO - Completed BENQI Liquid Staked | Email: N/A | Source: Not Found
+2026-05-21 13:18:50,263 - INFO - Processing project: Treehouse ETHTETH
+2026-05-21 13:18:50,263 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 13:18:55,796 - INFO - Completed Treehouse ETHTETH | Email: N/A | Source: Not Found
+2026-05-21 13:18:55,796 - INFO - Processing project: Universal BTCUNIBTC
+2026-05-21 13:18:55,796 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 13:19:01,249 - INFO - Completed Universal BTCUNIBTC | Email: N/A | Source: Not Found
+2026-05-21 13:19:01,249 - INFO - Processing project: crvUSDCRVUSD
+2026-05-21 13:19:01,249 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 13:19:06,758 - INFO - Completed crvUSDCRVUSD | Email: N/A | Source: Not Found
+2026-05-21 13:19:06,758 - INFO - Processing project: Staked TRXSTRX
+2026-05-21 13:19:06,758 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 13:19:12,267 - INFO - Completed Staked TRXSTRX | Email: N/A | Source: Not Found
+2026-05-21 13:19:12,268 - INFO - Processing project: Frax Staked Ether
+2026-05-21 13:19:12,268 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 13:19:17,705 - INFO - Completed Frax Staked Ether | Email: N/A | Source: Not Found
+2026-05-21 13:19:17,705 - INFO - Processing project: Rootstock BitcoinrBTC
+2026-05-21 13:19:17,705 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 13:19:23,196 - INFO - Completed Rootstock BitcoinrBTC | Email: N/A | Source: Not Found
+2026-05-21 13:19:23,197 - INFO - Processing project: Beacon ETHBETH
+2026-05-21 13:19:23,197 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 13:19:28,626 - INFO - Completed Beacon ETHBETH | Email: N/A | Source: Not Found
+2026-05-21 13:19:28,626 - INFO - Processing project: Venus USDTvUSDT
+2026-05-21 13:19:28,626 - INFO - Opening https://app.venus.io/dashboard (Attempt 1)
+2026-05-21 13:19:34,168 - INFO - Completed Venus USDTvUSDT | Email: N/A | Source: Not Found
+2026-05-21 13:19:34,168 - INFO - Processing project: Bitcoin Avalanche BridgedBTC.b
+2026-05-21 13:19:34,168 - INFO - Opening https://bitcoinbridge.network/ (Attempt 1)
+2026-05-21 13:19:39,530 - INFO - Completed Bitcoin Avalanche BridgedBTC.b | Email: N/A | Source: Not Found
+2026-05-21 13:19:39,530 - INFO - Processing project: Staked AavestkAAVE
+2026-05-21 13:19:39,530 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 13:19:45,042 - INFO - Completed Staked AavestkAAVE | Email: N/A | Source: Not Found
+2026-05-21 13:19:45,043 - INFO - Processing project: Sanctum InfinityINF
+2026-05-21 13:19:45,043 - INFO - Opening https://learn.sanctum.so/blog/scnsol-will-become-infinity (Attempt 1)
+2026-05-21 13:19:51,197 - INFO - Completed Sanctum InfinityINF | Email: icon_512x512@2x.png | Source: Website
+2026-05-21 13:19:51,198 - INFO - Processing project: Renzo Restaked
+2026-05-21 13:19:51,198 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 13:19:56,704 - INFO - Completed Renzo Restaked | Email: N/A | Source: Not Found
+2026-05-21 13:19:56,704 - INFO - Processing project: Wrapped Centrifuge
+2026-05-21 13:19:56,704 - INFO - Opening https://gov.centrifuge.io/t/centrifuge-token-migration-update/6860 (Attempt 1)
+2026-05-21 13:20:02,914 - INFO - Opening https://gov.centrifuge.io/t/about-please-complete-cfg-token-migration-now-may-2024/6395 (Attempt 1)
+2026-05-21 13:20:08,469 - INFO - Completed Wrapped Centrifuge | Email: hello@centrifuge.io | Source: Website
+2026-05-21 13:20:08,470 - INFO - Processing project: Aster as
+2026-05-21 13:20:08,470 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 13:20:13,979 - INFO - Completed Aster as | Email: N/A | Source: Not Found
+2026-05-21 13:20:13,979 - INFO - Processing project: Wrapped SolanaSOL
+2026-05-21 13:20:13,979 - INFO - Opening https://solana.com/ (Attempt 1)
+2026-05-21 13:20:20,156 - INFO - Completed Wrapped SolanaSOL | Email: operations@solana.com | Source: Website
+2026-05-21 13:20:20,156 - INFO - Processing project: Wrapped AVAXWAVAX
+2026-05-21 13:20:20,156 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 13:20:25,664 - INFO - Completed Wrapped AVAXWAVAX | Email: N/A | Source: Not Found
+2026-05-21 13:20:25,664 - INFO - Processing project: Bybit Staked
+2026-05-21 13:20:25,664 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 13:20:31,116 - INFO - Completed Bybit Staked | Email: N/A | Source: Not Found
+2026-05-21 13:20:31,116 - INFO - Processing project: JPool Staked SOL (JSOL)
+2026-05-21 13:20:31,116 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 13:20:36,555 - INFO - Completed JPool Staked SOL (JSOL) | Email: N/A | Source: Not Found
+2026-05-21 13:20:36,555 - INFO - Processing project: Wrapped FantomWFTM
+2026-05-21 13:20:36,555 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 13:20:41,975 - INFO - Completed Wrapped FantomWFTM | Email: N/A | Source: Not Found
+2026-05-21 13:20:41,975 - INFO - Processing project: Coinbase Wrapped
+2026-05-21 13:20:41,975 - INFO - Opening https://github.com/coinbase/wrapped-tokens-os (Attempt 1)
+2026-05-21 13:20:48,371 - INFO - Opening https://github.com/team (Attempt 1)
+2026-05-21 13:20:54,144 - INFO - Opening https://github.com/contact/report-content?content_url=https%3A%2F%2Fgithub.com%2Fcoinbase%2Fwrapped-tokens-os&report=coinbase+%28user%29 (Attempt 1)
+2026-05-21 13:20:54,434 - WARNING - Attempt 1 failed for https://github.com/contact/report-content?content_url=https%3A%2F%2Fgithub.com%2Fcoinbase%2Fwrapped-tokens-os&report=coinbase+%28user%29: Page.goto: net::ERR_HTTP_RESPONSE_CODE_FAILURE at https://github.com/contact/report-content?content_url=https%3A%2F%2Fgithub.com%2Fcoinbase%2Fwrapped-tokens-os&report=coinbase+%28user%29
+Call log:
+  - navigating to "https://github.com/contact/report-content?content_url=https%3A%2F%2Fgithub.com%2Fcoinbase%2Fwrapped-tokens-os&report=coinbase+%28user%29", waiting until "domcontentloaded"
+
+2026-05-21 13:20:54,435 - INFO - Opening https://github.com/contact/report-content?content_url=https%3A%2F%2Fgithub.com%2Fcoinbase%2Fwrapped-tokens-os&report=coinbase+%28user%29 (Attempt 2)
+2026-05-21 13:20:54,511 - WARNING - Attempt 2 failed for https://github.com/contact/report-content?content_url=https%3A%2F%2Fgithub.com%2Fcoinbase%2Fwrapped-tokens-os&report=coinbase+%28user%29: Page.goto: net::ERR_HTTP_RESPONSE_CODE_FAILURE at https://github.com/contact/report-content?content_url=https%3A%2F%2Fgithub.com%2Fcoinbase%2Fwrapped-tokens-os&report=coinbase+%28user%29
+Call log:
+  - navigating to "https://github.com/contact/report-content?content_url=https%3A%2F%2Fgithub.com%2Fcoinbase%2Fwrapped-tokens-os&report=coinbase+%28user%29", waiting until "domcontentloaded"
+
+2026-05-21 13:20:54,511 - INFO - Opening https://github.com/contact/report-content?content_url=https%3A%2F%2Fgithub.com%2Fcoinbase%2Fwrapped-tokens-os&report=coinbase+%28user%29 (Attempt 3)
+2026-05-21 13:20:54,562 - WARNING - Attempt 3 failed for https://github.com/contact/report-content?content_url=https%3A%2F%2Fgithub.com%2Fcoinbase%2Fwrapped-tokens-os&report=coinbase+%28user%29: Page.goto: net::ERR_HTTP_RESPONSE_CODE_FAILURE at https://github.com/contact/report-content?content_url=https%3A%2F%2Fgithub.com%2Fcoinbase%2Fwrapped-tokens-os&report=coinbase+%28user%29
+Call log:
+  - navigating to "https://github.com/contact/report-content?content_url=https%3A%2F%2Fgithub.com%2Fcoinbase%2Fwrapped-tokens-os&report=coinbase+%28user%29", waiting until "domcontentloaded"
+
+2026-05-21 13:20:54,562 - ERROR - Failed to open https://github.com/contact/report-content?content_url=https%3A%2F%2Fgithub.com%2Fcoinbase%2Fwrapped-tokens-os&report=coinbase+%28user%29 after 3 attempts.
+2026-05-21 13:20:54,564 - INFO - Completed Coinbase Wrapped | Email: N/A | Source: Not Found
+2026-05-21 13:20:54,564 - INFO - Processing project: Huobi BTCHBTC
+2026-05-21 13:20:54,564 - INFO - Opening https://www.slowmist.com/en/security-audit-certificate.html?id=2147d121a167cd5d78cefdef74b45547100a21d1f8349e9dab608f6abd293d01 (Attempt 1)
+2026-05-21 13:20:59,714 - INFO - Completed Huobi BTCHBTC | Email: N/A | Source: Not Found
+2026-05-21 13:20:59,715 - INFO - Processing project: BlazeStake Staked
+2026-05-21 13:20:59,715 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 13:21:05,113 - INFO - Completed BlazeStake Staked | Email: N/A | Source: Not Found
+2026-05-21 13:21:05,113 - INFO - Processing project: Crypto.com Staked
+2026-05-21 13:21:05,113 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 13:21:10,584 - INFO - Completed Crypto.com Staked | Email: N/A | Source: Not Found
+2026-05-21 13:21:10,585 - INFO - Processing project: Wrapped PulseWPLS
+2026-05-21 13:21:10,585 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 13:21:16,080 - INFO - Completed Wrapped PulseWPLS | Email: N/A | Source: Not Found
+2026-05-21 13:21:16,080 - INFO - Processing project: Mantle Restaked
+2026-05-21 13:21:16,080 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 13:21:21,536 - INFO - Completed Mantle Restaked | Email: N/A | Source: Not Found
+2026-05-21 13:21:21,537 - INFO - Processing project: Lorenzo staked USD1+SUSD1+
+2026-05-21 13:21:21,537 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 13:21:27,047 - INFO - Completed Lorenzo staked USD1+SUSD1+ | Email: N/A | Source: Not Found
+2026-05-21 13:21:27,047 - INFO - Processing project: xSolvBTCxSolvBTC
+2026-05-21 13:21:27,047 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 13:21:32,553 - INFO - Completed xSolvBTCxSolvBTC | Email: N/A | Source: Not Found
+2026-05-21 13:21:32,553 - INFO - Processing project: Wrapped peaq
+2026-05-21 13:21:32,553 - INFO - Opening https://www.peaq.network/blog/what-are-decentralized-physical-infrastructure-networks-depin (Attempt 1)
+2026-05-21 13:21:38,565 - INFO - Opening https://www.peaq.network/blog/machine-defi-102-all-about-peaq-app-your-machine-economy-gateway (Attempt 1)
+2026-05-21 13:21:44,097 - INFO - Completed Wrapped peaq | Email: N/A | Source: Not Found
+2026-05-21 13:21:44,097 - INFO - Processing project: Edgevana Staked
+2026-05-21 13:21:44,097 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 13:21:49,582 - INFO - Completed Edgevana Staked | Email: N/A | Source: Not Found
+2026-05-21 13:21:49,582 - INFO - Processing project: ether.fi Staked
+2026-05-21 13:21:49,582 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 13:21:55,033 - INFO - Completed ether.fi Staked | Email: N/A | Source: Not Found
+2026-05-21 13:21:55,033 - INFO - Processing project: Staked USDTSTUSDT
+2026-05-21 13:21:55,033 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 13:22:00,590 - INFO - Completed Staked USDTSTUSDT | Email: N/A | Source: Not Found
+2026-05-21 13:22:00,590 - INFO - Processing project: Haedal Staked
+2026-05-21 13:22:00,590 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 13:22:06,027 - INFO - Completed Haedal Staked | Email: N/A | Source: Not Found
+2026-05-21 13:22:06,027 - INFO - Processing project: pufETHPUFETH
+2026-05-21 13:22:06,027 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 13:22:11,592 - INFO - Completed pufETHPUFETH | Email: N/A | Source: Not Found
+2026-05-21 13:22:11,592 - INFO - Processing project: Venus USDCvUSDC
+2026-05-21 13:22:11,592 - INFO - Opening https://app.venus.io/dashboard (Attempt 1)
+2026-05-21 13:22:17,105 - INFO - Completed Venus USDCvUSDC | Email: N/A | Source: Not Found
+2026-05-21 13:22:17,105 - INFO - Processing project: Wrapped CROWCRO
+2026-05-21 13:22:17,105 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 13:22:22,600 - INFO - Completed Wrapped CROWCRO | Email: N/A | Source: Not Found
+2026-05-21 13:22:22,601 - INFO - Processing project: Staked Frax
+2026-05-21 13:22:22,601 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 13:22:28,105 - INFO - Completed Staked Frax | Email: N/A | Source: Not Found
+2026-05-21 13:22:28,105 - INFO - Processing project: Venus ETHvETH
+2026-05-21 13:22:28,105 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 13:22:33,325 - INFO - Completed Venus ETHvETH | Email: N/A | Source: Not Found
+2026-05-21 13:22:33,325 - INFO - Processing project: Volo Staked
+2026-05-21 13:22:33,325 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 13:22:38,533 - INFO - Completed Volo Staked | Email: N/A | Source: Not Found
+2026-05-21 13:22:38,533 - INFO - Processing project: swETHSWETH
+2026-05-21 13:22:38,533 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 13:22:43,727 - INFO - Completed swETHSWETH | Email: N/A | Source: Not Found
+2026-05-21 13:22:43,727 - INFO - Processing project: Wrapped TAOWTAO
+2026-05-21 13:22:43,728 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 13:22:48,902 - INFO - Completed Wrapped TAOWTAO | Email: N/A | Source: Not Found
+2026-05-21 13:22:48,902 - INFO - Processing project: Restaked Swell Ethereum
+2026-05-21 13:22:48,902 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 13:22:54,076 - INFO - Completed Restaked Swell Ethereum | Email: N/A | Source: Not Found
+2026-05-21 13:22:54,077 - INFO - Processing project: Wrapped Rootstock Bitcoin
+2026-05-21 13:22:54,077 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 13:22:59,244 - INFO - Completed Wrapped Rootstock Bitcoin | Email: N/A | Source: Not Found
+2026-05-21 13:22:59,244 - INFO - Processing project: DeFi Pulse
+2026-05-21 13:22:59,244 - INFO - Opening https://bilaxy.com/trade/DPI_ETH?intro=1696872 (Attempt 1)
+2026-05-21 13:23:07,551 - INFO - Completed DeFi Pulse | Email: N/A | Source: Not Found
+2026-05-21 13:23:07,552 - INFO - Processing project: Wrapped HBARWHBAR
+2026-05-21 13:23:07,552 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 13:23:12,720 - INFO - Completed Wrapped HBARWHBAR | Email: N/A | Source: Not Found
+2026-05-21 13:23:12,720 - INFO - Processing project: Wrapped NXMWNXM
+2026-05-21 13:23:12,720 - INFO - Opening https://t.co/heQxKsVhQH (Attempt 1)
+2026-05-21 13:23:18,727 - INFO - Completed Wrapped NXMWNXM | Email: alex@nexusmutual.io | Source: Website
+2026-05-21 13:23:18,728 - INFO - Processing project: Wrapped MaticWMATIC
+2026-05-21 13:23:18,728 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 13:23:23,893 - INFO - Completed Wrapped MaticWMATIC | Email: N/A | Source: Not Found
+2026-05-21 13:23:23,893 - INFO - Processing project: Universal ETHUNIETH
+2026-05-21 13:23:23,893 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 13:23:29,052 - INFO - Completed Universal ETHUNIETH | Email: N/A | Source: Not Found
+2026-05-21 13:23:29,053 - INFO - Processing project: Amnis Staked Aptos coin
+2026-05-21 13:23:29,053 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 13:23:34,225 - INFO - Completed Amnis Staked Aptos coin | Email: N/A | Source: Not Found
+2026-05-21 13:23:34,225 - INFO - Processing project: Wrapped BeraWBERA
+2026-05-21 13:23:34,225 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 13:23:39,400 - INFO - Completed Wrapped BeraWBERA | Email: N/A | Source: Not Found
+2026-05-21 13:23:39,400 - INFO - Processing project: OpenEden Compounding Open
+2026-05-21 13:23:39,400 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 13:23:44,557 - INFO - Completed OpenEden Compounding Open | Email: N/A | Source: Not Found
+2026-05-21 13:23:44,557 - INFO - Processing project: ATS600
+2026-05-21 13:23:44,557 - INFO - Opening https://www.gate.com/trade/ATS_USDT?ref=35748359 (Attempt 1)
+2026-05-21 13:23:51,648 - INFO - Completed ATS600 | Email: N/A | Source: Not Found
+2026-05-21 13:23:51,649 - INFO - Processing project: AIC100
+2026-05-21 13:23:51,649 - INFO - Opening https://go.kryll.io/xray-ai-companions-5458 (Attempt 1)
+2026-05-21 13:23:59,548 - INFO - Completed AIC100 | Email: N/A | Source: Not Found
+2026-05-21 13:23:59,759 - INFO - Extraction completed successfully. Total projects processed: 102
+2026-05-21 14:18:28,811 - INFO - Processing project: Lido Staked
+2026-05-21 14:18:28,811 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 14:18:35,174 - INFO - Opening https://whitebit.com/about-us (Attempt 1)
+2026-05-21 14:18:40,367 - INFO - Opening https://whitebit.com/m/careers (Attempt 1)
+2026-05-21 14:18:45,523 - INFO - Completed Lido Staked | Email: N/A | Source: Not Found
+2026-05-21 14:18:45,524 - INFO - Processing project: USDSUSDS
+2026-05-21 14:18:45,524 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 14:18:50,671 - INFO - Completed USDSUSDS | Email: N/A | Source: Not Found
+2026-05-21 14:18:50,671 - INFO - Processing project: Lido wst
+2026-05-21 14:18:50,671 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 14:18:55,829 - INFO - Completed Lido wst | Email: N/A | Source: Not Found
+2026-05-21 14:18:55,830 - INFO - Processing project: Wrapped BitcoinWBTC
+2026-05-21 14:18:55,830 - INFO - Opening https://www.slowmist.com/en/security-audit-certificate.html?id=19b0299be6f8f7bc6fc7a701aed5a28bae5c2225c122b3637c593420a4070c55 (Attempt 1)
+2026-05-21 14:19:01,231 - INFO - Completed Wrapped BitcoinWBTC | Email: N/A | Source: Not Found
+2026-05-21 14:19:01,231 - INFO - Processing project: Wrapped Beacon
+2026-05-21 14:19:01,231 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 14:19:06,401 - INFO - Completed Wrapped Beacon | Email: N/A | Source: Not Found
+2026-05-21 14:19:06,401 - INFO - Processing project: WETHWETH
+2026-05-21 14:19:06,402 - INFO - Opening https://hacken.io/audits/singularitydao/ (Attempt 1)
+2026-05-21 14:19:15,904 - INFO - Opening https://hacken.io/services/red-teaming/ (Attempt 1)
+2026-05-21 14:19:21,972 - INFO - Opening https://hacken.io/about/ (Attempt 1)
+2026-05-21 14:19:28,299 - INFO - Opening https://hacken.io/careers/ (Attempt 1)
+2026-05-21 14:19:34,501 - INFO - Completed WETHWETH | Email: N/A | Source: Not Found
+2026-05-21 14:19:34,501 - INFO - Processing project: Coinbase Wrapped
+2026-05-21 14:19:34,501 - INFO - Opening https://usethebitcoin.com/news/usdc-hyperliquid-coinbase-treasury/ (Attempt 1)
+2026-05-21 14:19:41,046 - INFO - Opening https://usethebitcoin.com/about-us/ (Attempt 1)
+2026-05-21 14:19:49,179 - INFO - Opening https://usethebitcoin.com/utb-careers/ (Attempt 1)
+2026-05-21 14:19:56,590 - INFO - Opening https://usethebitcoin.com/contact-us/ (Attempt 1)
+2026-05-21 14:20:03,837 - INFO - Completed Coinbase Wrapped | Email: N/A | Source: Not Found
+2026-05-21 14:20:03,838 - INFO - Processing project: Bitcoin BEP2BTCB
+2026-05-21 14:20:03,838 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 14:20:09,335 - INFO - Completed Bitcoin BEP2BTCB | Email: N/A | Source: Not Found
+2026-05-21 14:20:09,335 - INFO - Processing project: USDT0USDT0
+2026-05-21 14:20:09,335 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 14:20:14,495 - INFO - Completed USDT0USDT0 | Email: N/A | Source: Not Found
+2026-05-21 14:20:14,495 - INFO - Processing project: Aave Ethereum W
+2026-05-21 14:20:14,495 - INFO - Opening https://www.huobi.com/en-us/exchange/aethweth_eth?inviter_id=11345710&invite_code=zh5i6223 (Attempt 1)
+2026-05-21 14:20:35,664 - WARNING - Attempt 1 failed for https://www.huobi.com/en-us/exchange/aethweth_eth?inviter_id=11345710&invite_code=zh5i6223: Page.goto: net::ERR_CONNECTION_TIMED_OUT at https://www.huobi.com/en-us/exchange/aethweth_eth?inviter_id=11345710&invite_code=zh5i6223
+Call log:
+  - navigating to "https://www.huobi.com/en-us/exchange/aethweth_eth?inviter_id=11345710&invite_code=zh5i6223", waiting until "domcontentloaded"
+
+2026-05-21 14:20:35,664 - INFO - Opening https://www.huobi.com/en-us/exchange/aethweth_eth?inviter_id=11345710&invite_code=zh5i6223 (Attempt 2)
+2026-05-21 14:20:35,922 - WARNING - Attempt 2 failed for https://www.huobi.com/en-us/exchange/aethweth_eth?inviter_id=11345710&invite_code=zh5i6223: Page.goto: net::ERR_CONNECTION_TIMED_OUT at https://www.huobi.com/en-us/exchange/aethweth_eth?inviter_id=11345710&invite_code=zh5i6223
+Call log:
+  - navigating to "https://www.huobi.com/en-us/exchange/aethweth_eth?inviter_id=11345710&invite_code=zh5i6223", waiting until "domcontentloaded"
+
+2026-05-21 14:20:35,922 - INFO - Opening https://www.huobi.com/en-us/exchange/aethweth_eth?inviter_id=11345710&invite_code=zh5i6223 (Attempt 3)
+2026-05-21 14:20:56,708 - WARNING - Attempt 3 failed for https://www.huobi.com/en-us/exchange/aethweth_eth?inviter_id=11345710&invite_code=zh5i6223: Page.goto: net::ERR_CONNECTION_TIMED_OUT at https://www.huobi.com/en-us/exchange/aethweth_eth?inviter_id=11345710&invite_code=zh5i6223
+Call log:
+  - navigating to "https://www.huobi.com/en-us/exchange/aethweth_eth?inviter_id=11345710&invite_code=zh5i6223", waiting until "domcontentloaded"
+
+2026-05-21 14:20:56,708 - ERROR - Failed to open https://www.huobi.com/en-us/exchange/aethweth_eth?inviter_id=11345710&invite_code=zh5i6223 after 3 attempts.
+2026-05-21 14:20:56,711 - INFO - Completed Aave Ethereum W | Email: N/A | Source: Not Found
+2026-05-21 14:20:56,712 - INFO - Processing project: Wrapped e
+2026-05-21 14:20:56,712 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 14:21:02,345 - INFO - Completed Wrapped e | Email: N/A | Source: Not Found
+2026-05-21 14:21:02,346 - INFO - Processing project: Aave Ethereum U
+2026-05-21 14:21:02,346 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 14:21:07,683 - INFO - Completed Aave Ethereum U | Email: N/A | Source: Not Found
+2026-05-21 14:21:07,683 - INFO - Processing project: Ethena Staked
+2026-05-21 14:21:07,683 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 14:21:12,967 - INFO - Completed Ethena Staked | Email: N/A | Source: Not Found
+2026-05-21 14:21:12,968 - INFO - Processing project: syrupUSDCsyrupUSDC
+2026-05-21 14:21:12,968 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 14:21:18,214 - INFO - Completed syrupUSDCsyrupUSDC | Email: N/A | Source: Not Found
+2026-05-21 14:21:18,215 - INFO - Processing project: Wrapped TRONWTRX
+2026-05-21 14:21:18,215 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 14:21:23,450 - INFO - Completed Wrapped TRONWTRX | Email: N/A | Source: Not Found
+2026-05-21 14:21:23,450 - INFO - Processing project: Kelp DAO Restaked
+2026-05-21 14:21:23,450 - INFO - Opening https://rseth-tracking.vercel.app (Attempt 1)
+2026-05-21 14:21:29,213 - INFO - Completed Kelp DAO Restaked | Email: N/A | Source: Not Found
+2026-05-21 14:21:29,214 - INFO - Processing project: Bitcoin TRC20BTCT
+2026-05-21 14:21:29,214 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 14:21:34,444 - INFO - Completed Bitcoin TRC20BTCT | Email: N/A | Source: Not Found
+2026-05-21 14:21:34,444 - INFO - Processing project: BFUSDBFUSD
+2026-05-21 14:21:34,444 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 14:21:39,651 - INFO - Completed BFUSDBFUSD | Email: N/A | Source: Not Found
+2026-05-21 14:21:39,652 - INFO - Processing project: BounceBit BTCBBTC
+2026-05-21 14:21:39,652 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 14:21:44,855 - INFO - Completed BounceBit BTCBBTC | Email: N/A | Source: Not Found
+2026-05-21 14:21:44,855 - INFO - Processing project: USD Coin BridgedUSDC.e
+2026-05-21 14:21:44,856 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 14:21:50,070 - INFO - Completed USD Coin BridgedUSDC.e | Email: N/A | Source: Not Found
+2026-05-21 14:21:50,070 - INFO - Processing project: Ethena Labs (USDtb)
+2026-05-21 14:21:50,070 - INFO - Opening https://www.bybit.com/en-US/trade/spot/USDTB/USDT?affiliate_id=157132 (Attempt 1)
+2026-05-21 14:21:56,528 - INFO - Completed Ethena Labs (USDtb) | Email: N/A | Source: Not Found
+2026-05-21 14:21:56,528 - INFO - Processing project: Wrapped BNBWBNB
+2026-05-21 14:21:56,528 - INFO - Opening https://www.qielend.qie.digital/ (Attempt 1)
+2026-05-21 14:22:04,456 - INFO - Completed Wrapped BNBWBNB | Email: N/A | Source: Not Found
+2026-05-21 14:22:04,457 - INFO - Processing project: Kinetiq Staked
+2026-05-21 14:22:04,457 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 14:22:09,673 - INFO - Completed Kinetiq Staked | Email: N/A | Source: Not Found
+2026-05-21 14:22:09,673 - INFO - Processing project: Binance Staked
+2026-05-21 14:22:09,673 - INFO - Opening https://www.binance.com/en/trade/BNSOL_SOL?ref=40896146 (Attempt 1)
+2026-05-21 14:22:15,161 - INFO - Completed Binance Staked | Email: sensorsdata@1.26.12.js | Source: Website
+2026-05-21 14:22:15,161 - INFO - Processing project: Lombard Staked
+2026-05-21 14:22:15,161 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 14:22:20,368 - INFO - Completed Lombard Staked | Email: N/A | Source: Not Found
+2026-05-21 14:22:20,369 - INFO - Processing project: Jito Staked
+2026-05-21 14:22:20,369 - INFO - Opening https://blockworks.com/quarterly-calls/jito-26-q1 (Attempt 1)
+2026-05-21 14:22:27,704 - INFO - Opening https://blockworks.com/about (Attempt 1)
+2026-05-21 14:22:33,132 - INFO - Completed Jito Staked | Email: BlockworksTeam@2x.png | Source: Website
+2026-05-21 14:22:33,132 - INFO - Processing project: FunctionFBTC
+2026-05-21 14:22:33,132 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 14:22:38,527 - INFO - Completed FunctionFBTC | Email: N/A | Source: Not Found
+2026-05-21 14:22:38,528 - INFO - Processing project: Rocket Pool
+2026-05-21 14:22:38,528 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 14:22:43,730 - INFO - Completed Rocket Pool | Email: N/A | Source: Not Found
+2026-05-21 14:22:43,730 - INFO - Processing project: Wrapped FlareWFLR
+2026-05-21 14:22:43,730 - INFO - Opening https://openocean.finance/ (Attempt 1)
+2026-05-21 14:22:49,608 - INFO - Completed Wrapped FlareWFLR | Email: N/A | Source: Not Found
+2026-05-21 14:22:49,609 - INFO - Processing project: Liquid Staked
+2026-05-21 14:22:49,609 - INFO - Opening https://exchange.coinbase.com/trade/LSETH-ETH (Attempt 1)
+2026-05-21 14:22:59,083 - INFO - Completed Liquid Staked | Email: N/A | Source: Not Found
+2026-05-21 14:22:59,084 - INFO - Processing project: Lista Staked
+2026-05-21 14:22:59,084 - INFO - Opening https://lista.org/lending/market/bsc/0xb774dc73a40fd376becd8e82e2a642ba63e69086d70705766d8f7f1f75707a6d (Attempt 1)
+2026-05-21 14:23:05,579 - INFO - Completed Lista Staked | Email: N/A | Source: Not Found
+2026-05-21 14:23:05,579 - INFO - Processing project: syrupUSDTsyrupUSDT
+2026-05-21 14:23:05,579 - INFO - Opening https://openocean.finance/ (Attempt 1)
+2026-05-21 14:23:10,912 - INFO - Completed syrupUSDTsyrupUSDT | Email: N/A | Source: Not Found
+2026-05-21 14:23:10,912 - INFO - Processing project: tBTCTBTC
+2026-05-21 14:23:10,912 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 14:23:16,366 - INFO - Completed tBTCTBTC | Email: N/A | Source: Not Found
+2026-05-21 14:23:16,366 - INFO - Processing project: Bond USD0bUSD0
+2026-05-21 14:23:16,366 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 14:23:21,522 - INFO - Completed Bond USD0bUSD0 | Email: N/A | Source: Not Found
+2026-05-21 14:23:21,522 - INFO - Processing project: slisBNBxslisBNBx
+2026-05-21 14:23:21,522 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 14:23:26,665 - INFO - Completed slisBNBxslisBNBx | Email: N/A | Source: Not Found
+2026-05-21 14:23:26,665 - INFO - Processing project: SolvBTCSolvBTC
+2026-05-21 14:23:26,665 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 14:23:31,813 - INFO - Completed SolvBTCSolvBTC | Email: N/A | Source: Not Found
+2026-05-21 14:23:31,814 - INFO - Processing project: Mantle Staked
+2026-05-21 14:23:31,814 - INFO - Opening https://www.bybit.com/en-US/trade/spot/METH/USDT?affiliate_id=157132 (Attempt 1)
+2026-05-21 14:23:37,459 - INFO - Completed Mantle Staked | Email: N/A | Source: Not Found
+2026-05-21 14:23:37,459 - INFO - Processing project: Jupiter Staked
+2026-05-21 14:23:37,459 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 14:23:42,631 - INFO - Completed Jupiter Staked | Email: N/A | Source: Not Found
+2026-05-21 14:23:42,632 - INFO - Processing project: Venus BTCvBTC
+2026-05-21 14:23:42,632 - INFO - Opening https://app.venus.io (Attempt 1)
+2026-05-21 14:23:48,488 - INFO - Completed Venus BTCvBTC | Email: N/A | Source: Not Found
+2026-05-21 14:23:48,488 - INFO - Processing project: Wrapped ChilizWCHZ
+2026-05-21 14:23:48,488 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 14:23:53,655 - INFO - Completed Wrapped ChilizWCHZ | Email: N/A | Source: Not Found
+2026-05-21 14:23:53,656 - INFO - Processing project: Venus BNBvBNB
+2026-05-21 14:23:53,656 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 14:23:58,818 - INFO - Completed Venus BNBvBNB | Email: N/A | Source: Not Found
+2026-05-21 14:23:58,818 - INFO - Processing project: Wrapped HYPEWHYPE
+2026-05-21 14:23:58,818 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 14:24:03,981 - INFO - Completed Wrapped HYPEWHYPE | Email: N/A | Source: Not Found
+2026-05-21 14:24:03,982 - INFO - Processing project: Wrapped XTZWXTZ
+2026-05-21 14:24:03,982 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 14:24:09,149 - INFO - Completed Wrapped XTZWXTZ | Email: N/A | Source: Not Found
+2026-05-21 14:24:09,150 - INFO - Processing project: ether.fi Staked
+2026-05-21 14:24:09,150 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 14:24:14,316 - INFO - Completed ether.fi Staked | Email: N/A | Source: Not Found
+2026-05-21 14:24:14,316 - INFO - Processing project: StakeWise Staked
+2026-05-21 14:24:14,316 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 14:24:19,460 - INFO - Completed StakeWise Staked | Email: N/A | Source: Not Found
+2026-05-21 14:24:19,460 - INFO - Processing project: Coinbase Wrapped Staked
+2026-05-21 14:24:19,460 - INFO - Opening https://whitebit.com/crypto-card#partner-block?utm_source=coinmarketcap&utm_medium=svitolinaskinvl&utm_campaign=post (Attempt 1)
+2026-05-21 14:24:24,617 - INFO - Completed Coinbase Wrapped Staked | Email: N/A | Source: Not Found
+2026-05-21 14:24:24,618 - INFO - Processing project: Stader ETHxETHX
+2026-05-21 14:24:24,618 - INFO - Opening https://whitebit.com/crypto-card?utm_source=coinmarketcap&utm_medium=novawb&utm_campaign=post (Attempt 1)
+2026-05-21 14:24:29,767 - INFO - Completed Stader ETHxETHX | Email: N/A | Source: Not Found
+2026-05-21 14:24:29,767 - INFO - Processing project: Marinade Staked
+2026-05-21 14:24:29,768 - INFO - Opening https://github.com/certusone/wormhole-token-list/blob/main/content/by_source.csv (Attempt 1)
+2026-05-21 14:24:30,444 - WARNING - Attempt 1 failed for https://github.com/certusone/wormhole-token-list/blob/main/content/by_source.csv: Page.goto: net::ERR_ABORTED at https://github.com/certusone/wormhole-token-list/blob/main/content/by_source.csv
+Call log:
+  - navigating to "https://github.com/certusone/wormhole-token-list/blob/main/content/by_source.csv", waiting until "domcontentloaded"
+
+2026-05-21 14:24:30,445 - INFO - Opening https://github.com/certusone/wormhole-token-list/blob/main/content/by_source.csv (Attempt 2)
+2026-05-21 14:24:36,563 - INFO - Opening https://github.com/team (Attempt 1)
+2026-05-21 14:24:42,168 - INFO - Completed Marinade Staked | Email: N/A | Source: Not Found
+2026-05-21 14:24:42,168 - INFO - Processing project: GTBTCGTBTC
+2026-05-21 14:24:42,168 - INFO - Opening https://www.gate.com/trade/GTBTC_BTC?ref=35748359 (Attempt 1)
+2026-05-21 14:24:48,671 - INFO - Completed GTBTCGTBTC | Email: N/A | Source: Not Found
+2026-05-21 14:24:48,671 - INFO - Processing project: BENQI Liquid Staked
+2026-05-21 14:24:48,671 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 14:24:54,419 - INFO - Completed BENQI Liquid Staked | Email: N/A | Source: Not Found
+2026-05-21 14:24:54,419 - INFO - Processing project: Treehouse ETHTETH
+2026-05-21 14:24:54,419 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 14:25:00,034 - INFO - Completed Treehouse ETHTETH | Email: N/A | Source: Not Found
+2026-05-21 14:25:00,034 - INFO - Processing project: Universal BTCUNIBTC
+2026-05-21 14:25:00,034 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 14:25:05,759 - INFO - Completed Universal BTCUNIBTC | Email: N/A | Source: Not Found
+2026-05-21 14:25:05,760 - INFO - Processing project: crvUSDCRVUSD
+2026-05-21 14:25:05,760 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 14:25:11,406 - INFO - Completed crvUSDCRVUSD | Email: N/A | Source: Not Found
+2026-05-21 14:25:11,407 - INFO - Processing project: Staked TRXSTRX
+2026-05-21 14:25:11,407 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 14:25:16,973 - INFO - Completed Staked TRXSTRX | Email: N/A | Source: Not Found
+2026-05-21 14:25:16,973 - INFO - Processing project: Frax Staked Ether
+2026-05-21 14:25:16,973 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 14:25:22,575 - INFO - Completed Frax Staked Ether | Email: N/A | Source: Not Found
+2026-05-21 14:25:22,576 - INFO - Processing project: Rootstock BitcoinrBTC
+2026-05-21 14:25:22,576 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 14:25:28,178 - INFO - Completed Rootstock BitcoinrBTC | Email: N/A | Source: Not Found
+2026-05-21 14:25:28,178 - INFO - Processing project: Beacon ETHBETH
+2026-05-21 14:25:28,178 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 14:25:33,822 - INFO - Completed Beacon ETHBETH | Email: N/A | Source: Not Found
+2026-05-21 14:25:33,822 - INFO - Processing project: Venus USDTvUSDT
+2026-05-21 14:25:33,822 - INFO - Opening https://app.venus.io/dashboard (Attempt 1)
+2026-05-21 14:25:39,323 - INFO - Completed Venus USDTvUSDT | Email: N/A | Source: Not Found
+2026-05-21 14:25:39,323 - INFO - Processing project: Bitcoin Avalanche BridgedBTC.b
+2026-05-21 14:25:39,323 - INFO - Opening https://bitcoinbridge.network/ (Attempt 1)
+2026-05-21 14:25:44,667 - INFO - Completed Bitcoin Avalanche BridgedBTC.b | Email: N/A | Source: Not Found
+2026-05-21 14:25:44,667 - INFO - Processing project: Staked AavestkAAVE
+2026-05-21 14:25:44,667 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 14:25:50,281 - INFO - Completed Staked AavestkAAVE | Email: N/A | Source: Not Found
+2026-05-21 14:25:50,282 - INFO - Processing project: Sanctum InfinityINF
+2026-05-21 14:25:50,282 - INFO - Opening https://learn.sanctum.so/blog/scnsol-will-become-infinity (Attempt 1)
+2026-05-21 14:25:58,915 - INFO - Completed Sanctum InfinityINF | Email: icon_512x512@2x.png | Source: Website
+2026-05-21 14:25:58,915 - INFO - Processing project: Renzo Restaked
+2026-05-21 14:25:58,915 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 14:26:04,624 - INFO - Completed Renzo Restaked | Email: N/A | Source: Not Found
+2026-05-21 14:26:04,624 - INFO - Processing project: Wrapped Centrifuge
+2026-05-21 14:26:04,624 - INFO - Opening https://gov.centrifuge.io/t/centrifuge-token-migration-update/6860 (Attempt 1)
+2026-05-21 14:26:10,837 - INFO - Opening https://gov.centrifuge.io/t/about-please-complete-cfg-token-migration-now-may-2024/6395 (Attempt 1)
+2026-05-21 14:26:16,427 - INFO - Completed Wrapped Centrifuge | Email: hello@centrifuge.io | Source: Website
+2026-05-21 14:26:16,427 - INFO - Processing project: Aster as
+2026-05-21 14:26:16,427 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 14:26:22,090 - INFO - Completed Aster as | Email: N/A | Source: Not Found
+2026-05-21 14:26:22,090 - INFO - Processing project: Wrapped SolanaSOL
+2026-05-21 14:26:22,090 - INFO - Opening https://solana.com/ (Attempt 1)
+2026-05-21 14:26:28,960 - INFO - Completed Wrapped SolanaSOL | Email: operations@solana.com | Source: Website
+2026-05-21 14:26:28,960 - INFO - Processing project: Wrapped AVAXWAVAX
+2026-05-21 14:26:28,960 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 14:26:34,574 - INFO - Completed Wrapped AVAXWAVAX | Email: N/A | Source: Not Found
+2026-05-21 14:26:34,575 - INFO - Processing project: Bybit Staked
+2026-05-21 14:26:34,575 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 14:26:40,223 - INFO - Completed Bybit Staked | Email: N/A | Source: Not Found
+2026-05-21 14:26:40,224 - INFO - Processing project: JPool Staked SOL (JSOL)
+2026-05-21 14:26:40,224 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 14:26:45,785 - INFO - Completed JPool Staked SOL (JSOL) | Email: N/A | Source: Not Found
+2026-05-21 14:26:45,785 - INFO - Processing project: Wrapped FantomWFTM
+2026-05-21 14:26:45,785 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 14:26:51,376 - INFO - Completed Wrapped FantomWFTM | Email: N/A | Source: Not Found
+2026-05-21 14:26:51,377 - INFO - Processing project: Coinbase Wrapped
+2026-05-21 14:26:51,377 - INFO - Opening https://github.com/coinbase/wrapped-tokens-os (Attempt 1)
+2026-05-21 14:26:57,880 - INFO - Opening https://github.com/team (Attempt 1)
+2026-05-21 14:27:03,407 - INFO - Opening https://github.com/contact/report-content?content_url=https%3A%2F%2Fgithub.com%2Fcoinbase%2Fwrapped-tokens-os&report=coinbase+%28user%29 (Attempt 1)
+2026-05-21 14:27:03,737 - WARNING - Attempt 1 failed for https://github.com/contact/report-content?content_url=https%3A%2F%2Fgithub.com%2Fcoinbase%2Fwrapped-tokens-os&report=coinbase+%28user%29: Page.goto: net::ERR_HTTP_RESPONSE_CODE_FAILURE at https://github.com/contact/report-content?content_url=https%3A%2F%2Fgithub.com%2Fcoinbase%2Fwrapped-tokens-os&report=coinbase+%28user%29
+Call log:
+  - navigating to "https://github.com/contact/report-content?content_url=https%3A%2F%2Fgithub.com%2Fcoinbase%2Fwrapped-tokens-os&report=coinbase+%28user%29", waiting until "domcontentloaded"
+
+2026-05-21 14:27:03,737 - INFO - Opening https://github.com/contact/report-content?content_url=https%3A%2F%2Fgithub.com%2Fcoinbase%2Fwrapped-tokens-os&report=coinbase+%28user%29 (Attempt 2)
+2026-05-21 14:27:03,826 - WARNING - Attempt 2 failed for https://github.com/contact/report-content?content_url=https%3A%2F%2Fgithub.com%2Fcoinbase%2Fwrapped-tokens-os&report=coinbase+%28user%29: Page.goto: net::ERR_HTTP_RESPONSE_CODE_FAILURE at https://github.com/contact/report-content?content_url=https%3A%2F%2Fgithub.com%2Fcoinbase%2Fwrapped-tokens-os&report=coinbase+%28user%29
+Call log:
+  - navigating to "https://github.com/contact/report-content?content_url=https%3A%2F%2Fgithub.com%2Fcoinbase%2Fwrapped-tokens-os&report=coinbase+%28user%29", waiting until "domcontentloaded"
+
+2026-05-21 14:27:03,826 - INFO - Opening https://github.com/contact/report-content?content_url=https%3A%2F%2Fgithub.com%2Fcoinbase%2Fwrapped-tokens-os&report=coinbase+%28user%29 (Attempt 3)
+2026-05-21 14:27:03,899 - WARNING - Attempt 3 failed for https://github.com/contact/report-content?content_url=https%3A%2F%2Fgithub.com%2Fcoinbase%2Fwrapped-tokens-os&report=coinbase+%28user%29: Page.goto: net::ERR_HTTP_RESPONSE_CODE_FAILURE at https://github.com/contact/report-content?content_url=https%3A%2F%2Fgithub.com%2Fcoinbase%2Fwrapped-tokens-os&report=coinbase+%28user%29
+Call log:
+  - navigating to "https://github.com/contact/report-content?content_url=https%3A%2F%2Fgithub.com%2Fcoinbase%2Fwrapped-tokens-os&report=coinbase+%28user%29", waiting until "domcontentloaded"
+
+2026-05-21 14:27:03,900 - ERROR - Failed to open https://github.com/contact/report-content?content_url=https%3A%2F%2Fgithub.com%2Fcoinbase%2Fwrapped-tokens-os&report=coinbase+%28user%29 after 3 attempts.
+2026-05-21 14:27:03,902 - INFO - Completed Coinbase Wrapped | Email: N/A | Source: Not Found
+2026-05-21 14:27:03,903 - INFO - Processing project: Huobi BTCHBTC
+2026-05-21 14:27:03,903 - INFO - Opening https://www.slowmist.com/en/security-audit-certificate.html?id=2147d121a167cd5d78cefdef74b45547100a21d1f8349e9dab608f6abd293d01 (Attempt 1)
+2026-05-21 14:27:09,220 - INFO - Completed Huobi BTCHBTC | Email: N/A | Source: Not Found
+2026-05-21 14:27:09,221 - INFO - Processing project: BlazeStake Staked
+2026-05-21 14:27:09,221 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 14:27:14,842 - INFO - Completed BlazeStake Staked | Email: N/A | Source: Not Found
+2026-05-21 14:27:14,842 - INFO - Processing project: Crypto.com Staked
+2026-05-21 14:27:14,842 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 14:27:20,488 - INFO - Completed Crypto.com Staked | Email: N/A | Source: Not Found
+2026-05-21 14:27:20,488 - INFO - Processing project: Mantle Restaked
+2026-05-21 14:27:20,488 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 14:27:26,035 - INFO - Completed Mantle Restaked | Email: N/A | Source: Not Found
+2026-05-21 14:27:26,035 - INFO - Processing project: Wrapped PulseWPLS
+2026-05-21 14:27:26,035 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 14:27:31,565 - INFO - Completed Wrapped PulseWPLS | Email: N/A | Source: Not Found
+2026-05-21 14:27:31,566 - INFO - Processing project: Lorenzo staked USD1+SUSD1+
+2026-05-21 14:27:31,566 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 14:27:37,173 - INFO - Completed Lorenzo staked USD1+SUSD1+ | Email: N/A | Source: Not Found
+2026-05-21 14:27:37,173 - INFO - Processing project: xSolvBTCxSolvBTC
+2026-05-21 14:27:37,173 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 14:27:43,226 - INFO - Completed xSolvBTCxSolvBTC | Email: N/A | Source: Not Found
+2026-05-21 14:27:43,226 - INFO - Processing project: Edgevana Staked
+2026-05-21 14:27:43,226 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 14:27:48,800 - INFO - Completed Edgevana Staked | Email: N/A | Source: Not Found
+2026-05-21 14:27:48,801 - INFO - Processing project: Wrapped peaq
+2026-05-21 14:27:48,801 - INFO - Opening https://www.peaq.network/blog/what-are-decentralized-physical-infrastructure-networks-depin (Attempt 1)
+2026-05-21 14:27:54,986 - INFO - Opening https://www.peaq.network/blog/machine-defi-102-all-about-peaq-app-your-machine-economy-gateway (Attempt 1)
+2026-05-21 14:28:00,522 - INFO - Completed Wrapped peaq | Email: N/A | Source: Not Found
+2026-05-21 14:28:00,522 - INFO - Processing project: ether.fi Staked
+2026-05-21 14:28:00,522 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 14:28:06,174 - INFO - Completed ether.fi Staked | Email: N/A | Source: Not Found
+2026-05-21 14:28:06,175 - INFO - Processing project: Haedal Staked
+2026-05-21 14:28:06,175 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 14:28:11,783 - INFO - Completed Haedal Staked | Email: N/A | Source: Not Found
+2026-05-21 14:28:11,783 - INFO - Processing project: Staked USDTSTUSDT
+2026-05-21 14:28:11,783 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 14:28:17,361 - INFO - Completed Staked USDTSTUSDT | Email: N/A | Source: Not Found
+2026-05-21 14:28:17,361 - INFO - Processing project: pufETHPUFETH
+2026-05-21 14:28:17,361 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 14:28:22,944 - INFO - Completed pufETHPUFETH | Email: N/A | Source: Not Found
+2026-05-21 14:28:22,944 - INFO - Processing project: Venus USDCvUSDC
+2026-05-21 14:28:22,944 - INFO - Opening https://app.venus.io/dashboard (Attempt 1)
+2026-05-21 14:28:28,454 - INFO - Completed Venus USDCvUSDC | Email: N/A | Source: Not Found
+2026-05-21 14:28:28,454 - INFO - Processing project: Wrapped CROWCRO
+2026-05-21 14:28:28,454 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 14:28:34,079 - INFO - Completed Wrapped CROWCRO | Email: N/A | Source: Not Found
+2026-05-21 14:28:34,080 - INFO - Processing project: Staked Frax
+2026-05-21 14:28:34,080 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 14:28:39,657 - INFO - Completed Staked Frax | Email: N/A | Source: Not Found
+2026-05-21 14:28:39,658 - INFO - Processing project: Venus ETHvETH
+2026-05-21 14:28:39,658 - INFO - Opening https://app.venus.io/dashboard (Attempt 1)
+2026-05-21 14:28:45,157 - INFO - Completed Venus ETHvETH | Email: N/A | Source: Not Found
+2026-05-21 14:28:45,157 - INFO - Processing project: Volo Staked
+2026-05-21 14:28:45,158 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 14:28:50,781 - INFO - Completed Volo Staked | Email: N/A | Source: Not Found
+2026-05-21 14:28:50,781 - INFO - Processing project: swETHSWETH
+2026-05-21 14:28:50,781 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 14:28:56,398 - INFO - Completed swETHSWETH | Email: N/A | Source: Not Found
+2026-05-21 14:28:56,399 - INFO - Processing project: Wrapped TAOWTAO
+2026-05-21 14:28:56,399 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 14:29:01,990 - INFO - Completed Wrapped TAOWTAO | Email: N/A | Source: Not Found
+2026-05-21 14:29:01,991 - INFO - Processing project: Restaked Swell Ethereum
+2026-05-21 14:29:01,991 - INFO - Opening https://app.swellnetwork.io/restake (Attempt 1)
+2026-05-21 14:29:09,306 - INFO - Completed Restaked Swell Ethereum | Email: nllobera@gmail.com | Source: Website
+2026-05-21 14:29:09,306 - INFO - Processing project: Wrapped Rootstock Bitcoin
+2026-05-21 14:29:09,306 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 14:29:15,121 - INFO - Completed Wrapped Rootstock Bitcoin | Email: N/A | Source: Not Found
+2026-05-21 14:29:15,121 - INFO - Processing project: DeFi Pulse
+2026-05-21 14:29:15,121 - INFO - Opening https://pulse.inc/ (Attempt 1)
+2026-05-21 14:29:36,621 - WARNING - Attempt 1 failed for https://pulse.inc/: Page.goto: net::ERR_CONNECTION_TIMED_OUT at https://pulse.inc/
+Call log:
+  - navigating to "https://pulse.inc/", waiting until "domcontentloaded"
+
+2026-05-21 14:29:36,622 - INFO - Opening https://pulse.inc/ (Attempt 2)
+2026-05-21 14:29:36,834 - WARNING - Attempt 2 failed for https://pulse.inc/: Page.goto: net::ERR_CONNECTION_TIMED_OUT at https://pulse.inc/
+Call log:
+  - navigating to "https://pulse.inc/", waiting until "domcontentloaded"
+
+2026-05-21 14:29:36,834 - INFO - Opening https://pulse.inc/ (Attempt 3)
+2026-05-21 14:29:57,668 - WARNING - Attempt 3 failed for https://pulse.inc/: Page.goto: net::ERR_CONNECTION_TIMED_OUT at https://pulse.inc/
+Call log:
+  - navigating to "https://pulse.inc/", waiting until "domcontentloaded"
+
+2026-05-21 14:29:57,668 - ERROR - Failed to open https://pulse.inc/ after 3 attempts.
+2026-05-21 14:29:57,672 - INFO - Completed DeFi Pulse | Email: N/A | Source: Not Found
+2026-05-21 14:29:57,673 - INFO - Processing project: Wrapped HBARWHBAR
+2026-05-21 14:29:57,673 - INFO - Opening https://help.hedera.com/hc/en-us/articles/360002789198-When-are-the-next-distributions-of-hbars-scheduled- (Attempt 1)
+2026-05-21 14:30:04,082 - INFO - Opening https://help.hedera.com/contact (Attempt 1)
+2026-05-21 14:30:09,499 - INFO - Opening https://help.hedera.com/careers (Attempt 1)
+2026-05-21 14:30:14,906 - INFO - Completed Wrapped HBARWHBAR | Email: N/A | Source: Not Found
+2026-05-21 14:30:14,906 - INFO - Processing project: Wrapped NXMWNXM
+2026-05-21 14:30:14,906 - INFO - Opening https://nexus-wrapper.netlify.app/ (Attempt 1)
+2026-05-21 14:30:21,901 - INFO - Completed Wrapped NXMWNXM | Email: N/A | Source: Not Found
+2026-05-21 14:30:21,901 - INFO - Processing project: Wrapped MaticWMATIC
+2026-05-21 14:30:21,901 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 14:30:27,589 - INFO - Completed Wrapped MaticWMATIC | Email: N/A | Source: Not Found
+2026-05-21 14:30:27,589 - INFO - Processing project: Universal ETHUNIETH
+2026-05-21 14:30:27,589 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 14:30:33,106 - INFO - Completed Universal ETHUNIETH | Email: N/A | Source: Not Found
+2026-05-21 14:30:33,106 - INFO - Processing project: Amnis Staked Aptos coin
+2026-05-21 14:30:33,106 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 14:30:38,601 - INFO - Completed Amnis Staked Aptos coin | Email: N/A | Source: Not Found
+2026-05-21 14:30:38,601 - INFO - Processing project: Savings crv
+2026-05-21 14:30:38,601 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 14:30:44,075 - INFO - Completed Savings crv | Email: N/A | Source: Not Found
+2026-05-21 14:30:44,075 - INFO - Processing project: Wrapped BeraWBERA
+2026-05-21 14:30:44,075 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 14:30:49,635 - INFO - Completed Wrapped BeraWBERA | Email: N/A | Source: Not Found
+2026-05-21 14:30:49,636 - INFO - Processing project: ATS600
+2026-05-21 14:30:49,636 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 14:30:55,122 - INFO - Completed ATS600 | Email: N/A | Source: Not Found
+2026-05-21 14:30:55,123 - INFO - Processing project: AIC100
+2026-05-21 14:30:55,123 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 14:31:00,655 - INFO - Completed AIC100 | Email: N/A | Source: Not Found
+2026-05-21 14:31:00,889 - INFO - Extraction completed successfully. Total projects processed: 102
+2026-05-21 16:57:31,332 - INFO - Processing project: Lido Staked
+2026-05-21 16:57:31,333 - INFO - Opening https://www.lido.fi/ (Attempt 1)
+2026-05-21 16:57:35,209 - INFO - Completed Lido Staked | Email: N/A | Source: Not Found
+2026-05-21 16:57:35,210 - INFO - Processing project: USDSUSDS
+2026-05-21 16:57:35,210 - INFO - Opening https://whitebit.com/crypto-card#partner-block?utm_source=coinmarketcap&utm_medium=svitolinaskinvl&utm_campaign=post (Attempt 1)
+2026-05-21 16:57:39,390 - INFO - Opening https://whitebit.com/about-us (Attempt 1)
+2026-05-21 16:57:41,793 - INFO - Completed USDSUSDS | Email: info@whitebit.com | Source: Website
+2026-05-21 16:57:41,793 - INFO - Processing project: Lido wst
+2026-05-21 16:57:41,793 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 16:57:46,487 - INFO - Completed Lido wst | Email: N/A | Source: Not Found
+2026-05-21 16:57:46,488 - INFO - Processing project: Wrapped BitcoinWBTC
+2026-05-21 16:57:46,488 - INFO - Opening https://www.slowmist.com/en/security-audit-certificate.html?id=19b0299be6f8f7bc6fc7a701aed5a28bae5c2225c122b3637c593420a4070c55 (Attempt 1)
+2026-05-21 16:57:47,842 - INFO - Completed Wrapped BitcoinWBTC | Email: N/A | Source: Not Found
+2026-05-21 16:57:47,843 - INFO - Processing project: Wrapped Beacon
+2026-05-21 16:57:47,843 - INFO - Opening https://whitebit.com/crypto-card#partner-block?utm_source=coinmarketcap&utm_medium=svitolinaskinvl&utm_campaign=post (Attempt 1)
+2026-05-21 16:57:50,084 - INFO - Opening https://whitebit.com/about-us (Attempt 1)
+2026-05-21 16:57:51,750 - INFO - Completed Wrapped Beacon | Email: info@whitebit.com | Source: Website
+2026-05-21 16:57:51,750 - INFO - Processing project: WETHWETH
+2026-05-21 16:57:51,750 - INFO - Opening https://hacken.io/audits/singularitydao/ (Attempt 1)
+2026-05-21 16:57:59,796 - INFO - Opening https://hacken.io/services/red-teaming/ (Attempt 1)
+2026-05-21 16:58:05,416 - INFO - Opening https://hacken.io/about/ (Attempt 1)
+2026-05-21 16:58:10,991 - INFO - Opening https://hacken.io/careers/ (Attempt 1)
+2026-05-21 16:58:16,764 - INFO - Completed WETHWETH | Email: N/A | Source: Not Found
+2026-05-21 16:58:16,764 - INFO - Processing project: Coinbase Wrapped
+2026-05-21 16:58:16,764 - INFO - Opening https://usethebitcoin.com/news/usdc-hyperliquid-coinbase-treasury/ (Attempt 1)
+2026-05-21 16:58:21,628 - INFO - Opening https://usethebitcoin.com/about-us/ (Attempt 1)
+2026-05-21 16:58:24,267 - INFO - Opening https://usethebitcoin.com/utb-careers/ (Attempt 1)
+2026-05-21 16:58:26,848 - INFO - Opening https://usethebitcoin.com/contact-us/ (Attempt 1)
+2026-05-21 16:58:29,865 - INFO - Completed Coinbase Wrapped | Email: N/A | Source: Not Found
+2026-05-21 16:58:29,865 - INFO - Processing project: Bitcoin BEP2BTCB
+2026-05-21 16:58:29,865 - INFO - Opening https://whitebit.com/crypto-card#partner-block?utm_source=coinmarketcap&utm_medium=svitolinaskinvl&utm_campaign=post (Attempt 1)
+2026-05-21 16:58:32,263 - INFO - Opening https://whitebit.com/about-us (Attempt 1)
+2026-05-21 16:58:34,712 - INFO - Completed Bitcoin BEP2BTCB | Email: info@whitebit.com | Source: Website
+2026-05-21 16:58:34,712 - INFO - Processing project: USDT0USDT0
+2026-05-21 16:58:34,712 - INFO - Opening https://whitebit.com/crypto-card#partner-block?utm_source=coinmarketcap&utm_medium=svitolinaskinvl&utm_campaign=post (Attempt 1)
+2026-05-21 16:58:37,096 - INFO - Opening https://whitebit.com/about-us (Attempt 1)
+2026-05-21 16:58:39,523 - INFO - Completed USDT0USDT0 | Email: info@whitebit.com | Source: Website
+2026-05-21 16:58:39,523 - INFO - Processing project: Aave Ethereum W
+2026-05-21 16:58:39,523 - INFO - Opening https://www.huobi.com/en-us/exchange/aethweth_eth?inviter_id=11345710&invite_code=zh5i6223 (Attempt 1)
+2026-05-21 16:58:54,532 - WARNING - Attempt 1 failed for https://www.huobi.com/en-us/exchange/aethweth_eth?inviter_id=11345710&invite_code=zh5i6223: Page.goto: Timeout 15000ms exceeded.
+Call log:
+  - navigating to "https://www.huobi.com/en-us/exchange/aethweth_eth?inviter_id=11345710&invite_code=zh5i6223", waiting until "domcontentloaded"
+
+2026-05-21 16:58:54,532 - INFO - Opening https://www.huobi.com/en-us/exchange/aethweth_eth?inviter_id=11345710&invite_code=zh5i6223 (Attempt 2)
+2026-05-21 16:59:00,696 - WARNING - Attempt 2 failed for https://www.huobi.com/en-us/exchange/aethweth_eth?inviter_id=11345710&invite_code=zh5i6223: Page.goto: net::ERR_CONNECTION_TIMED_OUT at https://www.huobi.com/en-us/exchange/aethweth_eth?inviter_id=11345710&invite_code=zh5i6223
+Call log:
+  - navigating to "https://www.huobi.com/en-us/exchange/aethweth_eth?inviter_id=11345710&invite_code=zh5i6223", waiting until "domcontentloaded"
+
+2026-05-21 16:59:00,697 - ERROR - Failed to open https://www.huobi.com/en-us/exchange/aethweth_eth?inviter_id=11345710&invite_code=zh5i6223 after 2 attempts.
+2026-05-21 16:59:00,699 - INFO - Completed Aave Ethereum W | Email: N/A | Source: Not Found
+2026-05-21 16:59:00,699 - INFO - Processing project: Wrapped e
+2026-05-21 16:59:00,699 - INFO - Opening https://whitebit.com/crypto-card#partner-block?utm_source=coinmarketcap&utm_medium=svitolinaskinvl&utm_campaign=post (Attempt 1)
+2026-05-21 16:59:01,006 - WARNING - Attempt 1 failed for https://whitebit.com/crypto-card#partner-block?utm_source=coinmarketcap&utm_medium=svitolinaskinvl&utm_campaign=post: Page.goto: Navigation to "https://whitebit.com/crypto-card#partner-block?utm_source=coinmarketcap&utm_medium=svitolinaskinvl&utm_campaign=post" is interrupted by another navigation to "chrome-error://chromewebdata/"
+Call log:
+  - navigating to "https://whitebit.com/crypto-card#partner-block?utm_source=coinmarketcap&utm_medium=svitolinaskinvl&utm_campaign=post", waiting until "domcontentloaded"
+
+2026-05-21 16:59:01,006 - INFO - Opening https://whitebit.com/crypto-card#partner-block?utm_source=coinmarketcap&utm_medium=svitolinaskinvl&utm_campaign=post (Attempt 2)
+2026-05-21 16:59:01,502 - WARNING - Attempt 2 failed for https://whitebit.com/crypto-card#partner-block?utm_source=coinmarketcap&utm_medium=svitolinaskinvl&utm_campaign=post: Page.goto: Navigation to "https://whitebit.com/crypto-card#partner-block?utm_source=coinmarketcap&utm_medium=svitolinaskinvl&utm_campaign=post" is interrupted by another navigation to "https://whitebit.com/crypto-card#partner-block?utm_source=coinmarketcap&utm_medium=svitolinaskinvl&utm_campaign=post"
+Call log:
+  - navigating to "https://whitebit.com/crypto-card#partner-block?utm_source=coinmarketcap&utm_medium=svitolinaskinvl&utm_campaign=post", waiting until "domcontentloaded"
+
+2026-05-21 16:59:01,502 - ERROR - Failed to open https://whitebit.com/crypto-card#partner-block?utm_source=coinmarketcap&utm_medium=svitolinaskinvl&utm_campaign=post after 2 attempts.
+2026-05-21 16:59:01,505 - INFO - Completed Wrapped e | Email: N/A | Source: Not Found
+2026-05-21 16:59:01,505 - INFO - Processing project: Aave Ethereum U
+2026-05-21 16:59:01,505 - INFO - Opening https://whitebit.com/crypto-card#partner-block?utm_source=coinmarketcap&utm_medium=svitolinaskinvl&utm_campaign=post (Attempt 1)
+2026-05-21 16:59:01,707 - WARNING - Attempt 1 failed for https://whitebit.com/crypto-card#partner-block?utm_source=coinmarketcap&utm_medium=svitolinaskinvl&utm_campaign=post: Page.goto: Navigation to "https://whitebit.com/crypto-card#partner-block?utm_source=coinmarketcap&utm_medium=svitolinaskinvl&utm_campaign=post" is interrupted by another navigation to "https://whitebit.com/crypto-card#partner-block?utm_source=coinmarketcap&utm_medium=svitolinaskinvl&utm_campaign=post"
+Call log:
+  - navigating to "https://whitebit.com/crypto-card#partner-block?utm_source=coinmarketcap&utm_medium=svitolinaskinvl&utm_campaign=post", waiting until "domcontentloaded"
+
+2026-05-21 16:59:01,707 - INFO - Opening https://whitebit.com/crypto-card#partner-block?utm_source=coinmarketcap&utm_medium=svitolinaskinvl&utm_campaign=post (Attempt 2)
+2026-05-21 16:59:01,923 - WARNING - Attempt 2 failed for https://whitebit.com/crypto-card#partner-block?utm_source=coinmarketcap&utm_medium=svitolinaskinvl&utm_campaign=post: Page.goto: Navigation to "https://whitebit.com/crypto-card#partner-block?utm_source=coinmarketcap&utm_medium=svitolinaskinvl&utm_campaign=post" is interrupted by another navigation to "https://whitebit.com/crypto-card#partner-block?utm_source=coinmarketcap&utm_medium=svitolinaskinvl&utm_campaign=post"
+Call log:
+  - navigating to "https://whitebit.com/crypto-card#partner-block?utm_source=coinmarketcap&utm_medium=svitolinaskinvl&utm_campaign=post", waiting until "domcontentloaded"
+
+2026-05-21 16:59:01,923 - ERROR - Failed to open https://whitebit.com/crypto-card#partner-block?utm_source=coinmarketcap&utm_medium=svitolinaskinvl&utm_campaign=post after 2 attempts.
+2026-05-21 16:59:01,925 - INFO - Completed Aave Ethereum U | Email: N/A | Source: Not Found
+2026-05-21 16:59:01,926 - INFO - Processing project: Ethena Staked
+2026-05-21 16:59:01,926 - INFO - Opening https://app.ethena.fi/dashboards/backing-assets (Attempt 1)
+2026-05-21 16:59:02,500 - WARNING - Attempt 1 failed for https://app.ethena.fi/dashboards/backing-assets: Page.goto: Navigation to "https://app.ethena.fi/dashboards/backing-assets" is interrupted by another navigation to "https://whitebit.com/crypto-card#partner-block?utm_source=coinmarketcap&utm_medium=svitolinaskinvl&utm_campaign=post"
+Call log:
+  - navigating to "https://app.ethena.fi/dashboards/backing-assets", waiting until "domcontentloaded"
+
+2026-05-21 16:59:02,500 - INFO - Opening https://app.ethena.fi/dashboards/backing-assets (Attempt 2)
+2026-05-21 16:59:02,781 - WARNING - Attempt 2 failed for https://app.ethena.fi/dashboards/backing-assets: Page.goto: Navigation to "https://app.ethena.fi/dashboards/backing-assets" is interrupted by another navigation to "https://app.ethena.fi/dashboards/backing-assets"
+Call log:
+  - navigating to "https://app.ethena.fi/dashboards/backing-assets", waiting until "domcontentloaded"
+
+2026-05-21 16:59:02,781 - ERROR - Failed to open https://app.ethena.fi/dashboards/backing-assets after 2 attempts.
+2026-05-21 16:59:02,783 - INFO - Completed Ethena Staked | Email: N/A | Source: Not Found
+2026-05-21 16:59:02,783 - INFO - Processing project: syrupUSDCsyrupUSDC
+2026-05-21 16:59:02,783 - INFO - Opening https://whitebit.com/crypto-card#partner-block?utm_source=coinmarketcap&utm_medium=svitolinaskinvl&utm_campaign=post (Attempt 1)
+2026-05-21 16:59:03,399 - WARNING - Attempt 1 failed for https://whitebit.com/crypto-card#partner-block?utm_source=coinmarketcap&utm_medium=svitolinaskinvl&utm_campaign=post: Page.goto: Navigation to "https://whitebit.com/crypto-card#partner-block?utm_source=coinmarketcap&utm_medium=svitolinaskinvl&utm_campaign=post" is interrupted by another navigation to "https://app.ethena.fi/dashboards/backing-assets"
+Call log:
+  - navigating to "https://whitebit.com/crypto-card#partner-block?utm_source=coinmarketcap&utm_medium=svitolinaskinvl&utm_campaign=post", waiting until "domcontentloaded"
+
+2026-05-21 16:59:03,399 - INFO - Opening https://whitebit.com/crypto-card#partner-block?utm_source=coinmarketcap&utm_medium=svitolinaskinvl&utm_campaign=post (Attempt 2)
+2026-05-21 16:59:03,595 - WARNING - Attempt 2 failed for https://whitebit.com/crypto-card#partner-block?utm_source=coinmarketcap&utm_medium=svitolinaskinvl&utm_campaign=post: Page.goto: Navigation to "https://whitebit.com/crypto-card#partner-block?utm_source=coinmarketcap&utm_medium=svitolinaskinvl&utm_campaign=post" is interrupted by another navigation to "https://whitebit.com/crypto-card#partner-block?utm_source=coinmarketcap&utm_medium=svitolinaskinvl&utm_campaign=post"
+Call log:
+  - navigating to "https://whitebit.com/crypto-card#partner-block?utm_source=coinmarketcap&utm_medium=svitolinaskinvl&utm_campaign=post", waiting until "domcontentloaded"
+
+2026-05-21 16:59:03,595 - ERROR - Failed to open https://whitebit.com/crypto-card#partner-block?utm_source=coinmarketcap&utm_medium=svitolinaskinvl&utm_campaign=post after 2 attempts.
+2026-05-21 16:59:03,597 - INFO - Completed syrupUSDCsyrupUSDC | Email: N/A | Source: Not Found
+2026-05-21 16:59:03,598 - INFO - Processing project: Wrapped TRONWTRX
+2026-05-21 16:59:03,598 - INFO - Opening https://whitebit.com/crypto-card#partner-block?utm_source=coinmarketcap&utm_medium=svitolinaskinvl&utm_campaign=post (Attempt 1)
+2026-05-21 16:59:03,815 - WARNING - Attempt 1 failed for https://whitebit.com/crypto-card#partner-block?utm_source=coinmarketcap&utm_medium=svitolinaskinvl&utm_campaign=post: Page.goto: Navigation to "https://whitebit.com/crypto-card#partner-block?utm_source=coinmarketcap&utm_medium=svitolinaskinvl&utm_campaign=post" is interrupted by another navigation to "https://whitebit.com/crypto-card#partner-block?utm_source=coinmarketcap&utm_medium=svitolinaskinvl&utm_campaign=post"
+Call log:
+  - navigating to "https://whitebit.com/crypto-card#partner-block?utm_source=coinmarketcap&utm_medium=svitolinaskinvl&utm_campaign=post", waiting until "domcontentloaded"
+
+2026-05-21 16:59:03,815 - INFO - Opening https://whitebit.com/crypto-card#partner-block?utm_source=coinmarketcap&utm_medium=svitolinaskinvl&utm_campaign=post (Attempt 2)
+2026-05-21 16:59:04,025 - WARNING - Attempt 2 failed for https://whitebit.com/crypto-card#partner-block?utm_source=coinmarketcap&utm_medium=svitolinaskinvl&utm_campaign=post: Page.goto: Navigation to "https://whitebit.com/crypto-card#partner-block?utm_source=coinmarketcap&utm_medium=svitolinaskinvl&utm_campaign=post" is interrupted by another navigation to "https://whitebit.com/crypto-card#partner-block?utm_source=coinmarketcap&utm_medium=svitolinaskinvl&utm_campaign=post"
+Call log:
+  - navigating to "https://whitebit.com/crypto-card#partner-block?utm_source=coinmarketcap&utm_medium=svitolinaskinvl&utm_campaign=post", waiting until "domcontentloaded"
+
+2026-05-21 16:59:04,025 - ERROR - Failed to open https://whitebit.com/crypto-card#partner-block?utm_source=coinmarketcap&utm_medium=svitolinaskinvl&utm_campaign=post after 2 attempts.
+2026-05-21 16:59:04,027 - INFO - Completed Wrapped TRONWTRX | Email: N/A | Source: Not Found
+2026-05-21 16:59:04,028 - INFO - Processing project: Kelp DAO Restaked
+2026-05-21 16:59:04,028 - INFO - Opening https://rseth-tracking.vercel.app (Attempt 1)
+2026-05-21 16:59:04,194 - WARNING - Attempt 1 failed for https://rseth-tracking.vercel.app: Page.goto: Navigation to "https://rseth-tracking.vercel.app/" is interrupted by another navigation to "https://whitebit.com/crypto-card#partner-block?utm_source=coinmarketcap&utm_medium=svitolinaskinvl&utm_campaign=post"
+Call log:
+  - navigating to "https://rseth-tracking.vercel.app/", waiting until "domcontentloaded"
+
+2026-05-21 16:59:04,194 - INFO - Opening https://rseth-tracking.vercel.app (Attempt 2)
+2026-05-21 16:59:09,448 - INFO - Completed Kelp DAO Restaked | Email: N/A | Source: Not Found
+2026-05-21 16:59:09,449 - INFO - Processing project: Bitcoin TRC20BTCT
+2026-05-21 16:59:09,449 - INFO - Opening https://whitebit.com/crypto-card#partner-block?utm_source=coinmarketcap&utm_medium=svitolinaskinvl&utm_campaign=post (Attempt 1)
+2026-05-21 16:59:11,626 - INFO - Opening https://whitebit.com/about-us (Attempt 1)
+2026-05-21 16:59:13,323 - INFO - Completed Bitcoin TRC20BTCT | Email: info@whitebit.com | Source: Website
+2026-05-21 16:59:13,324 - INFO - Processing project: BFUSDBFUSD
+2026-05-21 16:59:13,324 - INFO - Opening https://whitebit.com/crypto-card#partner-block?utm_source=coinmarketcap&utm_medium=svitolinaskinvl&utm_campaign=post (Attempt 1)
+2026-05-21 16:59:15,336 - INFO - Opening https://whitebit.com/about-us (Attempt 1)
+2026-05-21 16:59:17,280 - INFO - Completed BFUSDBFUSD | Email: info@whitebit.com | Source: Website
+2026-05-21 16:59:17,280 - INFO - Processing project: BounceBit BTCBBTC
+2026-05-21 16:59:17,281 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 16:59:21,809 - INFO - Completed BounceBit BTCBBTC | Email: N/A | Source: Not Found
+2026-05-21 16:59:21,810 - INFO - Processing project: USD Coin BridgedUSDC.e
+2026-05-21 16:59:21,810 - INFO - Opening https://whitebit.com/crypto-card#partner-block?utm_source=coinmarketcap&utm_medium=svitolinaskinvl&utm_campaign=post (Attempt 1)
+2026-05-21 16:59:24,008 - INFO - Opening https://whitebit.com/about-us (Attempt 1)
+2026-05-21 16:59:25,716 - INFO - Completed USD Coin BridgedUSDC.e | Email: info@whitebit.com | Source: Website
+2026-05-21 16:59:25,716 - INFO - Processing project: Ethena Labs (USDtb)
+2026-05-21 16:59:25,717 - INFO - Opening https://www.bybit.com/en-US/trade/spot/USDTB/USDT?affiliate_id=157132 (Attempt 1)
+2026-05-21 16:59:33,040 - INFO - Completed Ethena Labs (USDtb) | Email: N/A | Source: Not Found
+2026-05-21 16:59:33,040 - INFO - Processing project: Wrapped BNBWBNB
+2026-05-21 16:59:33,040 - INFO - Opening https://www.qielend.qie.digital/ (Attempt 1)
+2026-05-21 16:59:38,646 - INFO - Completed Wrapped BNBWBNB | Email: N/A | Source: Not Found
+2026-05-21 16:59:38,646 - INFO - Processing project: Kinetiq Staked
+2026-05-21 16:59:38,646 - INFO - Opening https://whitebit.com/crypto-card#partner-block?utm_source=coinmarketcap&utm_medium=svitolinaskinvl&utm_campaign=post (Attempt 1)
+2026-05-21 16:59:41,109 - INFO - Opening https://whitebit.com/about-us (Attempt 1)
+2026-05-21 16:59:42,879 - INFO - Completed Kinetiq Staked | Email: info@whitebit.com | Source: Website
+2026-05-21 16:59:42,880 - INFO - Processing project: Binance Staked
+2026-05-21 16:59:42,880 - INFO - Opening https://www.binance.com/en/trade/BNSOL_SOL?ref=40896146 (Attempt 1)
+2026-05-21 16:59:48,487 - INFO - Completed Binance Staked | Email: sensorsdata@1.26.12.js | Source: Website
+2026-05-21 16:59:48,488 - INFO - Processing project: Lombard Staked
+2026-05-21 16:59:48,488 - INFO - Opening https://whitebit.com/crypto-card#partner-block?utm_source=coinmarketcap&utm_medium=svitolinaskinvl&utm_campaign=post (Attempt 1)
+2026-05-21 16:59:51,240 - INFO - Opening https://whitebit.com/about-us (Attempt 1)
+2026-05-21 16:59:52,844 - INFO - Completed Lombard Staked | Email: info@whitebit.com | Source: Website
+2026-05-21 16:59:52,845 - INFO - Processing project: FunctionFBTC
+2026-05-21 16:59:52,845 - INFO - Opening https://openocean.finance/ (Attempt 1)
+2026-05-21 16:59:55,147 - INFO - Completed FunctionFBTC | Email: N/A | Source: Not Found
+2026-05-21 16:59:55,147 - INFO - Processing project: Jito Staked
+2026-05-21 16:59:55,147 - INFO - Opening https://blockworks.com/quarterly-calls/jito-26-q1 (Attempt 1)
+2026-05-21 17:00:00,902 - INFO - Opening https://blockworks.com/about (Attempt 1)
+2026-05-21 17:00:03,228 - INFO - Completed Jito Staked | Email: BlockworksTeam@2x.png | Source: Website
+2026-05-21 17:00:03,228 - INFO - Processing project: Rocket Pool
+2026-05-21 17:00:03,228 - INFO - Opening https://whitebit.com/crypto-card#partner-block?utm_source=coinmarketcap&utm_medium=svitolinaskinvl&utm_campaign=post (Attempt 1)
+2026-05-21 17:00:05,476 - INFO - Opening https://whitebit.com/about-us (Attempt 1)
+2026-05-21 17:00:07,187 - INFO - Completed Rocket Pool | Email: info@whitebit.com | Source: Website
+2026-05-21 17:00:07,188 - INFO - Processing project: Liquid Staked
+2026-05-21 17:00:07,188 - INFO - Opening https://whitebit.com/crypto-card#partner-block?utm_source=coinmarketcap&utm_medium=svitolinaskinvl&utm_campaign=post (Attempt 1)
+2026-05-21 17:00:09,448 - INFO - Opening https://whitebit.com/about-us (Attempt 1)
+2026-05-21 17:00:11,207 - INFO - Completed Liquid Staked | Email: info@whitebit.com | Source: Website
+2026-05-21 17:00:11,207 - INFO - Processing project: Wrapped FlareWFLR
+2026-05-21 17:00:11,207 - INFO - Opening https://openocean.finance/ (Attempt 1)
+2026-05-21 17:00:12,824 - INFO - Completed Wrapped FlareWFLR | Email: N/A | Source: Not Found
+2026-05-21 17:00:12,825 - INFO - Processing project: Lista Staked
+2026-05-21 17:00:12,825 - INFO - Opening https://lista.org/lista-holder (Attempt 1)
+2026-05-21 17:00:19,475 - INFO - Completed Lista Staked | Email: N/A | Source: Not Found
+2026-05-21 17:00:19,475 - INFO - Processing project: syrupUSDTsyrupUSDT
+2026-05-21 17:00:19,475 - INFO - Opening https://openocean.finance/ (Attempt 1)
+2026-05-21 17:00:20,911 - INFO - Completed syrupUSDTsyrupUSDT | Email: N/A | Source: Not Found
+2026-05-21 17:00:20,912 - INFO - Processing project: tBTCTBTC
+2026-05-21 17:00:20,912 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 17:00:24,299 - INFO - Completed tBTCTBTC | Email: N/A | Source: Not Found
+2026-05-21 17:00:24,299 - INFO - Processing project: Bond USD0bUSD0
+2026-05-21 17:00:24,299 - INFO - Opening https://whitebit.com/crypto-card#partner-block?utm_source=coinmarketcap&utm_medium=svitolinaskinvl&utm_campaign=post (Attempt 1)
+2026-05-21 17:00:26,514 - INFO - Opening https://whitebit.com/about-us (Attempt 1)
+2026-05-21 17:00:28,436 - INFO - Completed Bond USD0bUSD0 | Email: info@whitebit.com | Source: Website
+2026-05-21 17:00:28,436 - INFO - Processing project: slisBNBxslisBNBx
+2026-05-21 17:00:28,436 - INFO - Opening https://whitebit.com/crypto-card#partner-block?utm_source=coinmarketcap&utm_medium=svitolinaskinvl&utm_campaign=post (Attempt 1)
+2026-05-21 17:00:30,130 - INFO - Opening https://whitebit.com/about-us (Attempt 1)
+2026-05-21 17:00:31,723 - INFO - Completed slisBNBxslisBNBx | Email: info@whitebit.com | Source: Website
+2026-05-21 17:00:31,723 - INFO - Processing project: SolvBTCSolvBTC
+2026-05-21 17:00:31,723 - INFO - Opening https://whitebit.com/crypto-card#partner-block?utm_source=coinmarketcap&utm_medium=svitolinaskinvl&utm_campaign=post (Attempt 1)
+2026-05-21 17:00:33,438 - INFO - Opening https://whitebit.com/about-us (Attempt 1)
+2026-05-21 17:00:34,990 - INFO - Completed SolvBTCSolvBTC | Email: info@whitebit.com | Source: Website
+2026-05-21 17:00:34,991 - INFO - Processing project: Mantle Staked
+2026-05-21 17:00:34,991 - INFO - Opening https://www.bybit.com/en-US/trade/spot/METH/USDT?affiliate_id=157132 (Attempt 1)
+2026-05-21 17:00:38,018 - INFO - Completed Mantle Staked | Email: N/A | Source: Not Found
+2026-05-21 17:00:38,018 - INFO - Processing project: Jupiter Staked
+2026-05-21 17:00:38,018 - INFO - Opening https://whitebit.com/crypto-card#partner-block?utm_source=coinmarketcap&utm_medium=svitolinaskinvl&utm_campaign=post (Attempt 1)
+2026-05-21 17:00:40,147 - INFO - Opening https://whitebit.com/about-us (Attempt 1)
+2026-05-21 17:00:41,762 - INFO - Completed Jupiter Staked | Email: info@whitebit.com | Source: Website
+2026-05-21 17:00:41,762 - INFO - Processing project: Venus BTCvBTC
+2026-05-21 17:00:41,762 - INFO - Opening https://app.venus.io (Attempt 1)
+2026-05-21 17:00:46,819 - INFO - Completed Venus BTCvBTC | Email: N/A | Source: Not Found
+2026-05-21 17:00:46,819 - INFO - Processing project: Wrapped ChilizWCHZ
+2026-05-21 17:00:46,819 - INFO - Opening https://whitebit.com/crypto-card#partner-block?utm_source=coinmarketcap&utm_medium=svitolinaskinvl&utm_campaign=post (Attempt 1)
+2026-05-21 17:00:48,924 - INFO - Opening https://whitebit.com/about-us (Attempt 1)
+2026-05-21 17:00:50,547 - INFO - Completed Wrapped ChilizWCHZ | Email: info@whitebit.com | Source: Website
+2026-05-21 17:00:50,548 - INFO - Processing project: Venus BNBvBNB
+2026-05-21 17:00:50,548 - INFO - Opening https://whitebit.com/crypto-card#partner-block?utm_source=coinmarketcap&utm_medium=svitolinaskinvl&utm_campaign=post (Attempt 1)
+2026-05-21 17:00:52,239 - INFO - Opening https://whitebit.com/about-us (Attempt 1)
+2026-05-21 17:00:53,782 - INFO - Completed Venus BNBvBNB | Email: info@whitebit.com | Source: Website
+2026-05-21 17:00:53,783 - INFO - Processing project: Wrapped HYPEWHYPE
+2026-05-21 17:00:53,783 - INFO - Opening https://whitebit.com/crypto-card#partner-block?utm_source=coinmarketcap&utm_medium=svitolinaskinvl&utm_campaign=post (Attempt 1)
+2026-05-21 17:00:55,455 - INFO - Opening https://whitebit.com/about-us (Attempt 1)
+2026-05-21 17:00:57,805 - INFO - Completed Wrapped HYPEWHYPE | Email: info@whitebit.com | Source: Website
+2026-05-21 17:00:57,806 - INFO - Processing project: Wrapped XTZWXTZ
+2026-05-21 17:00:57,806 - INFO - Opening https://whitebit.com/crypto-card#partner-block?utm_source=coinmarketcap&utm_medium=svitolinaskinvl&utm_campaign=post (Attempt 1)
+2026-05-21 17:00:59,841 - INFO - Opening https://whitebit.com/about-us (Attempt 1)
+2026-05-21 17:01:01,508 - INFO - Completed Wrapped XTZWXTZ | Email: info@whitebit.com | Source: Website
+2026-05-21 17:01:01,509 - INFO - Processing project: ether.fi Staked
+2026-05-21 17:01:01,509 - INFO - Opening https://whitebit.com/crypto-card#partner-block?utm_source=coinmarketcap&utm_medium=svitolinaskinvl&utm_campaign=post (Attempt 1)
+2026-05-21 17:01:03,182 - INFO - Opening https://whitebit.com/about-us (Attempt 1)
+2026-05-21 17:01:04,760 - INFO - Completed ether.fi Staked | Email: info@whitebit.com | Source: Website
+2026-05-21 17:01:04,760 - INFO - Processing project: StakeWise Staked
+2026-05-21 17:01:04,760 - INFO - Opening https://whitebit.com/crypto-card#partner-block?utm_source=coinmarketcap&utm_medium=svitolinaskinvl&utm_campaign=post (Attempt 1)
+2026-05-21 17:01:06,457 - INFO - Opening https://whitebit.com/about-us (Attempt 1)
+2026-05-21 17:01:08,033 - INFO - Completed StakeWise Staked | Email: info@whitebit.com | Source: Website
+2026-05-21 17:01:08,034 - INFO - Processing project: Coinbase Wrapped Staked
+2026-05-21 17:01:08,034 - INFO - Opening https://whitebit.com/crypto-card#partner-block?utm_source=coinmarketcap&utm_medium=svitolinaskinvl&utm_campaign=post (Attempt 1)
+2026-05-21 17:01:09,687 - INFO - Opening https://whitebit.com/about-us (Attempt 1)
+2026-05-21 17:01:11,243 - INFO - Completed Coinbase Wrapped Staked | Email: info@whitebit.com | Source: Website
+2026-05-21 17:01:11,244 - INFO - Processing project: Stader ETHxETHX
+2026-05-21 17:01:11,244 - INFO - Opening https://whitebit.com/crypto-card#partner-block?utm_source=coinmarketcap&utm_medium=svitolinaskinvl&utm_campaign=post (Attempt 1)
+2026-05-21 17:01:13,300 - INFO - Opening https://whitebit.com/about-us (Attempt 1)
+2026-05-21 17:01:14,873 - INFO - Completed Stader ETHxETHX | Email: info@whitebit.com | Source: Website
+2026-05-21 17:01:14,873 - INFO - Processing project: Marinade Staked
+2026-05-21 17:01:14,874 - INFO - Opening https://github.com/certusone/wormhole-token-list/blob/main/content/by_source.csv (Attempt 1)
+2026-05-21 17:01:21,922 - INFO - Opening https://github.com/team (Attempt 1)
+2026-05-21 17:01:26,691 - INFO - Completed Marinade Staked | Email: N/A | Source: Not Found
+2026-05-21 17:01:26,692 - INFO - Processing project: GTBTCGTBTC
+2026-05-21 17:01:26,692 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 17:01:30,166 - INFO - Completed GTBTCGTBTC | Email: N/A | Source: Not Found
+2026-05-21 17:01:30,167 - INFO - Processing project: BENQI Liquid Staked
+2026-05-21 17:01:30,167 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 17:01:33,406 - INFO - Completed BENQI Liquid Staked | Email: N/A | Source: Not Found
+2026-05-21 17:01:33,406 - INFO - Processing project: Treehouse ETHTETH
+2026-05-21 17:01:33,406 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 17:01:36,617 - INFO - Completed Treehouse ETHTETH | Email: N/A | Source: Not Found
+2026-05-21 17:01:36,618 - INFO - Processing project: Staked TRXSTRX
+2026-05-21 17:01:36,618 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 17:01:39,866 - INFO - Completed Staked TRXSTRX | Email: N/A | Source: Not Found
+2026-05-21 17:01:39,867 - INFO - Processing project: Universal BTCUNIBTC
+2026-05-21 17:01:39,867 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 17:01:44,035 - INFO - Completed Universal BTCUNIBTC | Email: N/A | Source: Not Found
+2026-05-21 17:01:44,036 - INFO - Processing project: crvUSDCRVUSD
+2026-05-21 17:01:44,036 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 17:01:47,457 - INFO - Completed crvUSDCRVUSD | Email: N/A | Source: Not Found
+2026-05-21 17:01:47,457 - INFO - Processing project: Frax Staked Ether
+2026-05-21 17:01:47,457 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 17:01:50,657 - INFO - Completed Frax Staked Ether | Email: N/A | Source: Not Found
+2026-05-21 17:01:50,657 - INFO - Processing project: Rootstock BitcoinrBTC
+2026-05-21 17:01:50,657 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 17:01:53,873 - INFO - Completed Rootstock BitcoinrBTC | Email: N/A | Source: Not Found
+2026-05-21 17:01:53,874 - INFO - Processing project: Beacon ETHBETH
+2026-05-21 17:01:53,874 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 17:01:58,067 - INFO - Completed Beacon ETHBETH | Email: N/A | Source: Not Found
+2026-05-21 17:01:58,068 - INFO - Processing project: Venus USDTvUSDT
+2026-05-21 17:01:58,068 - INFO - Opening https://app.venus.io/dashboard (Attempt 1)
+2026-05-21 17:02:02,213 - INFO - Completed Venus USDTvUSDT | Email: N/A | Source: Not Found
+2026-05-21 17:02:02,213 - INFO - Processing project: Bitcoin Avalanche BridgedBTC.b
+2026-05-21 17:02:02,214 - INFO - Opening https://bitcoinbridge.network/ (Attempt 1)
+2026-05-21 17:02:03,099 - INFO - Completed Bitcoin Avalanche BridgedBTC.b | Email: N/A | Source: Not Found
+2026-05-21 17:02:03,100 - INFO - Processing project: Staked AavestkAAVE
+2026-05-21 17:02:03,100 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 17:02:07,414 - INFO - Completed Staked AavestkAAVE | Email: N/A | Source: Not Found
+2026-05-21 17:02:07,415 - INFO - Processing project: Sanctum InfinityINF
+2026-05-21 17:02:07,415 - INFO - Opening https://learn.sanctum.so/blog/scnsol-will-become-infinity (Attempt 1)
+2026-05-21 17:02:17,241 - INFO - Completed Sanctum InfinityINF | Email: icon_512x512@2x.png | Source: Website
+2026-05-21 17:02:17,241 - INFO - Processing project: Renzo Restaked
+2026-05-21 17:02:17,241 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 17:02:22,320 - INFO - Completed Renzo Restaked | Email: N/A | Source: Not Found
+2026-05-21 17:02:22,320 - INFO - Processing project: Wrapped Centrifuge
+2026-05-21 17:02:22,320 - INFO - Opening https://gov.centrifuge.io/t/centrifuge-token-migration-update/6860 (Attempt 1)
+2026-05-21 17:02:28,752 - INFO - Opening https://gov.centrifuge.io/t/about-please-complete-cfg-token-migration-now-may-2024/6395 (Attempt 1)
+2026-05-21 17:02:34,322 - INFO - Completed Wrapped Centrifuge | Email: hello@centrifuge.io | Source: Website
+2026-05-21 17:02:34,323 - INFO - Processing project: Aster as
+2026-05-21 17:02:34,323 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 17:02:37,824 - INFO - Completed Aster as | Email: N/A | Source: Not Found
+2026-05-21 17:02:37,824 - INFO - Processing project: Wrapped SolanaSOL
+2026-05-21 17:02:37,825 - INFO - Opening https://solana.com/ (Attempt 1)
+2026-05-21 17:02:45,025 - INFO - Completed Wrapped SolanaSOL | Email: operations@solana.com | Source: Website
+2026-05-21 17:02:45,025 - INFO - Processing project: Wrapped AVAXWAVAX
+2026-05-21 17:02:45,025 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 17:02:48,397 - INFO - Completed Wrapped AVAXWAVAX | Email: N/A | Source: Not Found
+2026-05-21 17:02:48,397 - INFO - Processing project: Bybit Staked
+2026-05-21 17:02:48,397 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 17:02:51,749 - INFO - Completed Bybit Staked | Email: N/A | Source: Not Found
+2026-05-21 17:02:51,750 - INFO - Processing project: JPool Staked SOL (JSOL)
+2026-05-21 17:02:51,750 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 17:02:57,376 - INFO - Completed JPool Staked SOL (JSOL) | Email: N/A | Source: Not Found
+2026-05-21 17:02:57,377 - INFO - Processing project: Wrapped FantomWFTM
+2026-05-21 17:02:57,377 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 17:03:00,808 - INFO - Completed Wrapped FantomWFTM | Email: N/A | Source: Not Found
+2026-05-21 17:03:00,808 - INFO - Processing project: Coinbase Wrapped
+2026-05-21 17:03:00,808 - INFO - Opening https://github.com/coinbase/wrapped-tokens-os (Attempt 1)
+2026-05-21 17:03:03,876 - INFO - Opening https://github.com/team (Attempt 1)
+2026-05-21 17:03:07,261 - INFO - Opening https://github.com/contact/report-content?content_url=https%3A%2F%2Fgithub.com%2Fcoinbase%2Fwrapped-tokens-os&report=coinbase+%28user%29 (Attempt 1)
+2026-05-21 17:03:08,107 - INFO - Completed Coinbase Wrapped | Email: N/A | Source: Not Found
+2026-05-21 17:03:08,107 - INFO - Processing project: Huobi BTCHBTC
+2026-05-21 17:03:08,107 - INFO - Opening https://www.slowmist.com/en/security-audit-certificate.html?id=2147d121a167cd5d78cefdef74b45547100a21d1f8349e9dab608f6abd293d01 (Attempt 1)
+2026-05-21 17:03:09,628 - INFO - Completed Huobi BTCHBTC | Email: N/A | Source: Not Found
+2026-05-21 17:03:09,628 - INFO - Processing project: BlazeStake Staked
+2026-05-21 17:03:09,629 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 17:03:13,908 - INFO - Completed BlazeStake Staked | Email: N/A | Source: Not Found
+2026-05-21 17:03:13,908 - INFO - Processing project: Crypto.com Staked
+2026-05-21 17:03:13,908 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 17:03:18,143 - INFO - Completed Crypto.com Staked | Email: N/A | Source: Not Found
+2026-05-21 17:03:18,143 - INFO - Processing project: Wrapped PulseWPLS
+2026-05-21 17:03:18,143 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 17:03:22,303 - INFO - Completed Wrapped PulseWPLS | Email: N/A | Source: Not Found
+2026-05-21 17:03:22,303 - INFO - Processing project: Mantle Restaked
+2026-05-21 17:03:22,303 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 17:03:26,482 - INFO - Completed Mantle Restaked | Email: N/A | Source: Not Found
+2026-05-21 17:03:26,482 - INFO - Processing project: Lorenzo staked USD1+SUSD1+
+2026-05-21 17:03:26,482 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 17:03:30,677 - INFO - Completed Lorenzo staked USD1+SUSD1+ | Email: N/A | Source: Not Found
+2026-05-21 17:03:30,678 - INFO - Processing project: xSolvBTCxSolvBTC
+2026-05-21 17:03:30,678 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 17:03:35,013 - INFO - Completed xSolvBTCxSolvBTC | Email: N/A | Source: Not Found
+2026-05-21 17:03:35,014 - INFO - Processing project: Wrapped peaq
+2026-05-21 17:03:35,014 - INFO - Opening https://www.peaq.network/blog/what-are-decentralized-physical-infrastructure-networks-depin (Attempt 1)
+2026-05-21 17:03:38,893 - INFO - Opening https://www.peaq.network/blog/machine-defi-102-all-about-peaq-app-your-machine-economy-gateway (Attempt 1)
+2026-05-21 17:03:40,716 - INFO - Completed Wrapped peaq | Email: N/A | Source: Not Found
+2026-05-21 17:03:40,716 - INFO - Processing project: Edgevana Staked
+2026-05-21 17:03:40,717 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 17:03:44,108 - INFO - Completed Edgevana Staked | Email: N/A | Source: Not Found
+2026-05-21 17:03:44,109 - INFO - Processing project: ether.fi Staked
+2026-05-21 17:03:44,109 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 17:03:48,427 - INFO - Completed ether.fi Staked | Email: N/A | Source: Not Found
+2026-05-21 17:03:48,427 - INFO - Processing project: Staked USDTSTUSDT
+2026-05-21 17:03:48,427 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 17:03:52,759 - INFO - Completed Staked USDTSTUSDT | Email: N/A | Source: Not Found
+2026-05-21 17:03:52,760 - INFO - Processing project: Haedal Staked
+2026-05-21 17:03:52,760 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 17:03:56,966 - INFO - Completed Haedal Staked | Email: N/A | Source: Not Found
+2026-05-21 17:03:56,966 - INFO - Processing project: pufETHPUFETH
+2026-05-21 17:03:56,966 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 17:04:01,170 - INFO - Completed pufETHPUFETH | Email: N/A | Source: Not Found
+2026-05-21 17:04:01,171 - INFO - Processing project: Venus USDCvUSDC
+2026-05-21 17:04:01,171 - INFO - Opening https://app.venus.io/dashboard (Attempt 1)
+2026-05-21 17:04:05,357 - INFO - Completed Venus USDCvUSDC | Email: N/A | Source: Not Found
+2026-05-21 17:04:05,358 - INFO - Processing project: Wrapped CROWCRO
+2026-05-21 17:04:05,358 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 17:04:09,672 - INFO - Completed Wrapped CROWCRO | Email: N/A | Source: Not Found
+2026-05-21 17:04:09,673 - INFO - Processing project: Staked Frax
+2026-05-21 17:04:09,673 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 17:04:13,884 - INFO - Completed Staked Frax | Email: N/A | Source: Not Found
+2026-05-21 17:04:13,885 - INFO - Processing project: Venus ETHvETH
+2026-05-21 17:04:13,885 - INFO - Opening https://app.venus.io/dashboard (Attempt 1)
+2026-05-21 17:04:18,565 - INFO - Completed Venus ETHvETH | Email: N/A | Source: Not Found
+2026-05-21 17:04:18,565 - INFO - Processing project: Volo Staked
+2026-05-21 17:04:18,565 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 17:04:22,905 - INFO - Completed Volo Staked | Email: N/A | Source: Not Found
+2026-05-21 17:04:22,906 - INFO - Processing project: swETHSWETH
+2026-05-21 17:04:22,906 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 17:04:27,097 - INFO - Completed swETHSWETH | Email: N/A | Source: Not Found
+2026-05-21 17:04:27,097 - INFO - Processing project: Restaked Swell Ethereum
+2026-05-21 17:04:27,097 - INFO - Opening https://app.swellnetwork.io/restake (Attempt 1)
+2026-05-21 17:04:34,097 - INFO - Completed Restaked Swell Ethereum | Email: nllobera@gmail.com | Source: Website
+2026-05-21 17:04:34,098 - INFO - Processing project: Wrapped TAOWTAO
+2026-05-21 17:04:34,098 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 17:04:37,473 - INFO - Completed Wrapped TAOWTAO | Email: N/A | Source: Not Found
+2026-05-21 17:04:37,474 - INFO - Processing project: Wrapped Rootstock Bitcoin
+2026-05-21 17:04:37,474 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 17:04:40,681 - INFO - Completed Wrapped Rootstock Bitcoin | Email: N/A | Source: Not Found
+2026-05-21 17:04:40,681 - INFO - Processing project: DeFi Pulse
+2026-05-21 17:04:40,682 - INFO - Opening https://pulse.inc/ (Attempt 1)
+2026-05-21 17:04:55,694 - WARNING - Attempt 1 failed for https://pulse.inc/: Page.goto: Timeout 15000ms exceeded.
+Call log:
+  - navigating to "https://pulse.inc/", waiting until "domcontentloaded"
+
+2026-05-21 17:04:55,694 - INFO - Opening https://pulse.inc/ (Attempt 2)
+2026-05-21 17:05:02,074 - WARNING - Attempt 2 failed for https://pulse.inc/: Page.goto: net::ERR_CONNECTION_TIMED_OUT at https://pulse.inc/
+Call log:
+  - navigating to "https://pulse.inc/", waiting until "domcontentloaded"
+
+2026-05-21 17:05:02,074 - ERROR - Failed to open https://pulse.inc/ after 2 attempts.
+2026-05-21 17:05:02,076 - INFO - Completed DeFi Pulse | Email: N/A | Source: Not Found
+2026-05-21 17:05:02,076 - INFO - Processing project: Wrapped HBARWHBAR
+2026-05-21 17:05:02,076 - INFO - Opening https://help.hedera.com/hc/en-us/articles/360002789198-When-are-the-next-distributions-of-hbars-scheduled- (Attempt 1)
+2026-05-21 17:05:03,351 - WARNING - Attempt 1 failed for https://help.hedera.com/hc/en-us/articles/360002789198-When-are-the-next-distributions-of-hbars-scheduled-: Page.goto: Navigation to "https://help.hedera.com/hc/en-us/articles/360002789198-When-are-the-next-distributions-of-hbars-scheduled-" is interrupted by another navigation to "chrome-error://chromewebdata/"
+Call log:
+  - navigating to "https://help.hedera.com/hc/en-us/articles/360002789198-When-are-the-next-distributions-of-hbars-scheduled-", waiting until "domcontentloaded"
+
+2026-05-21 17:05:03,351 - INFO - Opening https://help.hedera.com/hc/en-us/articles/360002789198-When-are-the-next-distributions-of-hbars-scheduled- (Attempt 2)
+2026-05-21 17:05:03,399 - WARNING - Attempt 2 failed for https://help.hedera.com/hc/en-us/articles/360002789198-When-are-the-next-distributions-of-hbars-scheduled-: Page.goto: Navigation to "https://help.hedera.com/hc/en-us/articles/360002789198-When-are-the-next-distributions-of-hbars-scheduled-" is interrupted by another navigation to "https://hedera.com/faq/"
+Call log:
+  - navigating to "https://help.hedera.com/hc/en-us/articles/360002789198-When-are-the-next-distributions-of-hbars-scheduled-", waiting until "domcontentloaded"
+
+2026-05-21 17:05:03,399 - ERROR - Failed to open https://help.hedera.com/hc/en-us/articles/360002789198-When-are-the-next-distributions-of-hbars-scheduled- after 2 attempts.
+2026-05-21 17:05:03,401 - INFO - Completed Wrapped HBARWHBAR | Email: N/A | Source: Not Found
+2026-05-21 17:05:03,401 - INFO - Processing project: Wrapped NXMWNXM
+2026-05-21 17:05:03,401 - INFO - Opening https://nexus-wrapper.netlify.app/ (Attempt 1)
+2026-05-21 17:05:03,787 - WARNING - Attempt 1 failed for https://nexus-wrapper.netlify.app/: Page.goto: Navigation to "https://nexus-wrapper.netlify.app/" is interrupted by another navigation to "https://hedera.com/faq/"
+Call log:
+  - navigating to "https://nexus-wrapper.netlify.app/", waiting until "domcontentloaded"
+
+2026-05-21 17:05:03,787 - INFO - Opening https://nexus-wrapper.netlify.app/ (Attempt 2)
+2026-05-21 17:05:04,787 - INFO - Completed Wrapped NXMWNXM | Email: N/A | Source: Not Found
+2026-05-21 17:05:04,788 - INFO - Processing project: Wrapped MaticWMATIC
+2026-05-21 17:05:04,788 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 17:05:08,053 - INFO - Completed Wrapped MaticWMATIC | Email: N/A | Source: Not Found
+2026-05-21 17:05:08,054 - INFO - Processing project: Universal ETHUNIETH
+2026-05-21 17:05:08,054 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 17:05:11,294 - INFO - Completed Universal ETHUNIETH | Email: N/A | Source: Not Found
+2026-05-21 17:05:11,295 - INFO - Processing project: Amnis Staked Aptos coin
+2026-05-21 17:05:11,295 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 17:05:14,593 - INFO - Completed Amnis Staked Aptos coin | Email: N/A | Source: Not Found
+2026-05-21 17:05:14,594 - INFO - Processing project: Savings crv
+2026-05-21 17:05:14,594 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 17:05:18,038 - INFO - Completed Savings crv | Email: N/A | Source: Not Found
+2026-05-21 17:05:18,038 - INFO - Processing project: OpenEden Compounding Open
+2026-05-21 17:05:18,038 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 17:05:22,233 - INFO - Completed OpenEden Compounding Open | Email: N/A | Source: Not Found
+2026-05-21 17:05:22,233 - INFO - Processing project: AIC100
+2026-05-21 17:05:22,234 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 17:05:26,498 - INFO - Completed AIC100 | Email: N/A | Source: Not Found
+2026-05-21 17:05:26,498 - INFO - Processing project: JLP30
+2026-05-21 17:05:26,498 - INFO - Opening https://www.instagram.com/coinmarketcap/ (Attempt 1)
+2026-05-21 17:05:29,696 - INFO - Completed JLP30 | Email: N/A | Source: Not Found
+2026-05-21 17:05:29,821 - INFO - Extraction completed successfully. Total projects processed: 102
+2026-05-22 11:43:35,999 - INFO - Processing project: Wrapped BeraWBERA
+2026-05-22 11:43:36,001 - INFO - Opening https://play.google.com/store/apps/details/?id=com.coinmarketcap.android&amp;hl=en_US (Attempt 1)
+2026-05-22 11:43:38,080 - INFO - Opening https://play.google.com/about/giftcards (Attempt 1)
+2026-05-22 11:43:40,650 - INFO - Opening https://play.google.com/intl/en-US_in/about/play-terms.html (Attempt 1)
+2026-05-22 11:43:41,769 - INFO - Completed Wrapped BeraWBERA | Email: N/A | Source: Not Found
+2026-05-22 11:43:41,770 - INFO - Processing project: ASTER50
+2026-05-22 11:43:41,770 - INFO - Opening https://play.google.com/store/apps/details/?id=com.coinmarketcap.android&amp;hl=en_US (Attempt 1)
+2026-05-22 11:43:43,272 - INFO - Opening https://play.google.com/about/giftcards (Attempt 1)
+2026-05-22 11:43:45,046 - INFO - Opening https://play.google.com/intl/en-US_in/about/play-terms.html (Attempt 1)
+2026-05-22 11:43:46,029 - INFO - Completed ASTER50 | Email: N/A | Source: Not Found
+2026-05-22 11:43:46,100 - INFO - Extraction completed successfully. Total projects processed: 2

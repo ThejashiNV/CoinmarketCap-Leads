@@ -1,25 +1,48 @@
-from playwright.sync_api import sync_playwright
+from datetime import datetime
+import traceback
+
+from src.collectors.extract_categories import extract_categories
+from src.collectors.extract_projects import extract_projects
+from src.collectors.extract_project_details import extract_project_details
+from src.collectors.generate_leads import generate_leads
 
 
-def test_playwright():
-    print("Opening website...")
+def run_step(step_name, func):
+    print("\n" + "=" * 60)
+    print(f"Starting: {step_name}")
+    print("=" * 60)
 
-    with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True)
-        page = browser.new_page()
+    start_time = datetime.now()
 
-        page.goto("https://coinmarketcap.com/cryptocurrency-category/")
-        print("Getting HTML content...")
+    try:
+        func()
 
-        html = page.content()
+        end_time = datetime.now()
 
-        with open("data/categories_page.html", "w", encoding="utf-8") as f:
-            f.write(html)
+        print(f"\nCompleted: {step_name} in {end_time - start_time}")
 
-        print("HTML saved successfully to data/categories_page.html")
+    except Exception as e:
+        print(f"\nFailed: {step_name}")
+        print(f"Error: {e}")
 
-        browser.close()
+        traceback.print_exc()
+
+        raise
+
+
+def main():
+    print("\nMASTER PIPELINE STARTED\n")
+
+    run_step("Extract Categories", extract_categories)
+
+    run_step("Extract Projects", extract_projects)
+
+    run_step("Extract Project Details", extract_project_details)
+
+    run_step("Generate Final Leads", generate_leads)
+
+    print("\nMASTER PIPELINE COMPLETED SUCCESSFULLY!")
 
 
 if __name__ == "__main__":
-    test_playwright()
+    main()

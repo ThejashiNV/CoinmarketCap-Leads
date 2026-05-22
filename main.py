@@ -1,9 +1,9 @@
 from datetime import datetime
 import traceback
 
-from src.extractors.extract_categories import extract_categories
-from src.extractors.extract_projects import extract_projects_from_category
-from src.extractors.extract_project_details import extract_project_details
+from src.collectors.extract_categories import extract_categories
+from src.collectors.extract_projects import extract_projects
+from src.collectors.extract_project_details import extract_project_details
 from src.collectors.generate_leads import generate_leads
 
 
@@ -30,7 +30,7 @@ def main():
     print("\nMASTER PIPELINE STARTED\n")
 
     run_step("Extract Categories", extract_categories)
-    run_step("Extract Projects", extract_projects_from_category)
+    run_step("Extract Projects", extract_projects)
     run_step("Extract Project Details", extract_project_details)
     run_step("Generate Final Leads", generate_leads)
 
