@@ -2,6 +2,7 @@ import json
 import re
 from urllib.parse import urlparse
 
+import requests
 from bs4 import BeautifulSoup
 
 from src.collectors.platforms.listing import PLATFORM_BASE
@@ -9,6 +10,28 @@ from utils.platform_detector import detect_platform
 
 
 NEXT_DATA_RE = re.compile(r'id="__NEXT_DATA__"[^>]*>(.*?)</script>', re.S)
+
+_HTTP_HEADERS = {
+    "User-Agent": (
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+        "(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+    ),
+    "Accept-Language": "en-US,en;q=0.9",
+}
+
+# Below this, assume the static HTML was JS-gated and fall back to the browser.
+_MIN_CATEGORIES = 10
+
+
+def _http_fetch(url):
+    """Plain HTTP GET of a page's HTML, or "" on any failure (no browser)."""
+    try:
+        resp = requests.get(url, headers=_HTTP_HEADERS, timeout=20)
+        if resp.status_code == 200 and resp.text:
+            return resp.text
+    except requests.RequestException:
+        pass
+    return ""
 
 
 def _category_path(platform, path):
@@ -154,18 +177,31 @@ def parse_categories(platform, base, html):
 
 
 def collect_categories(index_url):
-    """Scrape a platform category-index page and return [{name, url}].
+    """Return a platform's categories as [{name, url}].
 
-    The browser is opened lazily so this module stays importable without a
-    running browser.
+    Fast path: most category indexes ship their list in the initial HTML (e.g.
+    CoinMarketCap's __NEXT_DATA__ blob), so a plain HTTP GET returns them in
+    ~1s. This keeps the synchronous /categories request far under the hosting
+    proxy's request timeout — a full headless-browser load of these heavy pages
+    takes ~80s and times out behind Cloudflare/Render on a cold start.
+
+    Fallback: client-rendered indexes (e.g. Coinranking) don't expose the list
+    in static HTML, so when the fast path yields too few categories we open the
+    browser exactly as before. The parsing logic is unchanged either way.
     """
-    from src.scraping.browser import browser_page, fetch_html
-
     platform = detect_platform(index_url)
     if not platform:
         raise ValueError(f"Unsupported platform URL: {index_url}")
 
     base = PLATFORM_BASE[platform]
+
+    html = _http_fetch(index_url)
+    categories = parse_categories(platform, base, html) if html else []
+    if len(categories) >= _MIN_CATEGORIES:
+        return categories
+
+    # Fast path insufficient (JS-rendered page): open the browser as before.
+    from src.scraping.browser import browser_page, fetch_html
 
     with browser_page() as page:
         html = fetch_html(page, index_url, timeout=60000, idle_timeout=6000)
