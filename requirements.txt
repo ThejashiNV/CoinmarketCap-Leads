@@ -1,11 +1,10 @@
-selenium
-webdriver-manager
-pandas
-streamlit
-googlesearch-python
+fastapi
+uvicorn[standard]
+pydantic
 playwright
 beautifulsoup4
 lxml
+pandas
+openpyxl
 requests
 python-dotenv
-openpyxl
