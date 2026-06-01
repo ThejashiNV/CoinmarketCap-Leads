@@ -1,10 +1,11 @@
-fastapi
-uvicorn[standard]
-pydantic
+selenium
+webdriver-manager
+pandas
+streamlit
+googlesearch-python
 playwright
 beautifulsoup4
 lxml
-pandas
-openpyxl
 requests
 python-dotenv
+openpyxl

@@ -1,46 +1,40 @@
-import os
-import sys
-import traceback
 from datetime import datetime
+import traceback
 
-from src.enrichment.pipeline import run_pipeline
+from src.collectors.extract_categories import extract_categories
+from src.collectors.extract_projects import extract_projects
+from src.collectors.extract_project_details import extract_project_details
+from src.collectors.generate_leads import generate_leads
 
 
-def get_listing_url():
-    """Resolve the platform listing URL from CLI arg or PLATFORM_URL env var."""
-    if len(sys.argv) > 1 and sys.argv[1].strip():
-        return sys.argv[1].strip()
-    return os.environ.get("PLATFORM_URL", "").strip()
+def run_step(step_name, func):
+    print("\n" + "=" * 60)
+    print(f"Starting: {step_name}")
+    print("=" * 60)
+
+    start_time = datetime.now()
+
+    try:
+        func()
+        end_time = datetime.now()
+        print(f"\nCompleted: {step_name} in {end_time - start_time}")
+
+    except Exception as e:
+        print(f"\nFailed: {step_name}")
+        print(f"Error: {e}")
+        traceback.print_exc()
+        raise
 
 
 def main():
-    listing_url = get_listing_url()
+    print("\nMASTER PIPELINE STARTED\n")
 
-    print("\nMULTI-SOURCE LEAD ENRICHMENT PIPELINE STARTED\n")
+    run_step("Extract Categories", extract_categories)
+    run_step("Extract Projects", extract_projects)
+    run_step("Extract Project Details", extract_project_details)
+    run_step("Generate Final Leads", generate_leads)
 
-    if not listing_url:
-        print(
-            "ERROR: No platform URL provided.\n"
-            "Usage: python main.py <coinmarketcap|coingecko|coinranking listing URL>"
-        )
-        sys.exit(1)
-
-    print("=" * 60)
-    print(f"Input URL: {listing_url}")
-    print("=" * 60)
-
-    limit_env = os.environ.get("LEAD_LIMIT", "").strip()
-    limit = int(limit_env) if limit_env.isdigit() else None
-
-    start = datetime.now()
-    try:
-        run_pipeline(listing_url, emit=lambda msg: print(msg, flush=True), limit=limit)
-    except Exception as exc:
-        print(f"\nPIPELINE FAILED: {exc}")
-        traceback.print_exc()
-        sys.exit(1)
-
-    print(f"\nPIPELINE COMPLETED SUCCESSFULLY in {datetime.now() - start}")
+    print("\nMASTER PIPELINE COMPLETED SUCCESSFULLY!")
 
 
 if __name__ == "__main__":

@@ -12,28 +12,11 @@ USER_AGENT = (
 logger = logging.getLogger("scraper")
 
 
-# Container/runtime launch flags (NOT scraping behaviour). These let Chromium
-# survive inside a small Docker instance (e.g. Render): the default 64 MB
-# /dev/shm is too small for Chromium and causes tab crashes that look like the
-# whole service dying mid-run — `--disable-dev-shm-usage` moves that to /tmp.
-# `--no-sandbox` is required when the container runs as root, and the rest trim
-# memory/GPU usage that a headless scrape never needs.
-_LAUNCH_ARGS = [
-    "--no-sandbox",
-    "--disable-setuid-sandbox",
-    "--disable-dev-shm-usage",
-    "--disable-gpu",
-    "--disable-extensions",
-    "--disable-background-networking",
-    "--no-first-run",
-]
-
-
 @contextmanager
 def browser_page(headless=True):
     """Yield a configured Playwright page; guarantees the browser is closed."""
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=headless, args=_LAUNCH_ARGS)
+        browser = p.chromium.launch(headless=headless)
         context = browser.new_context(
             user_agent=USER_AGENT,
             viewport={"width": 1366, "height": 900},
@@ -49,7 +32,7 @@ def browser_page(headless=True):
                 pass
 
 
-def fetch_html(page, url, timeout=20000, idle_timeout=4000, retries=2):
+def fetch_html(page, url, timeout=20000, idle_timeout=3000, retries=2):
     """Navigate to a URL and return its rendered HTML + visible text.
 
     Appends body inner_text so emails/links that are rendered as text (not in
@@ -68,6 +51,13 @@ def fetch_html(page, url, timeout=20000, idle_timeout=4000, retries=2):
                 html += "\n" + page.inner_text("body")
             except Exception:
                 pass
+
+            # Release the page's DOM/JS heap before the next navigation.
+            try:
+                page.goto("about:blank", wait_until="commit", timeout=3000)
+            except Exception:
+                pass
+
             return html
         except Exception as exc:
             logger.warning("fetch failed (%s/%s) for %s: %s", attempt, retries, url, exc)

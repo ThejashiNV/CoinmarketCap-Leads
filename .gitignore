@@ -6,6 +6,3 @@ dist/
 build/
 .env
 *.pyc
-logs/
-backup_test/
-output_backup/
