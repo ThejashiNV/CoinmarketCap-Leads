@@ -1,0 +1,17 @@
+# Keep the backend image small and exclude the separately-deployed frontend.
+venv/
+node_modules/
+frontend/
+__pycache__/
+**/__pycache__/
+*.pyc
+.git/
+.claude/
+output/
+output_backup/
+backup_test/
+data/
+logs/
+dist/
+build/
+README.md
