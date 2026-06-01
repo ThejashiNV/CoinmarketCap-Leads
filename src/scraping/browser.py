@@ -12,11 +12,28 @@ USER_AGENT = (
 logger = logging.getLogger("scraper")
 
 
+# Container/runtime launch flags (NOT scraping behaviour). These let Chromium
+# survive inside a small Docker instance (e.g. Render): the default 64 MB
+# /dev/shm is too small for Chromium and causes tab crashes that look like the
+# whole service dying mid-run — `--disable-dev-shm-usage` moves that to /tmp.
+# `--no-sandbox` is required when the container runs as root, and the rest trim
+# memory/GPU usage that a headless scrape never needs.
+_LAUNCH_ARGS = [
+    "--no-sandbox",
+    "--disable-setuid-sandbox",
+    "--disable-dev-shm-usage",
+    "--disable-gpu",
+    "--disable-extensions",
+    "--disable-background-networking",
+    "--no-first-run",
+]
+
+
 @contextmanager
 def browser_page(headless=True):
     """Yield a configured Playwright page; guarantees the browser is closed."""
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=headless)
+        browser = p.chromium.launch(headless=headless, args=_LAUNCH_ARGS)
         context = browser.new_context(
             user_agent=USER_AGENT,
             viewport={"width": 1366, "height": 900},
