@@ -81,6 +81,35 @@ EXPLORER_DOMAINS = [
     "ftmscan.com",
     "celoscan.io",
     "airtable.com",
+    # Multi-chain explorers / analytics that appear on CoinGecko coin pages.
+    "btc.com",
+    "mempool.space",
+    "ethplorer.io",
+    "tokenview.io",
+    "oklink.com",
+    "3xpl.com",
+    "intel.arkm.com",
+    "platform.arkhamintelligence.com",
+]
+
+# Charting / analytics / wallet / partner sites that listing pages link to
+# but are never a project's own homepage.
+TOOL_AND_PARTNER_DOMAINS = [
+    "tradingview.com",
+    "geckoterminal.com",
+    "coingecko.app.link",
+    "gcko.io",
+    "xdefi.io",
+    "coin98.com",
+    "tokenomist.ai",
+    "tokenterminal.com",
+    "onetrust.com",
+    "hackenproof.com",
+    "geckad.com",
+    "kev.geckad.com",
+    "hacken.io",
+    "vega.bet",
+    "cer.live",
 ]
 
 # App stores / extension stores.
@@ -213,6 +242,7 @@ _ALL_BLOCKED = (
     + APP_STORE_DOMAINS
     + SOCIAL_TOOL_DOMAINS
     + INFRA_DOMAINS
+    + TOOL_AND_PARTNER_DOMAINS
 )
 
 
