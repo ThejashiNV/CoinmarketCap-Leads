@@ -170,10 +170,15 @@ def status():
 def stream_logs():
     def event_stream():
         index = 0
+        idle_ticks = 0
+        # Open with a comment so the client sees bytes immediately and any proxy
+        # flushes the stream rather than buffering it.
+        yield ": connected\n\n"
         while True:
             if index < len(live_logs):
                 item = live_logs[index]
                 index += 1
+                idle_ticks = 0
                 yield f"data: {json.dumps(item)}\n\n"
                 if item.get("done"):
                     return
@@ -182,9 +187,25 @@ def stream_logs():
                 yield f"data: {json.dumps({'message': 'idle', 'done': True})}\n\n"
                 return
             else:
+                # The run is active but producing no new logs (e.g. a long page
+                # load or per-lead enrichment). Emit a heartbeat comment every
+                # ~10s so Cloudflare/Render don't drop the idle connection and
+                # the browser's EventSource stays open. Comments are ignored by
+                # EventSource (no onmessage), so this is transport-only.
+                idle_ticks += 1
+                if idle_ticks % 20 == 0:
+                    yield ": keepalive\n\n"
                 time.sleep(0.5)
 
-    return StreamingResponse(event_stream(), media_type="text/event-stream")
+    # Disable proxy/browser buffering so events arrive in real time.
+    headers = {
+        "Cache-Control": "no-cache",
+        "X-Accel-Buffering": "no",
+        "Connection": "keep-alive",
+    }
+    return StreamingResponse(
+        event_stream(), media_type="text/event-stream", headers=headers
+    )
 
 
 @app.get("/leads")
