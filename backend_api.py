@@ -111,12 +111,52 @@ def _run_extraction(category_url, top_n, mode="ranked"):
         state["running"] = False
 
 
+PLATFORM_CAPABILITIES = {
+    "coinmarketcap": {
+        "platform": "CoinMarketCap",
+        "supports_ranked": True,
+        "supports_recent": True,
+        "supports_category_recent": True,
+        "supports_date_filter": True,
+        "recent_source": "Category page __NEXT_DATA__ (dateAdded field)",
+    },
+    "coingecko": {
+        "platform": "CoinGecko",
+        "supports_ranked": True,
+        "supports_recent": True,
+        "supports_category_recent": False,
+        "supports_date_filter": False,
+        "recent_source": "Global /recently_added page (no category filter, no dates)",
+    },
+    "coinranking": {
+        "platform": "Coinranking",
+        "supports_ranked": True,
+        "supports_recent": True,
+        "supports_category_recent": True,
+        "supports_date_filter": True,
+        "recent_source": "Public API (orderBy=listedAt, tags[] filter)",
+    },
+}
+
+
 @app.get("/")
 def home():
     return {
         "message": "Crypto Lead Enrichment API running",
         "supported_platforms": SUPPORTED_PLATFORMS,
     }
+
+
+@app.get("/capabilities")
+def capabilities(platform: str = ""):
+    """Report what extraction modes each platform supports."""
+    if platform:
+        key = platform.strip().lower()
+        info = PLATFORM_CAPABILITIES.get(key)
+        if info:
+            return info
+        return {"status": "error", "message": f"Unknown platform: {platform}"}
+    return {"platforms": list(PLATFORM_CAPABILITIES.values())}
 
 
 @app.get("/categories")

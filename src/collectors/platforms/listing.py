@@ -1,7 +1,9 @@
 import json
 import re
+import time
 from urllib.parse import urlparse
 
+import requests
 from bs4 import BeautifulSoup
 
 from utils.platform_detector import detect_platform
@@ -131,34 +133,169 @@ def _parse_recently_added_cmc(html, listing_url):
     return projects
 
 
-# ---------- Standard anchor-based parsers (unchanged) ----------
+# ---------- Coinranking API "Recently Added" parser ----------
+
+_API_HEADERS = {
+    "User-Agent": (
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+        "(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+    ),
+}
+
+
+def _parse_recently_added_coinranking(listing_url):
+    """Fetch newest coins from Coinranking API, optionally within a category.
+
+    The Coinranking public API supports `orderBy=listedAt` + `tags[]=<slug>`,
+    returning coins with exact listing dates. Single HTTP request, no browser.
+    The URL slug from /coins/<tag> maps directly to the API tags[] parameter.
+    """
+    path = urlparse(listing_url).path
+    parts = [p for p in path.strip("/").split("/") if p]
+    tag = parts[1] if len(parts) >= 2 and parts[0] == "coins" else None
+
+    params = {
+        "orderBy": "listedAt",
+        "orderDirection": "desc",
+        "limit": 100,
+    }
+    if tag:
+        params["tags[]"] = tag
+
+    try:
+        resp = requests.get(
+            "https://api.coinranking.com/v2/coins",
+            params=params,
+            headers=_API_HEADERS,
+            timeout=15,
+        )
+        if resp.status_code != 200:
+            return None
+        coins = resp.json().get("data", {}).get("coins", [])
+    except requests.RequestException:
+        return None
+
+    if not coins:
+        return None
+
+    base = PLATFORM_BASE["coinranking"]
+    projects = []
+    for coin in coins:
+        cr_url = coin.get("coinrankingUrl", "")
+        slug_path = _project_slug("coinranking", urlparse(cr_url).path) if cr_url else None
+        if not slug_path:
+            continue
+        listed_at = coin.get("listedAt", 0)
+        date_str = time.strftime("%Y-%m-%dT%H:%M:%S.000Z", time.gmtime(listed_at)) if listed_at else ""
+
+        projects.append({
+            "Project Name": clean_project_name(coin.get("name", "")) or name_from_slug(slug_path),
+            "Project URL": base + slug_path,
+            "Source URL": listing_url,
+            "Platform": "coinranking",
+            "dateAdded": date_str,
+        })
+
+    return projects
+
+
+# ---------- CoinGecko "Recently Added" parser ----------
+
+def _parse_recently_added_coingecko(listing_url):
+    """Fetch the ~50 most recently added coins from CoinGecko's HTML page.
+
+    CoinGecko has no date field and no category filter for recently-added
+    coins. This returns the global recently-added list (newest first by
+    page position). The listing_url is used as Source URL for consistency
+    but the data comes from /en/coins/recently_added regardless.
+    """
+    try:
+        resp = requests.get(
+            "https://www.coingecko.com/en/coins/recently_added",
+            headers=_API_HEADERS,
+            timeout=15,
+        )
+        if resp.status_code != 200 or not resp.text:
+            return None
+    except requests.RequestException:
+        return None
+
+    soup = BeautifulSoup(resp.text, "lxml")
+    base = PLATFORM_BASE["coingecko"]
+    seen = set()
+    projects = []
+
+    for a in soup.find_all("a", href=True):
+        match = re.match(r"/en/coins/([a-z0-9\-]+)$", a["href"])
+        if not match or match.group(1) == "recently_added":
+            continue
+        slug = match.group(1)
+        if slug in seen:
+            continue
+        seen.add(slug)
+
+        project_url = f"{base}/en/coins/{slug}"
+        name = a.get_text(strip=True)
+        # CoinGecko anchors often contain the ticker appended; clean it
+        name = re.sub(r"[A-Z]{2,}$", "", name).strip() or name_from_slug(slug)
+        name = clean_project_name(name) or name_from_slug(slug)
+
+        projects.append({
+            "Project Name": name,
+            "Project URL": project_url,
+            "Source URL": listing_url,
+            "Platform": "coingecko",
+        })
+
+    return projects if projects else None
+
+
+# ---------- Main collector (routes ranked / recent per platform) ----------
 
 def collect_projects(listing_url, mode="ranked"):
-    """Scrape a listing/category page and return [{Project Name, Project URL}].
+    """Collect projects from a listing/category page.
 
     mode="ranked"  -> existing behavior: projects in market-cap/rank order.
-    mode="recent"  -> new: projects sorted by dateAdded descending (newest first).
+    mode="recent"  -> new: projects sorted by listing date (newest first).
 
     The browser is opened lazily so this module stays importable without a
     running browser (keeps unit tests fast).
     """
-    from src.scraping.browser import browser_page, fetch_html
-
     platform = detect_platform(listing_url)
     if not platform:
         raise ValueError(f"Unsupported platform URL: {listing_url}")
 
+    # ---- Recently Added mode: prefer fast structured sources ----
+    if mode == "recent":
+        if platform == "coinmarketcap":
+            # CMC: the category page itself has dateAdded in __NEXT_DATA__
+            # We still need to fetch it (browser for JS-rendered content)
+            from src.scraping.browser import browser_page, fetch_html
+            with browser_page() as page:
+                html = fetch_html(page, listing_url, timeout=60000, idle_timeout=6000)
+            structured = _parse_recently_added_cmc(html, listing_url)
+            if structured:
+                return structured
+
+        elif platform == "coinranking":
+            # Coinranking: public API with orderBy=listedAt + tags filter
+            api_result = _parse_recently_added_coinranking(listing_url)
+            if api_result:
+                return api_result
+
+        elif platform == "coingecko":
+            # CoinGecko: scrape the /recently_added HTML page (no category filter)
+            cg_result = _parse_recently_added_coingecko(listing_url)
+            if cg_result:
+                return cg_result
+
+    # ---- Ranked mode (default) or fallback: browser-based anchor parser ----
+    from src.scraping.browser import browser_page, fetch_html
     base = PLATFORM_BASE[platform]
 
     with browser_page() as page:
         html = fetch_html(page, listing_url, timeout=60000, idle_timeout=6000)
 
-    if mode == "recent" and platform == "coinmarketcap":
-        structured = _parse_recently_added_cmc(html, listing_url)
-        if structured:
-            return structured
-
-    # Default: rank-ordered anchor-based parsing (all platforms)
     return parse_projects(platform, base, html, listing_url)
 
 
