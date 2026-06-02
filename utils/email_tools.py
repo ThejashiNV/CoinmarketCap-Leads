@@ -38,12 +38,25 @@ REJECT_EMAIL_DOMAINS = (
     "wixsite.com",
     "squarespace.com",
     "webflow.io",
+    # Job boards / HR platforms that appear on careers/jobs pages.
+    "lever.co",
+    "greenhouse.io",
+    "bamboohr.com",
+    "workable.com",
+    "ashbyhq.com",
+    "zodl.com",
+    "breezy.hr",
+    "recruitee.com",
+    "smartrecruiters.com",
 )
 
-# Local-parts that are never useful as outreach leads.
+# Hard-excluded local-parts. These are NEVER returned regardless of domain or
+# score. Includes automated mailboxes and addresses the user explicitly said to
+# exclude (privacy@, legal@, security@, etc.).
 JUNK_LOCALPARTS = (
     "noreply",
     "no-reply",
+    "do-not-reply",
     "donotreply",
     "abuse",
     "postmaster",
@@ -51,6 +64,21 @@ JUNK_LOCALPARTS = (
     "mailerdaemon",
     "dmca",
     "bounce",
+    "bounces",
+    "automated",
+    "automation",
+    "notifications",
+    "notification",
+    "alerts",
+    "alert",
+    # Explicitly excluded by spec — useful for compliance but not outreach
+    "privacy",
+    "privacy-policy",
+    "legal",
+    "security",
+    "unsubscribe",
+    "optout",
+    "spam",
 )
 
 # Cloudflare email protection: <span class="__cf_email__" data-cfemail="hex">
@@ -60,9 +88,7 @@ CF_HREF_REGEX = re.compile(r'/cdn-cgi/l/email-protection#([0-9a-fA-F]+)')
 
 MAILTO_REGEX = re.compile(r'mailto:([^"\'?>\s]+)', re.IGNORECASE)
 
-# " name (at) domain (dot) com " style obfuscation. Tokens must be bracketed or
-# whitespace-delimited so we never rewrite "at"/"dot" hiding inside words
-# (e.g. "gstatic" must not become "gst@ic").
+# " name (at) domain (dot) com " style obfuscation.
 OBFUSCATION_PATTERNS = [
     (re.compile(r"\s*[\(\[\{]\s*at\s*[\)\]\}]\s*", re.IGNORECASE), "@"),
     (re.compile(r"\s+at\s+", re.IGNORECASE), "@"),
@@ -120,48 +146,57 @@ PERSONAL_DOMAINS = (
     "mail.com",
 )
 
-# Local-part keywords ranked best -> worst.
+# Business email keywords ranked by outreach value (index 0 = highest).
+# Scores are (len - index) * 10 so top keywords dominate.
 PREFERRED_KEYWORDS = [
-    "business",
-    "partnership",
+    # Tier 1 — direct business/partnership contact (highest value)
     "partnerships",
+    "partnership",
+    "business",
     "bd",
+    "bizdev",
+    "corporate",
+    "enterprise",
+    "sales",
+    # Tier 2 — general contact (high value)
     "contact",
     "hello",
     "hi",
     "info",
-    "sales",
-    "marketing",
-    "media",
-    "press",
     "team",
+    # Tier 3 — PR / media (medium-high)
+    "press",
+    "media",
+    "pr",
+    # Tier 4 — community / growth (medium)
+    "foundation",
+    "community",
+    "marketing",
+    "growth",
+    # Tier 5 — general enquiry (lower)
     "general",
     "enquiries",
     "inquiries",
+    # Tier 6 — support (acceptable, not ideal)
+    "support",
+    "help",
 ]
 
-AVOID_KEYWORDS = [
-    "noreply",
-    "no-reply",
-    "donotreply",
-    "notification",
-    "notifications",
-    "privacy",
-    "legal",
-    "abuse",
-    "security",
-    "dmca",
-    "webmaster",
-    "postmaster",
+# These score heavily negative but do NOT hard-filter (still stored if nothing
+# better exists). The hard filter is JUNK_LOCALPARTS above.
+SOFT_AVOID_KEYWORDS = [
     "admin",
+    "webmaster",
+    "recruiting",
+    "careers",
+    "jobs",
+    "invest",
+    "investor",
 ]
 
 
 def decode_cfemail(hex_str):
-    """Decode a Cloudflare-obfuscated email hex string.
-
-    The first byte is an XOR key; each subsequent byte is XORed with it.
-    """
+    """Decode a Cloudflare-obfuscated email hex string."""
     try:
         key = int(hex_str[:2], 16)
         decoded = "".join(
@@ -185,20 +220,21 @@ def _valid_syntax(email):
 
 
 def _is_clean_email(email):
-    email = email.lower()
-    if not _valid_syntax(email):
+    email_lower = email.lower()
+    if not _valid_syntax(email_lower):
         return False
-    if email.endswith(ASSET_SUFFIXES):
+    if email_lower.endswith(ASSET_SUFFIXES):
         return False
-    if any(junk in email for junk in JUNK_SUBSTRINGS):
+    if any(junk in email_lower for junk in JUNK_SUBSTRINGS):
         return False
-    local, domain = email.split("@", 1)
+    local, domain = email_lower.split("@", 1)
     if domain.endswith(REJECT_EMAIL_DOMAINS):
         return False
-    if local.startswith(JUNK_LOCALPARTS):
+    # Hard-filter: any local-part that starts with a junk prefix.
+    if any(local.startswith(j) or local == j for j in JUNK_LOCALPARTS):
         return False
     # Reject obvious version/asset hashes mistaken as emails.
-    if re.search(r"@\d+x", email):
+    if re.search(r"@\d+x", email_lower):
         return False
     return True
 
@@ -255,20 +291,16 @@ def _score(email, prefer_domain=None):
 
     score = 0
     for i, kw in enumerate(PREFERRED_KEYWORDS):
-        if kw in local:
+        if local == kw or local.startswith(kw):
             score += (len(PREFERRED_KEYWORDS) - i) * 10
             break
 
-    if any(kw in local for kw in AVOID_KEYWORDS):
-        score -= 100
+    if any(kw in local for kw in SOFT_AVOID_KEYWORDS):
+        score -= 40
 
-    # Support is acceptable but not preferred.
-    if local in ("support", "help") or local.startswith(("support", "help")):
-        score += 1
-
-    # Business domains beat free webmail.
+    # Personal webmail domains are very low value.
     if domain.endswith(PERSONAL_DOMAINS):
-        score -= 20
+        score -= 50
 
     # Strongly prefer an email on the project's own domain.
     if prefer_domain:
@@ -282,20 +314,75 @@ def _score(email, prefer_domain=None):
 
 
 def choose_best_email(emails, prefer_domain=None):
-    """Pick the most business-appropriate email, preferring the site domain."""
+    """Pick the single most business-appropriate email (legacy, used by store)."""
     candidates = [e for e in (emails or []) if e]
     if not candidates:
         return ""
     return max(candidates, key=lambda e: _score(e, prefer_domain))
 
 
-def email_confidence(email):
-    if not email:
+def choose_business_emails(emails, prefer_domain=None):
+    """Return ALL useful business emails, priority-sorted, deduped.
+
+    Unlike choose_best_email, this preserves every email that scores above a
+    minimum threshold so callers can store the full set (e.g.
+    "contact@x.io; partnerships@x.io; press@x.io").
+
+    When a project-domain email is present, off-domain emails are excluded
+    unless they clearly belong to an official sister organization (very high
+    base score). This prevents partner/campaign platform emails from leaking
+    into the output alongside the real contact address.
+    """
+    candidates = [e for e in (emails or []) if e]
+    if not candidates:
+        return []
+
+    scored = [(e, _score(e, prefer_domain)) for e in candidates]
+    scored.sort(key=lambda t: t[1], reverse=True)
+
+    # Separate on-domain from off-domain results.
+    pref = (prefer_domain or "").lower()
+    on_domain = [(e, s) for e, s in scored if pref and e.split("@", 1)[1].lower() in (pref, f"mail.{pref}")]
+    off_domain = [(e, s) for e, s in scored if (e, s) not in on_domain]
+
+    result = []
+
+    # Always include all positively-scored on-domain emails.
+    result.extend(e for e, s in on_domain if s > 0)
+
+    if result:
+        # On-domain emails found: only add off-domain if they score very high
+        # (suggesting a well-known official address, not a partner platform).
+        result.extend(e for e, s in off_domain if s > 200)
+    else:
+        # No on-domain email at all: include any positively-scored off-domain.
+        result.extend(e for e, s in off_domain if s > 0)
+
+    if not result:
+        # Last resort: return the absolute best even if negative.
+        result = [scored[0][0]] if scored else []
+
+    return result
+
+
+def join_business_emails(emails, prefer_domain=None):
+    """Return a '; '-joined string of all useful business emails, or 'N/A'."""
+    chosen = choose_business_emails(emails, prefer_domain)
+    return "; ".join(chosen) if chosen else "N/A"
+
+
+def email_confidence(email_field):
+    """Confidence level for the email field (may contain multiple emails)."""
+    if not email_field or email_field == "N/A":
         return "LOW"
-    local = email.split("@", 1)[0].lower()
-    high = ("contact", "hello", "info", "team", "partnership", "business", "sales")
+    # Take the first email (highest-priority) for scoring.
+    first = email_field.split(";")[0].strip()
+    local = first.split("@", 1)[0].lower() if "@" in first else ""
+    high = ("contact", "hello", "info", "team", "partnership", "partnerships",
+            "business", "sales", "bd", "bizdev", "press", "media")
     if any(kw in local for kw in high):
         return "HIGH"
-    if any(kw in local for kw in ("support", "help", "media", "press")):
+    if any(kw in local for kw in ("support", "help", "foundation", "community",
+                                   "marketing", "growth")):
         return "MEDIUM"
     return "LOW"
