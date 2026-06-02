@@ -32,9 +32,14 @@ def main():
     limit_env = os.environ.get("LEAD_LIMIT", "").strip()
     limit = int(limit_env) if limit_env.isdigit() else None
 
+    # MODE: "ranked" (default, Top N by market cap) or "recent" (Newest N)
+    mode = os.environ.get("EXTRACT_MODE", "ranked").strip().lower()
+    if mode not in ("ranked", "recent"):
+        mode = "ranked"
+
     start = datetime.now()
     try:
-        run_pipeline(listing_url, emit=lambda msg: print(msg, flush=True), limit=limit)
+        run_pipeline(listing_url, emit=lambda msg: print(msg, flush=True), limit=limit, mode=mode)
     except Exception as exc:
         print(f"\nPIPELINE FAILED: {exc}")
         traceback.print_exc()

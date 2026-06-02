@@ -57,13 +57,15 @@ _state_lock = threading.Lock()
 class ExtractionRequest(BaseModel):
     category_url: str
     top_n: int = 20
+    mode: str = "ranked"  # "ranked" (Top N by market cap) or "recent" (Newest N)
 
 
-def _run_extraction(category_url, top_n):
+def _run_extraction(category_url, top_n, mode="ranked"):
     process = None
     try:
         env = dict(os.environ)
         env["LEAD_LIMIT"] = str(top_n)
+        env["EXTRACT_MODE"] = mode
 
         process = subprocess.Popen(
             [sys.executable, MAIN_SCRIPT, category_url],
@@ -175,6 +177,10 @@ def start_extraction(payload: ExtractionRequest):
         top_n = 20
     top_n = max(1, min(top_n, 500))
 
+    mode = (payload.mode or "ranked").strip().lower()
+    if mode not in ("ranked", "recent"):
+        mode = "ranked"
+
     # Atomically claim the single run slot so concurrent requests can't race.
     with _state_lock:
         if state["running"]:
@@ -183,7 +189,7 @@ def start_extraction(payload: ExtractionRequest):
         live_logs.clear()
 
     thread = threading.Thread(
-        target=_run_extraction, args=(url, top_n), daemon=True
+        target=_run_extraction, args=(url, top_n, mode), daemon=True
     )
     thread.start()
 

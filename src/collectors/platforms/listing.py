@@ -1,3 +1,4 @@
+import json
 import re
 from urllib.parse import urlparse
 
@@ -12,6 +13,8 @@ PLATFORM_BASE = {
     "coingecko": "https://www.coingecko.com",
     "coinranking": "https://coinranking.com",
 }
+
+NEXT_DATA_RE = re.compile(r'id="__NEXT_DATA__"[^>]*>(.*?)</script>', re.S)
 
 
 def _project_slug(platform, path):
@@ -59,8 +62,82 @@ def name_from_slug(slug_path):
     return " ".join(tokens).title()
 
 
-def collect_projects(listing_url):
+# ---------- CMC structured-data parser for "Recently Added" mode ----------
+
+def _find_crypto_list(node, depth=0):
+    """Locate the `cryptoCurrencyList` inside CMC's __NEXT_DATA__.
+
+    This list contains every coin on a category page with full metadata
+    including `dateAdded`, `slug`, `name`, `tags`, etc. — richer than
+    what the anchor-based parser can extract.
+    """
+    if depth > 8:
+        return None
+    if isinstance(node, dict):
+        # Direct key match
+        candidate = node.get("cryptoCurrencyList")
+        if isinstance(candidate, list) and candidate and "slug" in candidate[0]:
+            return candidate
+        for value in node.values():
+            found = _find_crypto_list(value, depth + 1)
+            if found is not None:
+                return found
+    elif isinstance(node, list):
+        for value in node:
+            found = _find_crypto_list(value, depth + 1)
+            if found is not None:
+                return found
+    return None
+
+
+def _parse_recently_added_cmc(html, listing_url):
+    """Parse CMC category page and return projects sorted by dateAdded desc.
+
+    CMC category pages embed a `cryptoCurrencyList` in their __NEXT_DATA__
+    JSON blob. Each entry has `slug`, `name`, `dateAdded` (ISO 8601), and
+    `tags`. This lets us sort by listing date without any additional HTTP
+    requests — the data is already in the page we fetched.
+    """
+    match = NEXT_DATA_RE.search(html or "")
+    if not match:
+        return None
+    try:
+        data = json.loads(match.group(1))
+    except (json.JSONDecodeError, ValueError):
+        return None
+
+    coins = _find_crypto_list(data)
+    if not coins:
+        return None
+
+    base = PLATFORM_BASE["coinmarketcap"]
+    projects = []
+    for coin in coins:
+        slug = coin.get("slug", "")
+        name = coin.get("name", "") or name_from_slug(slug)
+        date_added = coin.get("dateAdded", "")
+        if not slug:
+            continue
+        projects.append({
+            "Project Name": clean_project_name(name) or name,
+            "Project URL": f"{base}/currencies/{slug}",
+            "Source URL": listing_url,
+            "Platform": "coinmarketcap",
+            "dateAdded": date_added,
+        })
+
+    # Sort by dateAdded descending (newest first)
+    projects.sort(key=lambda p: p.get("dateAdded", ""), reverse=True)
+    return projects
+
+
+# ---------- Standard anchor-based parsers (unchanged) ----------
+
+def collect_projects(listing_url, mode="ranked"):
     """Scrape a listing/category page and return [{Project Name, Project URL}].
+
+    mode="ranked"  -> existing behavior: projects in market-cap/rank order.
+    mode="recent"  -> new: projects sorted by dateAdded descending (newest first).
 
     The browser is opened lazily so this module stays importable without a
     running browser (keeps unit tests fast).
@@ -76,6 +153,12 @@ def collect_projects(listing_url):
     with browser_page() as page:
         html = fetch_html(page, listing_url, timeout=60000, idle_timeout=6000)
 
+    if mode == "recent" and platform == "coinmarketcap":
+        structured = _parse_recently_added_cmc(html, listing_url)
+        if structured:
+            return structured
+
+    # Default: rank-ordered anchor-based parsing (all platforms)
     return parse_projects(platform, base, html, listing_url)
 
 

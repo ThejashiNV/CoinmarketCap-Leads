@@ -52,11 +52,14 @@ def _get_ram_mb():
     return -1
 
 
-def run_pipeline(listing_url, emit=print, limit=None):
+def run_pipeline(listing_url, emit=print, limit=None, mode="ranked"):
     """Collect projects from a listing URL and enrich each into a lead row.
 
     `emit` is a callback for human-readable progress (stdout by default; the
     backend swaps in a log collector for SSE streaming).
+
+    mode="ranked"  -> Top N by market cap (existing behavior)
+    mode="recent"  -> Newest N by listing date (new)
     """
     _setup_logging()
     os.makedirs(OUTPUT_DIR, exist_ok=True)
@@ -67,11 +70,13 @@ def run_pipeline(listing_url, emit=print, limit=None):
             f"Unsupported platform URL. Supported: {', '.join(SUPPORTED_PLATFORMS)}"
         )
 
+    mode_label = "Recently Added" if mode == "recent" else "Top Ranked"
     emit(f"Platform detected: {platform}")
+    emit(f"Mode: {mode_label}")
     emit(f"Collecting projects from: {listing_url}")
 
     t_collect_start = time.time()
-    projects = collect_projects(listing_url)
+    projects = collect_projects(listing_url, mode=mode)
     t_collect = time.time() - t_collect_start
     emit(f"Collected {len(projects)} projects.")
 
