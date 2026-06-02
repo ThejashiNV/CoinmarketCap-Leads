@@ -25,6 +25,15 @@ OUTPUT_DIR = os.path.join(BASE_DIR, "output")
 LEADS_CSV = os.path.join(OUTPUT_DIR, "final_leads.csv")
 LEADS_XLSX = os.path.join(OUTPUT_DIR, "final_leads.xlsx")
 
+# Maximum allowed extraction time (seconds). A Top-50 run takes ~17 min;
+# 45 min gives ample headroom. If exceeded, the subprocess is killed so the
+# server doesn't stay in "running" forever on a hung Chromium page.
+MAX_RUN_SECONDS = 2700
+
+# Maximum log entries kept in memory. A Top-50 run emits ~150-200 lines;
+# 500 gives headroom without unbounded growth.
+MAX_LOG_ENTRIES = 500
+
 app = FastAPI(title="Crypto Lead Enrichment API")
 
 app.add_middleware(
@@ -38,8 +47,11 @@ app.add_middleware(
 
 # Shared run state. A single extraction runs at a time; logs are streamed to
 # the frontend over SSE and terminated with a sentinel carrying done=True.
-state = {"running": False}
+# `_state_lock` guards the check-and-set of `running` so two near-simultaneous
+# /start-extraction requests can't both pass and spawn duplicate subprocesses.
+state = {"running": False, "process": None}
 live_logs = []
+_state_lock = threading.Lock()
 
 
 class ExtractionRequest(BaseModel):
@@ -48,6 +60,7 @@ class ExtractionRequest(BaseModel):
 
 
 def _run_extraction(category_url, top_n):
+    process = None
     try:
         env = dict(os.environ)
         env["LEAD_LIMIT"] = str(top_n)
@@ -63,15 +76,36 @@ def _run_extraction(category_url, top_n):
             errors="replace",
             bufsize=1,
         )
+        state["process"] = process
+
+        deadline = time.time() + MAX_RUN_SECONDS
         for line in process.stdout:
             line = line.rstrip()
             if line:
-                live_logs.append({"message": line})
-        process.wait()
+                # Cap log buffer to prevent unbounded memory growth.
+                if len(live_logs) < MAX_LOG_ENTRIES:
+                    live_logs.append({"message": line})
+            if time.time() > deadline:
+                live_logs.append({
+                    "message": f"Extraction timed out after {MAX_RUN_SECONDS}s.",
+                    "done": True,
+                })
+                process.kill()
+                return
+
+        process.wait(timeout=30)
         live_logs.append({"message": "Extraction finished.", "done": True})
     except Exception as exc:
         live_logs.append({"message": f"Extraction error: {exc}", "done": True})
     finally:
+        # Guarantee the subprocess is dead — prevents zombie Chromium.
+        if process and process.poll() is None:
+            try:
+                process.kill()
+                process.wait(timeout=10)
+            except Exception:
+                pass
+        state["process"] = None
         state["running"] = False
 
 
@@ -135,17 +169,19 @@ def start_extraction(payload: ExtractionRequest):
             "message": f"Unsupported URL. Supported platforms: {', '.join(SUPPORTED_PLATFORMS)}",
         }
 
-    if state["running"]:
-        return {"status": "busy", "message": "An extraction is already running."}
-
     try:
         top_n = int(payload.top_n)
     except (TypeError, ValueError):
         top_n = 20
     top_n = max(1, min(top_n, 500))
 
-    live_logs.clear()
-    state["running"] = True
+    # Atomically claim the single run slot so concurrent requests can't race.
+    with _state_lock:
+        if state["running"]:
+            return {"status": "busy", "message": "An extraction is already running."}
+        state["running"] = True
+        live_logs.clear()
+
     thread = threading.Thread(
         target=_run_extraction, args=(url, top_n), daemon=True
     )
@@ -163,21 +199,38 @@ def status():
 def stream_logs():
     def event_stream():
         index = 0
+        idle_ticks = 0
+        # Emit an initial comment so the client sees bytes immediately and
+        # any proxy flushes the stream rather than buffering it.
+        yield ": connected\n\n"
         while True:
             if index < len(live_logs):
                 item = live_logs[index]
                 index += 1
+                idle_ticks = 0
                 yield f"data: {json.dumps(item)}\n\n"
                 if item.get("done"):
                     return
             elif not state["running"]:
-                # Caught up and nothing is running: end the stream cleanly.
                 yield f"data: {json.dumps({'message': 'idle', 'done': True})}\n\n"
                 return
             else:
+                # Emit a heartbeat comment every ~10s so Cloudflare/proxies
+                # don't close the idle connection. SSE comments are invisible
+                # to EventSource (no onmessage).
+                idle_ticks += 1
+                if idle_ticks % 20 == 0:
+                    yield ": keepalive\n\n"
                 time.sleep(0.5)
 
-    return StreamingResponse(event_stream(), media_type="text/event-stream")
+    headers = {
+        "Cache-Control": "no-cache",
+        "X-Accel-Buffering": "no",
+        "Connection": "keep-alive",
+    }
+    return StreamingResponse(
+        event_stream(), media_type="text/event-stream", headers=headers
+    )
 
 
 @app.get("/leads")

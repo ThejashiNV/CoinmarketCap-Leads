@@ -11,25 +11,56 @@ USER_AGENT = (
 
 logger = logging.getLogger("scraper")
 
+# Container/runtime launch flags. These let Chromium survive inside a Docker
+# instance: `--disable-dev-shm-usage` moves shared memory from /dev/shm
+# (default 64 MB) to /tmp; `--no-sandbox` is required when running as root.
+_LAUNCH_ARGS = [
+    "--no-sandbox",
+    "--disable-setuid-sandbox",
+    "--disable-dev-shm-usage",
+    "--disable-gpu",
+    "--disable-extensions",
+    "--disable-background-networking",
+    "--no-first-run",
+]
+
 
 @contextmanager
 def browser_page(headless=True):
-    """Yield a configured Playwright page; guarantees the browser is closed."""
-    with sync_playwright() as p:
-        browser = p.chromium.launch(headless=headless)
+    """Yield a configured Playwright page; guarantees full cleanup on exit.
+
+    Closes context then browser explicitly so Chromium never leaks. A single
+    browser + context + page is reused across all projects in a run.
+    """
+    pw = sync_playwright().start()
+    browser = None
+    context = None
+    try:
+        browser = pw.chromium.launch(headless=headless, args=_LAUNCH_ARGS)
         context = browser.new_context(
             user_agent=USER_AGENT,
-            viewport={"width": 1366, "height": 900},
+            viewport={"width": 1280, "height": 720},
             locale="en-US",
         )
         page = context.new_page()
-        try:
-            yield page
-        finally:
+        yield page
+    finally:
+        # Explicit cleanup chain: page belongs to context, context to browser.
+        # Close each layer so no Chromium process survives.
+        if context:
+            try:
+                context.close()
+            except Exception:
+                pass
+        if browser:
             try:
                 browser.close()
             except Exception:
                 pass
+        try:
+            pw.stop()
+        except Exception:
+            pass
 
 
 def fetch_html(page, url, timeout=20000, idle_timeout=3000, retries=2):
