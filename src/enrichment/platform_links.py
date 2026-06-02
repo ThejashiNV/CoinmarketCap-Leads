@@ -70,15 +70,40 @@ def _from_dom(html):
     return website, socials
 
 
+def _from_coingecko(html):
+    """CoinGecko-specific extraction scoped to the coin-page container.
+
+    CoinGecko coin pages embed wallet/partner links (xdefi.io, coin98, etc.),
+    exchange affiliate links, and news article URLs in the broader page chrome.
+    The project's own official link + socials live inside a container with
+    id="gecko-coin-page-container". Scoping to that div eliminates the junk.
+    Falls back to full-DOM if the container isn't found.
+    """
+    soup = BeautifulSoup(html or "", "lxml")
+    container = soup.find(id="gecko-coin-page-container")
+    if not container:
+        return None
+
+    hrefs = [a["href"].strip() for a in container.find_all("a", href=True)]
+    socials = extract_socials(" ".join(hrefs))
+    website = pick_best_website([h for h in hrefs if is_valid_website(h)])
+    return website, socials
+
+
 def extract_platform_links(platform, html):
     """Return (website, socials_dict) for a project page on a given platform.
 
     CoinMarketCap embeds authoritative official links in a Next.js data blob;
     using it avoids picking up partner/aggregator links scattered in the DOM.
+    CoinGecko scopes to its coin-page container to avoid wallet/partner junk.
     Other platforms use anchor-only parsing.
     """
     if platform == "coinmarketcap":
         structured = _from_structured(html)
         if structured is not None:
             return structured
+    if platform == "coingecko":
+        scoped = _from_coingecko(html)
+        if scoped is not None:
+            return scoped
     return _from_dom(html)

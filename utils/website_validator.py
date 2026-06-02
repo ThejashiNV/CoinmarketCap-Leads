@@ -45,6 +45,9 @@ EXCHANGE_DOMAINS = [
     "digifinex.com",
     "ascendex.com",
     "bitmart.com",
+    "coinw.com",
+    "xt.com",
+    "ourbit.com",
     "uniswap.org",
     "pancakeswap.finance",
     # Brokers / affiliate "buy" links that listing sites inject into coin pages.
@@ -80,6 +83,40 @@ EXPLORER_DOMAINS = [
     "ftmscan.com",
     "celoscan.io",
     "airtable.com",
+    # Multi-chain explorers / analytics on CoinGecko coin pages.
+    "btc.com",
+    "mempool.space",
+    "ethplorer.io",
+    "tokenview.io",
+    "oklink.com",
+    "3xpl.com",
+    "intel.arkm.com",
+    "platform.arkhamintelligence.com",
+    "xrpscan.com",
+    "solana.fm",
+    "adaex.org",
+    "monerujo.io",
+]
+
+# Charting / analytics / wallet / partner sites that listing pages link to
+# but are never a project's own homepage.
+TOOL_AND_PARTNER_DOMAINS = [
+    "tradingview.com",
+    "geckoterminal.com",
+    "coingecko.app.link",
+    "gcko.io",
+    "xdefi.io",
+    "coin98.com",
+    "tokenomist.ai",
+    "tokenterminal.com",
+    "onetrust.com",
+    "hackenproof.com",
+    "geckad.com",
+    "kev.geckad.com",
+    "hacken.io",
+    "vega.bet",
+    "cer.live",
+    "defillama.com",
 ]
 
 # App stores / extension stores.
@@ -101,6 +138,8 @@ SOCIAL_TOOL_DOMAINS = [
     "facebook.com",
     "fb.com",
     "instagram.com",
+    "threads.com",
+    "threads.net",
     "linkedin.com",
     "t.me",
     "telegram.me",
@@ -197,6 +236,19 @@ _ALL_BLOCKED = (
     + APP_STORE_DOMAINS
     + SOCIAL_TOOL_DOMAINS
     + INFRA_DOMAINS
+    + TOOL_AND_PARTNER_DOMAINS
+)
+
+# Referral/affiliate signatures. Listing sites inject exchange registration
+# links onto coin pages; these are never a project's homepage.
+AFFILIATE_MARKERS = (
+    "/register",
+    "/signup",
+    "/sign-up",
+    "/ref/",
+    "referral",
+    "invite=",
+    "affiliate",
 )
 
 
@@ -229,7 +281,11 @@ def is_valid_website(url):
         return False
 
     normalized = normalize_url(url)
-    if normalized.lower().endswith(ASSET_EXTENSIONS):
+    low = normalized.lower()
+    if low.endswith(ASSET_EXTENSIONS):
+        return False
+
+    if any(marker in low for marker in AFFILIATE_MARKERS):
         return False
 
     return True
