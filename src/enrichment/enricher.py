@@ -182,39 +182,39 @@ def _secondary_domains(home_html, primary_root, project_name=""):
         "bamboohr.com", "workable.com", "jobs.com",
     )
 
+    def _check_and_add(host, context_text=""):
+        """Apply all filters and add host to found if it passes."""
+        if not host or host == primary_host or host in found:
+            return
+        if is_social_or_tool(f"https://{host}"):
+            return
+        if not is_valid_website(f"https://{host}"):
+            return
+        if any(host.endswith(g) for g in _GENERIC_SKIP):
+            return
+        # Relevance: host or surrounding text must contain a project token.
+        combined = (host + " " + context_text).lower()
+        if not any(tok in combined for tok in relevance_tokens if len(tok) >= 4):
+            return
+        found[host] = f"https://{host}"
+
+    # Pass 1: parsed <a> tags (covers normal visible links)
     for a in soup.find_all("a", href=True):
         href = a["href"].strip()
         if not href.startswith("http"):
             continue
-        parsed = urlparse(href)
-        host = parsed.netloc.lower().lstrip("www.")
-        if not host or host == primary_host:
-            continue
-        if is_social_or_tool(href):
-            continue
-        if not is_valid_website(f"https://{host}"):
-            continue
-        if any(host.endswith(g) for g in _GENERIC_SKIP):
-            continue
-        # Relevance gate: the secondary domain must be relevant to the project.
-        # Two paths to relevance:
-        # (a) The host contains a relevance token as a substring — catches
-        #     "cardanofoundation.org" when primary SLD is "cardano".
-        # (b) The anchor text or the URL path contains a relevance token —
-        #     catches abbreviation-named foundations like "zfnd.org" which
-        #     is the Zcash Foundation, linked with text "Zcash Foundation".
-        host_lower = host.lower()
-        link_text = (a.get_text(" ", strip=True) + " " + href).lower()
-        relevant = (
-            any(tok in host_lower for tok in relevance_tokens if len(tok) >= 4)
-            or any(tok in link_text for tok in relevance_tokens if len(tok) >= 4)
-        )
-        if not relevant:
-            continue
-        if host not in found:
-            found[host] = f"https://{host}"
-        if len(found) >= 2:
-            break
+        host = urlparse(href).netloc.lower().lstrip("www.")
+        _check_and_add(host, a.get_text(" ", strip=True) + " " + href)
+
+    # Pass 2: raw-text href scan (catches links inside HTML comments, e.g.
+    # bitcoin.org's footer links bitcoinfoundation.org inside <!-- --> which
+    # BeautifulSoup skips)
+    if len(found) < 2:
+        for match in re.findall(r'href=["\']?(https?://[^"\'\s>]+)', home_html):
+            host = urlparse(match).netloc.lower().lstrip("www.")
+            _check_and_add(host, match)
+            if len(found) >= 2:
+                break
 
     return list(found.values())
 
