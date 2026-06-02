@@ -47,15 +47,6 @@ function validateCategoryUrl(value) {
   return ""
 }
 
-function StatCard({ title, value, accent }) {
-  return (
-    <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-2xl hover:scale-105 transition-all duration-300">
-      <p className="text-slate-400 text-sm">{title}</p>
-      <h1 className={`text-4xl font-bold mt-3 ${accent}`}>{value}</h1>
-    </div>
-  )
-}
-
 function App() {
   const [platformName, setPlatformName] = useState("CoinMarketCap")
   const [platformUrl, setPlatformUrl] = useState("")
@@ -178,9 +169,6 @@ function App() {
       setLoading(false)
     }
   }
-
-  const countWith = (field) =>
-    leads.filter((l) => l[field] && l[field] !== "N/A").length
 
   return (
     <div className="min-h-screen bg-[#020617] text-white p-6 md:p-10 overflow-x-hidden">
@@ -323,30 +311,6 @@ function App() {
         </button>
       </div>
 
-      {/* Stats */}
-      <div className="relative z-10 grid grid-cols-2 md:grid-cols-4 gap-6 mt-10">
-        <StatCard
-          title="Processed"
-          value={leads.length}
-          accent="text-cyan-400"
-        />
-        <StatCard
-          title="Emails Found"
-          value={countWith("Official Email ID")}
-          accent="text-emerald-400"
-        />
-        <StatCard
-          title="LinkedIn Found"
-          value={countWith("LinkedIn URLs")}
-          accent="text-blue-400"
-        />
-        <StatCard
-          title="Telegram Found"
-          value={countWith("Telegram URLs")}
-          accent="text-purple-400"
-        />
-      </div>
-
       {/* Live Logs */}
       <div className="relative z-10 mt-10 bg-white/5 border border-white/10 backdrop-blur-xl rounded-2xl p-6 shadow-2xl">
         <h2 className="text-2xl font-bold mb-6">Live Progress</h2>
@@ -391,9 +355,9 @@ function App() {
           </div>
         </div>
 
-        <div className="overflow-x-auto rounded-xl border border-white/5">
+        <div className="overflow-auto rounded-xl border border-white/5" style={{ maxHeight: "600px" }}>
           <table className="w-full text-left text-sm">
-            <thead className="bg-slate-900/80 text-slate-400">
+            <thead className="bg-slate-900/80 text-slate-400 sticky top-0 z-10">
               <tr>
                 <th className="px-4 py-3">Project</th>
                 <th className="px-4 py-3">Website</th>
