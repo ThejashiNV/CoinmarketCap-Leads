@@ -27,7 +27,7 @@ TELEGRAM_BLOCKLIST = (
     "coinmarketcap",
     "coingecko",
     "coinranking",
-    "telegram",
+    "/telegram",
     "share",
     "joinchat/aaaa",
 )

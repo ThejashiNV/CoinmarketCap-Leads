@@ -48,7 +48,8 @@ class ResultsStore:
         if os.path.exists(self.path):
             try:
                 with open(self.path, "r", encoding="utf-8") as f:
-                    self._data = json.load(f)
+                    data = json.load(f)
+                self._data = data if isinstance(data, dict) else {}
             except (json.JSONDecodeError, OSError):
                 self._data = {}
 
@@ -65,7 +66,7 @@ class ResultsStore:
 
     def should_process(self, project_url):
         entry = self._data.get(self._key(project_url))
-        if entry is None:
+        if not isinstance(entry, dict):
             return True
         status = entry.get("status")
         if status in ("complete", "exhausted"):
@@ -76,6 +77,8 @@ class ResultsStore:
         """Persist a freshly enriched row and compute its status."""
         key = self._key(project_url)
         prev = self._data.get(key, {})
+        if not isinstance(prev, dict):
+            prev = {}
         attempts = prev.get("attempts", 0) + 1
 
         if is_complete(row):
@@ -90,7 +93,7 @@ class ResultsStore:
 
     def get_row(self, project_url):
         entry = self._data.get(self._key(project_url))
-        return entry.get("row") if entry else None
+        return entry.get("row") if isinstance(entry, dict) else None
 
     def rows_for(self, project_urls):
         """Return stored rows for the given URLs, in order (skips unknown)."""

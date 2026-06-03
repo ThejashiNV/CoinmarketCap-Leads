@@ -86,6 +86,7 @@ function App() {
 
   const [topNOption, setTopNOption] = useState("20")
   const [customN, setCustomN] = useState("")
+  const [mode, setMode] = useState("ranked")
 
   const [loading, setLoading] = useState(false)
   const [logs, setLogs] = useState([])
@@ -181,7 +182,7 @@ function App() {
       const response = await fetch(`${API_BASE}/start-extraction`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ category_url: selectedCategory, top_n: topN }),
+        body: JSON.stringify({ category_url: selectedCategory, top_n: topN, mode }),
       })
       const result = await response.json()
 
@@ -344,6 +345,44 @@ function App() {
                 )}
               </div>
             </div>
+          </div>
+
+          {/* Extraction Mode */}
+          <div className="mt-5">
+            <label className="block text-slate-500 text-xs font-semibold uppercase tracking-wider mb-2">
+              Extraction Mode
+            </label>
+            <div className="inline-flex rounded-xl overflow-hidden border border-white/[0.06]">
+              <button
+                type="button"
+                onClick={() => setMode("ranked")}
+                disabled={loading}
+                className={`px-5 py-2.5 text-sm font-semibold transition-all ${
+                  mode === "ranked"
+                    ? "bg-gradient-to-r from-cyan-500/20 to-cyan-500/10 text-cyan-300 border-r border-white/[0.06]"
+                    : "bg-slate-900/60 text-slate-500 hover:text-slate-300 border-r border-white/[0.06]"
+                } disabled:opacity-40`}
+              >
+                Top Ranked
+              </button>
+              <button
+                type="button"
+                onClick={() => setMode("recent")}
+                disabled={loading}
+                className={`px-5 py-2.5 text-sm font-semibold transition-all ${
+                  mode === "recent"
+                    ? "bg-gradient-to-r from-purple-500/20 to-purple-500/10 text-purple-300"
+                    : "bg-slate-900/60 text-slate-500 hover:text-slate-300"
+                } disabled:opacity-40`}
+              >
+                Recently Added
+              </button>
+            </div>
+            <p className="text-slate-600 text-xs mt-1.5">
+              {mode === "ranked"
+                ? "Projects sorted by market cap rank."
+                : "Projects sorted by listing date (newest first)."}
+            </p>
           </div>
 
           {/* Start Button */}
