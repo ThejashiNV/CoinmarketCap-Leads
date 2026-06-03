@@ -16,7 +16,7 @@ from utils.email_tools import (
     email_confidence,
     choose_business_emails,
 )
-from utils.search_recovery import recover_linkedin, recover_telegram
+from utils.search_recovery import recover_linkedin, recover_telegram, recover_email
 from utils.social_tools import extract_socials, all_urls
 from utils.text_tools import clean_project_name
 from utils.url_tools import normalize_url, root_domain_url, join_urls, host_of
@@ -65,6 +65,22 @@ CONTACT_PATHS = [
     "/privacy",
     "/privacy-policy",
 ]
+
+# Contact-related keywords used to discover internal links from the homepage.
+_CONTACT_LINK_RE = re.compile(
+    r"\b(contact|about|team|company|support|press|media|community|"
+    r"partners?|foundation|careers?|jobs?|impressum|imprint)\b",
+    re.IGNORECASE,
+)
+# File extensions that are never contact pages.
+_NON_PAGE_SUFFIXES = (
+    ".jpg", ".jpeg", ".png", ".gif", ".svg", ".webp", ".ico",
+    ".pdf", ".zip", ".mp4", ".mp3", ".css", ".js", ".json", ".xml",
+    ".woff", ".woff2", ".ttf", ".eot",
+)
+
+# Priority contact paths for browser fallback (only rendered when static fails).
+_BROWSER_FALLBACK_PATHS = ("/contact", "/contact-us", "/about", "/about-us", "/team")
 
 SOCIAL_KEYS = ["linkedin", "telegram", "twitter", "discord", "github"]
 
@@ -144,6 +160,60 @@ def _fetch_batch(urls, max_workers=8, timeout=8):
             except Exception:
                 results[url] = ""
     return results
+
+
+def _discover_contact_links(home_html, root):
+    """Parse homepage anchors for internal links that look like contact/about pages.
+
+    Returns up to 8 absolute same-domain URLs not already in CONTACT_PATHS.
+    This catches non-standard paths like /get-in-touch, /our-team, /newsroom/contact.
+    """
+    if not home_html or not root:
+        return []
+
+    root_host = urlparse(root).netloc.lower()
+    known_paths = {p.lstrip("/").lower() for p in CONTACT_PATHS}
+    soup = BeautifulSoup(home_html, "lxml")
+    found = []
+    seen = set()
+
+    for a in soup.find_all("a", href=True):
+        href = a["href"].strip()
+        text = a.get_text(strip=True).lower()
+
+        # Only consider internal links.
+        if href.startswith("/"):
+            full = urljoin(root + "/", href.lstrip("/"))
+        elif href.startswith(("http://", "https://")):
+            if urlparse(href).netloc.lower().lstrip("www.") != root_host.lstrip("www."):
+                continue
+            full = href
+        else:
+            continue
+
+        # Skip non-page resources.
+        low_href = href.lower()
+        if low_href.endswith(_NON_PAGE_SUFFIXES):
+            continue
+
+        # Skip if it's already a known CONTACT_PATHS entry.
+        path = urlparse(full).path.strip("/").lower()
+        if path in known_paths or not path:
+            continue
+
+        # Match by link text or href against contact keywords.
+        if not _CONTACT_LINK_RE.search(text) and not _CONTACT_LINK_RE.search(low_href):
+            continue
+
+        norm = normalize_url(full)
+        if norm and norm not in seen:
+            seen.add(norm)
+            found.append(norm)
+
+        if len(found) >= 8:
+            break
+
+    return found
 
 
 def _secondary_domains(home_html, primary_root, project_name=""):
@@ -260,6 +330,7 @@ def enrich_project(page, project):
     # business address sits on /press or /contact. LinkedIn/Telegram still exit
     # early once found. All paths are fetched concurrently so this is fast.
     t2 = time.time()
+    batch = {}
     if website:
         root = root_domain_url(website)
         if root:
@@ -271,6 +342,12 @@ def enrich_project(page, project):
             for sec_root in secondary_roots:
                 for path in ["/contact", "/contact-us", "/about", "/team", "/press", "/foundation"]:
                     targets.append(urljoin(sec_root + "/", path.lstrip("/")))
+
+            # Dynamic link discovery: parse homepage for internal contact-like links.
+            discovered = _discover_contact_links(home_html, root)
+            for link in discovered:
+                if link not in targets:
+                    targets.append(link)
 
             batch = _fetch_batch(targets)
 
@@ -287,6 +364,32 @@ def enrich_project(page, project):
                     # no need to run LinkedIn/Telegram recovery later.
                     pass
     t_contact = time.time() - t2
+
+    # ---- STEP 3.5: browser fallback for JS-rendered contact pages ----
+    # If mandatory fields are still missing and key contact pages returned very
+    # thin HTML via static HTTP, re-fetch up to 3 via the browser (Playwright).
+    t2b = time.time()
+    if _needs_more(acc) and website:
+        root = root_domain_url(website)
+        if root:
+            rendered = 0
+            for path in _BROWSER_FALLBACK_PATHS:
+                if rendered >= 3 or not _needs_more(acc):
+                    break
+                target = urljoin(root + "/", path.lstrip("/"))
+                static_html = batch.get(target, "")
+                # Only use browser if static fetch returned < 500 chars (likely JS-only).
+                if len(static_html) < 500:
+                    try:
+                        browser_html = fetch_html(page, target, timeout=12000, idle_timeout=2000)
+                        if browser_html and len(browser_html) > len(static_html):
+                            emails, socials, _ = harvest(browser_html)
+                            _merge(acc, emails, socials)
+                            note_email_source("Contact Page (JS)")
+                            rendered += 1
+                    except Exception as exc:
+                        logger.warning("browser fallback failed for %s: %s", target, exc)
+    t_browser_fallback = time.time() - t2b
 
     # ---- STEP 4: search recovery for still-missing LinkedIn / Telegram ----
     t3 = time.time()
@@ -307,11 +410,28 @@ def enrich_project(page, project):
             logger.warning("telegram recovery failed for %s: %s", name, exc)
 
     t_recovery = time.time() - t3
+
+    # ---- STEP 4.5: email search recovery ----
+    # If email is still empty and we have a website domain, search the web.
+    t4 = time.time()
+    if not acc["emails"] and website:
+        try:
+            for email in recover_email(name, website, acc["linkedin"]):
+                if email not in acc["emails"]:
+                    acc["emails"].append(email)
+            if acc["emails"]:
+                email_source = "Search Recovery"
+        except Exception as exc:
+            logger.warning("email recovery failed for %s: %s", name, exc)
+    t_email_recovery = time.time() - t4
+
     t_total = time.time() - t0
 
     logger.info(
-        "Timing %s | platform=%.1fs website=%.1fs contact=%.1fs recovery=%.1fs total=%.1fs",
-        name, t_platform, t_website, t_contact, t_recovery, t_total,
+        "Timing %s | platform=%.1fs website=%.1fs contact=%.1fs browser=%.1fs "
+        "recovery=%.1fs email_search=%.1fs total=%.1fs",
+        name, t_platform, t_website, t_contact, t_browser_fallback,
+        t_recovery, t_email_recovery, t_total,
     )
 
     # Build the email field: ALL useful business emails, priority-sorted.

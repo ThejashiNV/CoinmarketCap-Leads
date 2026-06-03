@@ -48,6 +48,65 @@ REJECT_EMAIL_DOMAINS = (
     "breezy.hr",
     "recruitee.com",
     "smartrecruiters.com",
+    # News / media sites whose emails leak from ads, widgets, or press pages.
+    "express.co.uk",
+    "reachplc.com",
+    "mirror.co.uk",
+    "dailymail.co.uk",
+    "thesun.co.uk",
+    "bbc.co.uk",
+    "bbc.com",
+    "cnn.com",
+    "nytimes.com",
+    "theguardian.com",
+    "forbes.com",
+    "bloomberg.com",
+    # Crypto news sites — never a project's own contact address.
+    "coindesk.com",
+    "cointelegraph.com",
+    "decrypt.co",
+    "theblock.co",
+    "defiant.io",
+    "bitcoinmagazine.com",
+    "beincrypto.com",
+    "cryptoslate.com",
+    "newsbtc.com",
+    "coinspeaker.com",
+    "ambcrypto.com",
+    "u.today",
+    "cryptopotato.com",
+    "cryptobriefing.com",
+    # Analytics / data platforms whose emails appear on partner pages.
+    "chainalysis.com",
+    "nansen.ai",
+    "dune.com",
+    "glassnode.com",
+    "messari.io",
+    "certik.com",
+    # Audit firms — their emails leak from security pages.
+    "hacken.io",
+    "trailofbits.com",
+    "openzeppelin.com",
+    "quantstamp.com",
+    "peckshield.com",
+    "slowmist.com",
+    "immunefi.com",
+    # Design / dev tool domains that leak from embedded widgets.
+    "figma.com",
+    "notion.so",
+    "typeform.com",
+    "webflow.com",
+    # UK/EU press regulator and media company domains.
+    "ipso.co.uk",
+    "pressgazette.co.uk",
+    "ofcom.org.uk",
+    "goskippy.com",
+    "moneysupermarket.com",
+    # Crypto lending / DeFi aggregator emails that leak from partner pages.
+    "coinrabbit.io",
+    "nexo.io",
+    "celsius.network",
+    "blockfi.com",
 )
 
 # Hard-excluded local-parts. These are NEVER returned regardless of domain or
@@ -79,6 +138,12 @@ JUNK_LOCALPARTS = (
     "unsubscribe",
     "optout",
     "spam",
+    # Infrastructure mailboxes — never respond to business outreach.
+    "webmaster",
+    "hostmaster",
+    "root",
+    "sysadmin",
+    "administrator",
 )
 
 # Cloudflare email protection: <span class="__cf_email__" data-cfemail="hex">
@@ -116,6 +181,22 @@ JUNK_SUBSTRINGS = [
     "email.com",
     "sentry-next",
     "u003e",
+    # Template / placeholder emails that appear in docs or example code.
+    "you@company",
+    "you@your",
+    "your@email",
+    "your@company",
+    "name@company",
+    "name@domain",
+    "user@domain",
+    "info@example",
+    "contact@example",
+    "yourname@",
+    "yourcompany",
+    "youremail",
+    "changeme",
+    "placeholder",
+    "someone@somewhere",
 ]
 
 ASSET_SUFFIXES = (

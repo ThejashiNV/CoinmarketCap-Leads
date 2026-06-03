@@ -7,9 +7,9 @@ from utils.url_tools import normalize_url, dedupe_urls
 URL_IN_TEXT_REGEX = re.compile(r'https?://[^\s"\'<>)\]]+', re.IGNORECASE)
 PROTOCOL_RELATIVE_REGEX = re.compile(r'(?<!:)//[A-Za-z0-9.\-]+\.[A-Za-z]{2,}[^\s"\'<>)\]]*')
 
-LINKEDIN_COMPANY_RE = re.compile(r"linkedin\.com/company/[^/\s?#\"'<>)\]]+", re.IGNORECASE)
-LINKEDIN_PROFILE_RE = re.compile(r"linkedin\.com/in/[^/\s?#\"'<>)\]]+", re.IGNORECASE)
-LINKEDIN_SCHOOL_RE = re.compile(r"linkedin\.com/school/[^/\s?#\"'<>)\]]+", re.IGNORECASE)
+LINKEDIN_COMPANY_RE = re.compile(r"linkedin\.com/company/[^/\s?#\"'<>)\]\\]+", re.IGNORECASE)
+LINKEDIN_PROFILE_RE = re.compile(r"linkedin\.com/in/[^/\s?#\"'<>)\]\\]+", re.IGNORECASE)
+LINKEDIN_SCHOOL_RE = re.compile(r"linkedin\.com/school/[^/\s?#\"'<>)\]\\]+", re.IGNORECASE)
 
 TELEGRAM_RE = re.compile(
     r"(?:t\.me|telegram\.me)/(?!share/|share$)[A-Za-z0-9_+/]+", re.IGNORECASE
@@ -22,11 +22,47 @@ TWITTER_RE = re.compile(
 DISCORD_RE = re.compile(r"(?:discord\.gg|discord\.com/invite)/[A-Za-z0-9\-]+", re.IGNORECASE)
 GITHUB_RE = re.compile(r"github\.com/[A-Za-z0-9\-._]+(?:/[A-Za-z0-9\-._]+)?", re.IGNORECASE)
 
-# Telegram handles that are aggregator/listing noise, not the project's own.
-TELEGRAM_BLOCKLIST = (
+# Aggregator/listing handles that appear on every project page via site chrome.
+AGGREGATOR_HANDLES = (
+    # Listing / analytics platforms
     "coinmarketcap",
     "coingecko",
     "coinranking",
+    "dextools",
+    "dexscreener",
+    # Exchanges
+    "binance",
+    "coinbase",
+    "kucoin",
+    "okx",
+    "bybit",
+    "gateio",
+    "gate_io",
+    "mexc",
+    "bitget",
+    "cryptocom",
+    "crypto.com",
+    "bitpanda",
+    "robinhood",
+    # Security / audit platforms
+    "certik",
+    "immunefi",
+    "hackenproof",
+    # Crypto news / media (their social handles leak from embedded widgets)
+    "coindesk",
+    "cointelegraph",
+    "decrypt",
+    "theblock",
+    "bitcoinmagazine",
+    "beincrypto",
+    # Design / dev tools
+    "figma",
+    "notion",
+)
+
+# Telegram handles that are aggregator/listing noise, not the project's own.
+TELEGRAM_BLOCKLIST = (
+    *AGGREGATOR_HANDLES,
     "/telegram",
     "share",
     "joinchat/aaaa",
@@ -71,6 +107,10 @@ def extract_linkedin(html):
     )
     urls = []
     for item in raw:
+        low = item.lower()
+        # Skip aggregator/listing platform LinkedIn pages that leak from site chrome.
+        if any(bad in low for bad in AGGREGATOR_HANDLES):
+            continue
         norm = normalize_url("https://www." + item if not item.startswith("http") else item)
         if not norm:
             norm = normalize_url("https://" + item)
@@ -94,6 +134,10 @@ def extract_telegram(html):
 def extract_twitter(html):
     urls = []
     for item in _harvest(html, TWITTER_RE):
+        low = item.lower()
+        # Skip aggregator/listing platform Twitter handles that leak from site chrome.
+        if any(bad in low for bad in AGGREGATOR_HANDLES):
+            continue
         norm = normalize_url("https://" + item)
         if norm:
             urls.append(norm)
