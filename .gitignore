@@ -1,8 +1,16 @@
 venv/
 node_modules/
 __pycache__/
+**/__pycache__/
+*.pyc
 output/
 dist/
 build/
+logs/
+data/
 .env
-*.pyc
+.env.local
+.claude/
+backup_test/
+output_backup/
+*-shamlatech*
