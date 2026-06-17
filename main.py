@@ -3,7 +3,7 @@ import sys
 import traceback
 from datetime import datetime
 
-from src.enrichment.pipeline import run_pipeline
+from src.enrichment.pipeline import run_pipeline, DEFAULT_WORKERS
 
 
 def get_listing_url():
@@ -32,14 +32,22 @@ def main():
     limit_env = os.environ.get("LEAD_LIMIT", "").strip()
     limit = int(limit_env) if limit_env.isdigit() else None
 
-    # MODE: "ranked" (default, Top N by market cap) or "recent" (Newest N)
     mode = os.environ.get("EXTRACT_MODE", "ranked").strip().lower()
     if mode not in ("ranked", "recent"):
         mode = "ranked"
 
+    workers_env = os.environ.get("WORKERS", "").strip()
+    workers = int(workers_env) if workers_env.isdigit() and int(workers_env) >= 1 else DEFAULT_WORKERS
+
     start = datetime.now()
     try:
-        run_pipeline(listing_url, emit=lambda msg: print(msg, flush=True), limit=limit, mode=mode)
+        run_pipeline(
+            listing_url,
+            emit=lambda msg: print(msg, flush=True),
+            limit=limit,
+            mode=mode,
+            workers=workers,
+        )
     except Exception as exc:
         print(f"\nPIPELINE FAILED: {exc}")
         traceback.print_exc()

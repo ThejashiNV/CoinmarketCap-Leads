@@ -1,6 +1,10 @@
+import json
 import logging
 import os
+import queue
+import threading
 import time
+import uuid
 
 import pandas as pd
 
@@ -8,7 +12,7 @@ from src.collectors.platforms.listing import collect_projects
 from src.enrichment.enricher import enrich_project
 from src.enrichment.export import export_leads
 from src.enrichment.store import ResultsStore
-from src.scraping.browser import browser_page
+from src.telemetry.collector import MetricsCollector
 from utils.platform_detector import detect_platform, SUPPORTED_PLATFORMS
 
 
@@ -22,11 +26,17 @@ FINAL_XLSX = os.path.join(OUTPUT_DIR, "final_leads.xlsx")
 
 logger = logging.getLogger("scraper")
 
+# Each worker maintains its own Chromium process (~200-300 MB RAM each).
+# 3 workers is a safe default for servers with ≥1 GB RAM.
+DEFAULT_WORKERS = 3
+
 
 def _setup_logging():
     os.makedirs(LOG_DIR, exist_ok=True)
     if not logger.handlers:
-        handler = logging.FileHandler(os.path.join(LOG_DIR, "extraction.log"), encoding="utf-8")
+        handler = logging.FileHandler(
+            os.path.join(LOG_DIR, "extraction.log"), encoding="utf-8"
+        )
         handler.setFormatter(
             logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
         )
@@ -41,25 +51,194 @@ def _get_ram_mb():
         return psutil.Process(os.getpid()).memory_info().rss / (1024 * 1024)
     except Exception:
         pass
-    # Fallback for Linux /proc (works without psutil)
     try:
         with open(f"/proc/{os.getpid()}/status") as f:
             for line in f:
                 if line.startswith("VmRSS:"):
-                    return int(line.split()[1]) / 1024  # kB -> MB
+                    return int(line.split()[1]) / 1024
     except Exception:
         pass
     return -1
 
 
-def run_pipeline(listing_url, emit=print, limit=None, mode="ranked"):
+class _Progress:
+    """Thread-safe progress tracker shared across all worker threads."""
+
+    def __init__(self, total, workers):
+        self._lock = threading.Lock()
+        self.total = total
+        self.workers = workers
+        self.done = 0
+        self.failed = 0
+        self._times = []           # per-project wall-clock seconds
+        self.t_start = time.time()
+
+    def mark_done(self, elapsed_s, failed=False):
+        with self._lock:
+            self.done += 1
+            if failed:
+                self.failed += 1
+            elif elapsed_s > 0:
+                self._times.append(elapsed_s)
+            return self.done
+
+    def pct(self):
+        with self._lock:
+            return round((self.done / self.total) * 100, 1) if self.total else 100
+
+    def eta_seconds(self):
+        with self._lock:
+            remaining = self.total - self.done
+            if not self._times or remaining <= 0:
+                return 0
+            avg = sum(self._times) / len(self._times)
+            # Wall-clock ETA: remaining work spread across all workers.
+            return max(0, (remaining * avg) / self.workers)
+
+    def avg_time(self):
+        with self._lock:
+            return sum(self._times) / len(self._times) if self._times else 0
+
+
+def _progress_msg(prog, project_name):
+    """Emit a structured JSON progress line parseable by the backend/frontend."""
+    return json.dumps({
+        "type": "progress",
+        "done": prog.done,
+        "total": prog.total,
+        "pct": prog.pct(),
+        "project": project_name,
+        "eta": int(prog.eta_seconds()),
+        "workers": prog.workers,
+    })
+
+
+def _worker(project_queue, results, prog, store, emit, collector, worker_id):
+    """
+    Worker thread: creates its own Playwright instance + Chromium browser,
+    pulls projects from the shared queue, and enriches each one.
+
+    Each thread owns its playwright/browser objects exclusively — Playwright's
+    sync_api is not thread-safe to share across threads, but separate instances
+    in separate threads are fully supported.
+    """
+    from playwright.sync_api import sync_playwright
+    from src.scraping.browser import _LAUNCH_ARGS, USER_AGENT
+
+    pw = sync_playwright().start()
+    browser = None
+    ctx = None
+    try:
+        browser = pw.chromium.launch(headless=True, args=_LAUNCH_ARGS)
+        ctx = browser.new_context(
+            user_agent=USER_AGENT,
+            viewport={"width": 1280, "height": 720},
+            locale="en-US",
+        )
+        page = ctx.new_page()
+
+        while True:
+            try:
+                project = project_queue.get(timeout=3)
+            except queue.Empty:
+                break
+
+            pos = project["_position"]
+            name = project.get("Project Name") or project["Project URL"]
+            url = project["Project URL"]
+
+            t0 = time.time()
+            try:
+                if not store.should_process(url):
+                    cached = store.get_row(url)
+                    if cached:
+                        results[pos] = cached
+                    done = prog.mark_done(0)
+                    emit(f"PROGRESS:{_progress_msg(prog, name)}")
+                    emit(f"[{done}/{prog.total}] Skip (cached): {name}")
+                    collector.record_project({
+                        "worker_id":       worker_id,
+                        "project_name":    name,
+                        "project_url":     url,
+                        "status":          "cached",
+                        "total_duration":  0.0,
+                    })
+                    continue
+
+                row, stage_metrics = enrich_project(page, project)
+                elapsed = time.time() - t0
+
+                store.record(url, row)
+                results[pos] = row
+
+                done = prog.mark_done(elapsed)
+                eta = prog.eta_seconds()
+                eta_str = f"{int(eta // 60)}m{int(eta % 60)}s" if eta else "—"
+
+                collector.record_project({
+                    "worker_id":      worker_id,
+                    "project_name":   name,
+                    "project_url":    url,
+                    "status":         "success",
+                    "total_duration": round(elapsed, 3),
+                    **stage_metrics,
+                })
+
+                emit(f"PROGRESS:{_progress_msg(prog, name)}")
+                emit(
+                    f"[{done}/{prog.total}] {name} | "
+                    f"email={row['Official Email ID']} | "
+                    f"{elapsed:.1f}s | ETA {eta_str}"
+                )
+                logger.info(
+                    "Enriched %s | pos=%d elapsed=%.1fs eta=%s",
+                    name, pos, elapsed, eta_str,
+                )
+
+            except Exception as exc:
+                elapsed = time.time() - t0
+                logger.exception("Failed enriching %s: %s", name, exc)
+                done = prog.mark_done(elapsed, failed=True)
+                collector.record_project({
+                    "worker_id":      worker_id,
+                    "project_name":   name,
+                    "project_url":    url,
+                    "status":         "failed",
+                    "total_duration": round(elapsed, 3),
+                    "error":          str(exc),
+                })
+                emit(f"PROGRESS:{_progress_msg(prog, name)}")
+                emit(f"[{done}/{prog.total}] Error: {name}: {exc}")
+            finally:
+                project_queue.task_done()
+
+    finally:
+        if ctx:
+            try:
+                ctx.close()
+            except Exception:
+                pass
+        if browser:
+            try:
+                browser.close()
+            except Exception:
+                pass
+        try:
+            pw.stop()
+        except Exception:
+            pass
+
+
+def run_pipeline(listing_url, emit=print, limit=None, mode="ranked", workers=DEFAULT_WORKERS):
     """Collect projects from a listing URL and enrich each into a lead row.
 
-    `emit` is a callback for human-readable progress (stdout by default; the
-    backend swaps in a log collector for SSE streaming).
+    Uses a thread pool so multiple projects are enriched concurrently.
+    Each worker maintains its own browser process; `workers` controls how many
+    run in parallel.  Results are re-assembled in original collection order so
+    the exported CSV always respects newest-first / rank ordering.
 
-    mode="ranked"  -> Top N by market cap (existing behavior)
-    mode="recent"  -> Newest N by listing date (new)
+    `emit` is called for every human-readable progress line and for structured
+    PROGRESS:{...} JSON lines (consumed by the backend SSE layer).
     """
     _setup_logging()
     os.makedirs(OUTPUT_DIR, exist_ok=True)
@@ -70,103 +249,100 @@ def run_pipeline(listing_url, emit=print, limit=None, mode="ranked"):
             f"Unsupported platform URL. Supported: {', '.join(SUPPORTED_PLATFORMS)}"
         )
 
+    run_id = uuid.uuid4().hex[:12]
     mode_label = "Recently Added" if mode == "recent" else "Top Ranked"
     emit(f"Platform detected: {platform}")
     emit(f"Mode: {mode_label}")
+    emit(f"Run ID: {run_id}")
     emit(f"Collecting projects from: {listing_url}")
 
     t_collect_start = time.time()
     projects = collect_projects(listing_url, mode=mode)
     t_collect = time.time() - t_collect_start
-    emit(f"Collected {len(projects)} projects.")
+    emit(f"Collected {len(projects)} projects in {t_collect:.1f}s.")
 
     if limit:
         projects = projects[:limit]
-        emit(f"Limiting this run to {len(projects)} projects.")
+        emit(f"Limiting to {len(projects)} projects.")
 
-    if projects:
-        pd.DataFrame(projects).to_csv(PROJECTS_CSV, index=False)
+    if not projects:
+        emit("No projects to process.")
+        return export_leads([], FINAL_CSV, FINAL_XLSX)
+
+    # Assign stable position indices BEFORE any concurrent processing.
+    # This index is the single source of truth for output ordering.
+    for i, p in enumerate(projects):
+        p["_position"] = i
+
+    pd.DataFrame(projects).to_csv(PROJECTS_CSV, index=False)
 
     store = ResultsStore(STORE_PATH)
     total = len(projects)
-    enriched_count = 0
-    skipped_count = 0
-    failed_count = 0
-    project_times = []
-    peak_ram = _get_ram_mb()
+    actual_workers = min(workers, total, 8)
+
+    collector = MetricsCollector(
+        run_id=run_id,
+        platform=platform,
+        mode=mode,
+        worker_count=actual_workers,
+        requested=limit or total,
+    )
+
+    # Pre-populate results with any rows cached by a prior run so that a
+    # resumed extraction after a crash re-includes them in the final export.
+    results = {}  # int -> enriched row dict
+    for p in projects:
+        cached = store.get_row(p["Project URL"])
+        if cached:
+            results[p["_position"]] = cached
+    cached_count = len(results)
+
+    emit(
+        f"Starting enrichment: {total} projects | {actual_workers} workers"
+        + (f" | {cached_count} already cached" if cached_count else "")
+    )
+
+    project_queue = queue.Queue()
+    for p in projects:
+        project_queue.put(p)
+
+    prog = _Progress(total, actual_workers)
 
     t_enrich_start = time.time()
 
-    with browser_page() as page:
-        ram_after_launch = _get_ram_mb()
-        logger.info("Browser launched | RAM=%.0fMB", ram_after_launch)
-
-        for index, project in enumerate(projects, start=1):
-            url = project["Project URL"]
-            name = project.get("Project Name") or url
-
-            if not store.should_process(url):
-                emit(f"[{index}/{total}] Skip (already complete): {name}")
-                skipped_count += 1
-                continue
-
-            emit(f"[{index}/{total}] Enriching: {name}")
-            t_proj = time.time()
-            try:
-                row = enrich_project(page, project)
-                store.record(url, row)
-                enriched_count += 1
-                emit(
-                    f"    website={row['Official Website URL']} | "
-                    f"email={row['Official Email ID']} | "
-                    f"missing={row['Missing Fields']}"
-                )
-            except Exception as exc:
-                logger.exception("Failed enriching %s: %s", name, exc)
-                emit(f"    error: {exc}")
-                failed_count += 1
-
-            dt = time.time() - t_proj
-            project_times.append(dt)
-
-            # Track peak RAM
-            ram_now = _get_ram_mb()
-            if ram_now > peak_ram:
-                peak_ram = ram_now
-
-            # Log per-project resource snapshot every 5 projects
-            if index % 5 == 0 or index == total:
-                logger.info(
-                    "Progress %d/%d | RAM=%.0fMB | peak=%.0fMB | last=%.1fs",
-                    index, total, ram_now, peak_ram, dt,
-                )
+    threads = [
+        threading.Thread(
+            target=_worker,
+            args=(project_queue, results, prog, store, emit, collector, wid),
+            daemon=True,
+        )
+        for wid in range(actual_workers)
+    ]
+    for t in threads:
+        t.start()
+    for t in threads:
+        t.join()
 
     t_enrich_total = time.time() - t_enrich_start
 
-    rows = store.rows_for([p["Project URL"] for p in projects])
-    df = export_leads(rows, FINAL_CSV, FINAL_XLSX)
+    # Re-assemble in original collection order (position index).
+    ordered_rows = [results[i] for i in range(total) if i in results]
+    df = export_leads(ordered_rows, FINAL_CSV, FINAL_XLSX)
 
-    emit(f"Exported {len(df)} leads to {FINAL_CSV} and {FINAL_XLSX}")
+    emit(f"Exported {len(df)} leads → {FINAL_CSV}")
 
-    # ---- Benchmark summary ----
-    avg_time = sum(project_times) / len(project_times) if project_times else 0
-    total_runtime = t_collect + t_enrich_total
-    summary = (
-        f"--- Benchmark ---\n"
-        f"  Projects: {total} total, {enriched_count} enriched, "
-        f"{skipped_count} skipped, {failed_count} failed\n"
-        f"  Collection: {t_collect:.1f}s\n"
-        f"  Enrichment: {t_enrich_total:.1f}s "
-        f"(avg {avg_time:.1f}s/project)\n"
-        f"  Total: {total_runtime:.1f}s\n"
-        f"  Peak RAM: {peak_ram:.0f}MB\n"
-        f"  Browser launches: 1"
+    report = collector.finalize(
+        t_collect=t_collect,
+        t_enrich=t_enrich_total,
+        collection_count=len(projects),
     )
-    emit(summary)
+    for line in collector.text_report(report).splitlines():
+        emit(line)
+
     logger.info(
-        "Benchmark | projects=%d enriched=%d skipped=%d failed=%d "
-        "collection=%.1fs enrichment=%.1fs avg=%.1fs/proj total=%.1fs peak_ram=%.0fMB",
-        total, enriched_count, skipped_count, failed_count,
-        t_collect, t_enrich_total, avg_time, total_runtime, peak_ram,
+        "Benchmark | run_id=%s projects=%d successful=%d failed=%d workers=%d "
+        "collect=%.1fs enrich=%.1fs total=%.1fs",
+        run_id, total, report["successful"], report["failed"], actual_workers,
+        t_collect, t_enrich_total, report["total_time_s"],
     )
     return df

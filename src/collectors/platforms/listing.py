@@ -67,28 +67,41 @@ def name_from_slug(slug_path):
 # ---------- CMC structured-data parser for "Recently Added" mode ----------
 
 def _find_crypto_list(node, depth=0):
-    """Locate the `cryptoCurrencyList` inside CMC's __NEXT_DATA__.
+    """Locate a coin list inside CMC's __NEXT_DATA__.
 
-    This list contains every coin on a category page with full metadata
-    including `dateAdded`, `slug`, `name`, `tags`, etc. — richer than
-    what the anchor-based parser can extract.
+    CMC page structure varies between /new/, category pages, and view pages.
+    We search for several known key names at up to depth 12 to handle all of
+    them, accepting any list whose first element has a 'slug' field.
     """
-    if depth > 8:
+    _LIST_KEYS = ("cryptoCurrencyList", "data", "coins", "cryptoCurrencies")
+
+    if depth > 12:
         return None
+
     if isinstance(node, dict):
-        # Direct key match
-        candidate = node.get("cryptoCurrencyList")
-        if isinstance(candidate, list) and candidate and "slug" in candidate[0]:
-            return candidate
-        for value in node.values():
+        for key in _LIST_KEYS:
+            candidate = node.get(key)
+            if (
+                isinstance(candidate, list)
+                and candidate
+                and isinstance(candidate[0], dict)
+                and "slug" in candidate[0]
+            ):
+                return candidate
+
+        # Recurse into all values; larger dicts searched first (more likely to
+        # contain the target list higher up in the tree).
+        for value in sorted(node.values(), key=lambda v: isinstance(v, (dict, list)), reverse=True):
             found = _find_crypto_list(value, depth + 1)
             if found is not None:
                 return found
+
     elif isinstance(node, list):
         for value in node:
             found = _find_crypto_list(value, depth + 1)
             if found is not None:
                 return found
+
     return None
 
 

@@ -331,6 +331,7 @@ def enrich_project(page, project):
     # early once found. All paths are fetched concurrently so this is fast.
     t2 = time.time()
     batch = {}
+    targets = []
     if website:
         root = root_domain_url(website)
         if root:
@@ -392,27 +393,35 @@ def enrich_project(page, project):
     t_browser_fallback = time.time() - t2b
 
     # ---- STEP 4: search recovery for still-missing LinkedIn / Telegram ----
-    t3 = time.time()
+    linkedin_recovery_attempted = not acc["linkedin"]
+    linkedin_recovered = False
+    t3a = time.time()
     if not acc["linkedin"]:
         try:
             for url in recover_linkedin(name, website, acc["emails"]):
                 if url not in acc["linkedin"]:
                     acc["linkedin"].append(url)
+            linkedin_recovered = bool(acc["linkedin"])
         except Exception as exc:
             logger.warning("linkedin recovery failed for %s: %s", name, exc)
+    t_linkedin_recovery = time.time() - t3a
 
+    telegram_recovery_attempted = not acc["telegram"]
+    telegram_recovered = False
+    t3b = time.time()
     if not acc["telegram"]:
         try:
             for url in recover_telegram(name, website, acc["emails"]):
                 if url not in acc["telegram"]:
                     acc["telegram"].append(url)
+            telegram_recovered = bool(acc["telegram"])
         except Exception as exc:
             logger.warning("telegram recovery failed for %s: %s", name, exc)
-
-    t_recovery = time.time() - t3
+    t_telegram_recovery = time.time() - t3b
 
     # ---- STEP 4.5: email search recovery ----
-    # If email is still empty and we have a website domain, search the web.
+    email_recovery_attempted = not acc["emails"] and bool(website)
+    email_recovered = False
     t4 = time.time()
     if not acc["emails"] and website:
         try:
@@ -421,6 +430,7 @@ def enrich_project(page, project):
                     acc["emails"].append(email)
             if acc["emails"]:
                 email_source = "Search Recovery"
+                email_recovered = True
         except Exception as exc:
             logger.warning("email recovery failed for %s: %s", name, exc)
     t_email_recovery = time.time() - t4
@@ -429,9 +439,9 @@ def enrich_project(page, project):
 
     logger.info(
         "Timing %s | platform=%.1fs website=%.1fs contact=%.1fs browser=%.1fs "
-        "recovery=%.1fs email_search=%.1fs total=%.1fs",
+        "li_rec=%.1fs tg_rec=%.1fs email_search=%.1fs total=%.1fs",
         name, t_platform, t_website, t_contact, t_browser_fallback,
-        t_recovery, t_email_recovery, t_total,
+        t_linkedin_recovery, t_telegram_recovery, t_email_recovery, t_total,
     )
 
     # Build the email field: ALL useful business emails, priority-sorted.
@@ -464,4 +474,37 @@ def enrich_project(page, project):
         row["Official Email ID"],
         row["Missing Fields"],
     )
-    return row
+
+    contact_pages_with_content = sum(1 for h in batch.values() if h)
+
+    stage_metrics = {
+        "t_platform":          round(t_platform, 3),
+        "t_website":           round(t_website, 3),
+        "t_contact":           round(t_contact, 3),
+        "t_browser_fallback":  round(t_browser_fallback, 3),
+        "t_linkedin_recovery": round(t_linkedin_recovery, 3),
+        "t_telegram_recovery": round(t_telegram_recovery, 3),
+        "t_email_recovery":    round(t_email_recovery, 3),
+        "website_found":       bool(website),
+        "email_found":         email_field != NA,
+        "linkedin_found":      bool(acc["linkedin"]),
+        "telegram_found":      bool(acc["telegram"]),
+        "twitter_found":       bool(acc["twitter"]),
+        "discord_found":       bool(acc["discord"]),
+        "contact_pages_attempted":    len(targets),
+        "contact_pages_with_content": contact_pages_with_content,
+        "linkedin_recovery_attempted": linkedin_recovery_attempted,
+        "telegram_recovery_attempted": telegram_recovery_attempted,
+        "email_recovery_attempted":    email_recovery_attempted,
+        "linkedin_recovered":  linkedin_recovered,
+        "telegram_recovered":  telegram_recovered,
+        "email_recovered":     email_recovered,
+        "recovery_used": (
+            linkedin_recovery_attempted
+            or telegram_recovery_attempted
+            or email_recovery_attempted
+        ),
+        "recovery_success": bool(linkedin_recovered or telegram_recovered or email_recovered),
+    }
+
+    return row, stage_metrics

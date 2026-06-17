@@ -8,10 +8,12 @@ import time
 import pandas as pd
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, StreamingResponse
+from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
 from pydantic import BaseModel
 
 from src.collectors.platforms.categories import collect_categories
+from src.enrichment.pipeline import DEFAULT_WORKERS
+from src.telemetry.collector import load_latest_metrics, load_history
 from utils.platform_detector import (
     detect_platform,
     is_category_url,
@@ -24,15 +26,12 @@ MAIN_SCRIPT = os.path.join(BASE_DIR, "main.py")
 OUTPUT_DIR = os.path.join(BASE_DIR, "output")
 LEADS_CSV = os.path.join(OUTPUT_DIR, "final_leads.csv")
 LEADS_XLSX = os.path.join(OUTPUT_DIR, "final_leads.xlsx")
+METRICS_LATEST_PATH = os.path.join(OUTPUT_DIR, "metrics_latest.json")
 
-# Maximum allowed extraction time (seconds). A Top-50 run takes ~17 min;
-# 45 min gives ample headroom. If exceeded, the subprocess is killed so the
-# server doesn't stay in "running" forever on a hung Chromium page.
+# Hard cap on a single extraction run (45 min).
 MAX_RUN_SECONDS = 2700
-
-# Maximum log entries kept in memory. A Top-50 run emits ~150-200 lines;
-# 500 gives headroom without unbounded growth.
-MAX_LOG_ENTRIES = 500
+# Log buffer size — capped so memory doesn't grow unbounded on very large runs.
+MAX_LOG_ENTRIES = 1000
 
 app = FastAPI(title="Crypto Lead Enrichment API")
 
@@ -45,27 +44,41 @@ app.add_middleware(
 )
 
 
-# Shared run state. A single extraction runs at a time; logs are streamed to
-# the frontend over SSE and terminated with a sentinel carrying done=True.
-# `_state_lock` guards the check-and-set of `running` so two near-simultaneous
-# /start-extraction requests can't both pass and spawn duplicate subprocesses.
-state = {"running": False, "process": None}
-live_logs = []
+# ── Shared run state ──────────────────────────────────────────────────────────
+# A single extraction runs at a time.  `_state_lock` makes the check-and-set
+# of `running` atomic so two near-simultaneous POST /start-extraction requests
+# can't both pass and spawn duplicate subprocesses.
+
+state = {
+    "running": False,
+    "process": None,
+    "progress": {
+        "done": 0,
+        "total": 0,
+        "pct": 0.0,
+        "project": "",
+        "eta": 0,
+        "workers": 0,
+    },
+}
+live_logs: list[dict] = []
 _state_lock = threading.Lock()
 
 
 class ExtractionRequest(BaseModel):
     category_url: str
     top_n: int = 20
-    mode: str = "ranked"  # "ranked" (Top N by market cap) or "recent" (Newest N)
+    mode: str = "ranked"   # "ranked" | "recent"
+    workers: int = DEFAULT_WORKERS
 
 
-def _run_extraction(category_url, top_n, mode="ranked"):
+def _run_extraction(category_url: str, top_n: int, mode: str, workers: int):
     process = None
     try:
         env = dict(os.environ)
         env["LEAD_LIMIT"] = str(top_n)
         env["EXTRACT_MODE"] = mode
+        env["WORKERS"] = str(max(1, min(workers, 8)))
 
         process = subprocess.Popen(
             [sys.executable, MAIN_SCRIPT, category_url],
@@ -83,10 +96,25 @@ def _run_extraction(category_url, top_n, mode="ranked"):
         deadline = time.time() + MAX_RUN_SECONDS
         for line in process.stdout:
             line = line.rstrip()
-            if line:
-                # Cap log buffer to prevent unbounded memory growth.
-                if len(live_logs) < MAX_LOG_ENTRIES:
-                    live_logs.append({"message": line})
+            if not line:
+                continue
+
+            # Structured progress line emitted by the pipeline.
+            if line.startswith("PROGRESS:"):
+                try:
+                    data = json.loads(line[9:])
+                    state["progress"].update(data)
+                    # Also push as typed SSE event so the frontend can update
+                    # its progress bar without parsing log text.
+                    if len(live_logs) < MAX_LOG_ENTRIES:
+                        live_logs.append({"type": "progress", **data})
+                except Exception:
+                    pass
+                continue
+
+            if len(live_logs) < MAX_LOG_ENTRIES:
+                live_logs.append({"message": line})
+
             if time.time() > deadline:
                 live_logs.append({
                     "message": f"Extraction timed out after {MAX_RUN_SECONDS}s.",
@@ -97,10 +125,10 @@ def _run_extraction(category_url, top_n, mode="ranked"):
 
         process.wait(timeout=30)
         live_logs.append({"message": "Extraction finished.", "done": True})
+
     except Exception as exc:
         live_logs.append({"message": f"Extraction error: {exc}", "done": True})
     finally:
-        # Guarantee the subprocess is dead — prevents zombie Chromium.
         if process and process.poll() is None:
             try:
                 process.kill()
@@ -110,6 +138,8 @@ def _run_extraction(category_url, top_n, mode="ranked"):
         state["process"] = None
         state["running"] = False
 
+
+# ── Platform capability matrix ────────────────────────────────────────────────
 
 PLATFORM_CAPABILITIES = {
     "coinmarketcap": {
@@ -139,6 +169,8 @@ PLATFORM_CAPABILITIES = {
 }
 
 
+# ── Endpoints ─────────────────────────────────────────────────────────────────
+
 @app.get("/")
 def home():
     return {
@@ -149,7 +181,6 @@ def home():
 
 @app.get("/capabilities")
 def capabilities(platform: str = ""):
-    """Report what extraction modes each platform supports."""
     if platform:
         key = platform.strip().lower()
         info = PLATFORM_CAPABILITIES.get(key)
@@ -161,9 +192,7 @@ def capabilities(platform: str = ""):
 
 @app.get("/categories")
 def categories(url: str = ""):
-    """Fetch every category from a platform's category-index URL."""
     url = (url or "").strip()
-
     if not url:
         return {"status": "error", "message": "A category URL is required."}
 
@@ -200,7 +229,6 @@ def categories(url: str = ""):
 @app.post("/start-extraction")
 def start_extraction(payload: ExtractionRequest):
     url = (payload.category_url or "").strip()
-
     if not url:
         return {"status": "error", "message": "A category URL is required."}
 
@@ -215,30 +243,39 @@ def start_extraction(payload: ExtractionRequest):
         top_n = int(payload.top_n)
     except (TypeError, ValueError):
         top_n = 20
-    top_n = max(1, min(top_n, 500))
+    top_n = max(1, min(top_n, 1000))
 
     mode = (payload.mode or "ranked").strip().lower()
     if mode not in ("ranked", "recent"):
         mode = "ranked"
 
-    # Atomically claim the single run slot so concurrent requests can't race.
+    workers = max(1, min(int(payload.workers or DEFAULT_WORKERS), 8))
+
     with _state_lock:
         if state["running"]:
             return {"status": "busy", "message": "An extraction is already running."}
         state["running"] = True
+        state["progress"] = {
+            "done": 0, "total": top_n, "pct": 0.0,
+            "project": "", "eta": 0, "workers": workers,
+        }
         live_logs.clear()
 
     thread = threading.Thread(
-        target=_run_extraction, args=(url, top_n, mode), daemon=True
+        target=_run_extraction, args=(url, top_n, mode, workers), daemon=True
     )
     thread.start()
 
-    return {"status": "started", "platform": platform, "top_n": top_n}
+    return {"status": "started", "platform": platform, "top_n": top_n, "workers": workers}
 
 
 @app.get("/status")
 def status():
-    return {"running": state["running"], "log_count": len(live_logs)}
+    return {
+        "running": state["running"],
+        "log_count": len(live_logs),
+        "progress": state["progress"],
+    }
 
 
 @app.get("/live-logs")
@@ -246,8 +283,6 @@ def stream_logs():
     def event_stream():
         index = 0
         idle_ticks = 0
-        # Emit an initial comment so the client sees bytes immediately and
-        # any proxy flushes the stream rather than buffering it.
         yield ": connected\n\n"
         while True:
             if index < len(live_logs):
@@ -261,21 +296,19 @@ def stream_logs():
                 yield f"data: {json.dumps({'message': 'idle', 'done': True})}\n\n"
                 return
             else:
-                # Emit a heartbeat comment every ~10s so Cloudflare/proxies
-                # don't close the idle connection. SSE comments are invisible
-                # to EventSource (no onmessage).
                 idle_ticks += 1
                 if idle_ticks % 20 == 0:
                     yield ": keepalive\n\n"
                 time.sleep(0.5)
 
-    headers = {
-        "Cache-Control": "no-cache",
-        "X-Accel-Buffering": "no",
-        "Connection": "keep-alive",
-    }
     return StreamingResponse(
-        event_stream(), media_type="text/event-stream", headers=headers
+        event_stream(),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "X-Accel-Buffering": "no",
+            "Connection": "keep-alive",
+        },
     )
 
 
@@ -283,17 +316,18 @@ def stream_logs():
 def get_leads():
     if not os.path.exists(LEADS_CSV):
         return []
-    df = pd.read_csv(LEADS_CSV)
-    return df.fillna("").to_dict(orient="records")
+    try:
+        df = pd.read_csv(LEADS_CSV)
+        return df.fillna("").to_dict(orient="records")
+    except Exception:
+        return []
 
 
 @app.get("/download/csv")
 def download_csv():
     if not os.path.exists(LEADS_CSV):
         return {"status": "error", "message": "No leads file available yet."}
-    return FileResponse(
-        LEADS_CSV, media_type="text/csv", filename="crypto_leads.csv"
-    )
+    return FileResponse(LEADS_CSV, media_type="text/csv", filename="crypto_leads.csv")
 
 
 @app.get("/download/xlsx")
@@ -305,3 +339,76 @@ def download_xlsx():
         media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         filename="crypto_leads.xlsx",
     )
+
+
+@app.get("/download/json")
+def download_json():
+    if not os.path.exists(LEADS_CSV):
+        return {"status": "error", "message": "No leads file available yet."}
+    try:
+        df = pd.read_csv(LEADS_CSV)
+        records = df.fillna("").to_dict(orient="records")
+        content = json.dumps(records, ensure_ascii=False, indent=2)
+        return StreamingResponse(
+            iter([content]),
+            media_type="application/json",
+            headers={"Content-Disposition": 'attachment; filename="crypto_leads.json"'},
+        )
+    except Exception as exc:
+        return {"status": "error", "message": str(exc)}
+
+
+@app.get("/metrics")
+def get_metrics():
+    data = load_latest_metrics()
+    if data is None:
+        return JSONResponse(
+            status_code=404,
+            content={"status": "not_found", "message": "No metrics available yet. Run an extraction first."},
+        )
+    return data
+
+
+@app.get("/metrics/history")
+def get_metrics_history():
+    return load_history()
+
+
+@app.get("/metrics/export/json")
+def export_metrics_json():
+    if not os.path.exists(METRICS_LATEST_PATH):
+        return JSONResponse(
+            status_code=404,
+            content={"status": "not_found", "message": "No metrics file available yet."},
+        )
+    return FileResponse(
+        METRICS_LATEST_PATH,
+        media_type="application/json",
+        filename="metrics_latest.json",
+    )
+
+
+@app.get("/metrics/export/csv")
+def export_metrics_csv():
+    data = load_latest_metrics()
+    if data is None:
+        return JSONResponse(
+            status_code=404,
+            content={"status": "not_found", "message": "No metrics available yet."},
+        )
+    try:
+        projects = data.get("projects", [])
+        if not projects:
+            return JSONResponse(
+                status_code=404,
+                content={"status": "not_found", "message": "No per-project data in metrics."},
+            )
+        df = pd.json_normalize(projects)
+        content = df.to_csv(index=False)
+        return StreamingResponse(
+            iter([content]),
+            media_type="text/csv",
+            headers={"Content-Disposition": 'attachment; filename="metrics_projects.csv"'},
+        )
+    except Exception as exc:
+        return {"status": "error", "message": str(exc)}

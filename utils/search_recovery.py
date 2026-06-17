@@ -18,6 +18,7 @@ Design constraints:
 import logging
 import random
 import re
+import threading
 import time
 from urllib.parse import quote_plus, unquote, urlparse
 
@@ -48,10 +49,13 @@ _ENGINE_COOLDOWN = 180  # seconds
 _engine_blocked_until = {}  # engine_name → time.time() when cooldown expires
 
 # Global throttle: minimum seconds between search requests.
+# Shared across all threads — serialised by _throttle_lock so concurrent
+# workers don't all fire at once and trigger rate-limits.
 _MIN_INTERVAL = 2.5
 _last_request_time = 0.0
+_throttle_lock = threading.Lock()
 
-# Round-robin engine rotation index.
+# Round-robin engine rotation index (also guarded by _throttle_lock).
 _engine_index = 0
 
 # Generic slug tokens that must not, on their own, qualify a match.
@@ -73,13 +77,14 @@ def _headers():
 
 
 def _throttle():
-    """Ensure a minimum gap between search requests to avoid burst rate limits."""
+    """Ensure a minimum gap between search requests, safe for concurrent workers."""
     global _last_request_time
-    elapsed = time.time() - _last_request_time
-    if elapsed < _MIN_INTERVAL:
-        jitter = random.uniform(0.3, 1.0)
-        time.sleep(_MIN_INTERVAL - elapsed + jitter)
-    _last_request_time = time.time()
+    with _throttle_lock:
+        elapsed = time.time() - _last_request_time
+        if elapsed < _MIN_INTERVAL:
+            jitter = random.uniform(0.3, 1.0)
+            time.sleep(_MIN_INTERVAL - elapsed + jitter)
+        _last_request_time = time.time()
 
 
 def _is_engine_available(name):

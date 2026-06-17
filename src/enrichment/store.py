@@ -1,10 +1,10 @@
 import json
 import os
+import threading
 
 from utils.url_tools import normalize_url
 
 
-# The fields that must be filled for a lead to count as "complete".
 MANDATORY_FIELDS = [
     "Official Website URL",
     "Official Email ID",
@@ -31,17 +31,14 @@ def is_complete(row):
 class ResultsStore:
     """URL-keyed persistent store of enriched rows.
 
-    Replaces the old name-keyed checkpoint. Keying by canonical project URL
-    avoids name collisions, and because every processed row is persisted here,
-    skipped projects still appear in the final export (the old code dropped
-    them). Incomplete rows are retried up to MAX_ATTEMPTS before being marked
-    exhausted, so the pipeline keeps chasing mandatory fields without looping
-    forever.
+    Thread-safe: a per-instance Lock guards all reads and writes so multiple
+    concurrent worker threads can call record() / should_process() safely.
     """
 
     def __init__(self, path):
         self.path = path
         self._data = {}
+        self._lock = threading.Lock()
         self._load()
 
     def _load(self):
@@ -65,41 +62,45 @@ class ResultsStore:
         return normalize_url(project_url) or str(project_url).strip()
 
     def should_process(self, project_url):
-        entry = self._data.get(self._key(project_url))
-        if not isinstance(entry, dict):
-            return True
-        status = entry.get("status")
-        if status in ("complete", "exhausted"):
-            return False
-        return entry.get("attempts", 0) < MAX_ATTEMPTS
+        with self._lock:
+            entry = self._data.get(self._key(project_url))
+            if not isinstance(entry, dict):
+                return True
+            status = entry.get("status")
+            if status in ("complete", "exhausted"):
+                return False
+            return entry.get("attempts", 0) < MAX_ATTEMPTS
 
     def record(self, project_url, row):
         """Persist a freshly enriched row and compute its status."""
         key = self._key(project_url)
-        prev = self._data.get(key, {})
-        if not isinstance(prev, dict):
-            prev = {}
-        attempts = prev.get("attempts", 0) + 1
+        with self._lock:
+            prev = self._data.get(key, {})
+            if not isinstance(prev, dict):
+                prev = {}
+            attempts = prev.get("attempts", 0) + 1
 
-        if is_complete(row):
-            status = "complete"
-        elif attempts >= MAX_ATTEMPTS:
-            status = "exhausted"
-        else:
-            status = "partial"
+            if is_complete(row):
+                status = "complete"
+            elif attempts >= MAX_ATTEMPTS:
+                status = "exhausted"
+            else:
+                status = "partial"
 
-        self._data[key] = {"row": row, "status": status, "attempts": attempts}
-        self._save()
+            self._data[key] = {"row": row, "status": status, "attempts": attempts}
+            self._save()
 
     def get_row(self, project_url):
-        entry = self._data.get(self._key(project_url))
-        return entry.get("row") if isinstance(entry, dict) else None
+        with self._lock:
+            entry = self._data.get(self._key(project_url))
+            return entry.get("row") if isinstance(entry, dict) else None
 
     def rows_for(self, project_urls):
         """Return stored rows for the given URLs, in order (skips unknown)."""
-        rows = []
-        for url in project_urls:
-            row = self.get_row(url)
-            if row:
-                rows.append(row)
-        return rows
+        with self._lock:
+            rows = []
+            for url in project_urls:
+                entry = self._data.get(self._key(url))
+                if isinstance(entry, dict) and "row" in entry:
+                    rows.append(entry["row"])
+            return rows
