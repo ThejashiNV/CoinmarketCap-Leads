@@ -399,8 +399,9 @@ function App() {
     return parseInt(topNOption, 10)
   }
 
-  const streamLogs = () => {
+  const streamLogs = (reconnectAttempt = 0) => {
     const es = new EventSource(`${API_BASE}/live-logs`)
+
     es.onmessage = (event) => {
       const data = JSON.parse(event.data)
 
@@ -415,14 +416,56 @@ function App() {
 
       if (data.done) {
         es.close()
-        setLoading(false)
-        fetchLeads()
-        setTimeout(() => setTab("results"), 600)
+        // Confirm with /status before declaring finished — guards against
+        // SSE reconnects that emit a stale "idle" done event.
+        fetch(`${API_BASE}/status`)
+          .then((r) => r.json())
+          .then((s) => {
+            if (s.running) {
+              // Backend still going — reconnect silently.
+              setTimeout(() => streamLogs(0), 1500)
+            } else {
+              setLoading(false)
+              fetchLeads()
+              setTimeout(() => setTab("results"), 600)
+            }
+          })
+          .catch(() => {
+            setLoading(false)
+            fetchLeads()
+          })
       }
     }
+
     es.onerror = () => {
       es.close()
-      setLoading(false)
+      // SSE connection dropped (proxy timeout, network blip, etc.).
+      // Do NOT show "Extraction complete" — check if backend is still running.
+      fetch(`${API_BASE}/status`)
+        .then((r) => r.json())
+        .then((s) => {
+          if (s.running) {
+            // Still running — reconnect with back-off (max 3s).
+            const delay = Math.min(1000 * (reconnectAttempt + 1), 3000)
+            setLogs((prev) => [
+              { message: `Connection lost — reconnecting in ${Math.round(delay / 1000)}s…` },
+              ...prev,
+            ].slice(0, 800))
+            setTimeout(() => streamLogs(reconnectAttempt + 1), delay)
+          } else {
+            // Genuinely finished or crashed.
+            setLoading(false)
+            fetchLeads()
+          }
+        })
+        .catch(() => {
+          // Can't reach API at all.
+          setLoading(false)
+          setLogs((prev) => [
+            { message: "Lost connection to server. Check that the backend is running." },
+            ...prev,
+          ].slice(0, 800))
+        })
     }
   }
 
