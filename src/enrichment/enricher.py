@@ -1,3 +1,4 @@
+import json
 import logging
 import re
 import time
@@ -9,11 +10,10 @@ from bs4 import BeautifulSoup
 
 from src.scraping.browser import fetch_html
 from src.enrichment.platform_links import extract_platform_links
-from src.enrichment.store import missing_fields, NA
+from src.enrichment.store import NA
 from utils.email_tools import (
     extract_emails,
     join_business_emails,
-    email_confidence,
     choose_business_emails,
 )
 from utils.search_recovery import recover_linkedin, recover_telegram, recover_email
@@ -24,6 +24,57 @@ from utils.website_validator import is_valid_website, is_social_or_tool
 
 
 logger = logging.getLogger("scraper")
+
+_NEXT_DATA_RE = re.compile(r'id="__NEXT_DATA__"[^>]*>(.*?)</script>', re.S)
+_MAX_DESC_LEN = 220
+
+
+def _extract_description(html, max_len=_MAX_DESC_LEN):
+    """Return a short description from HTML meta tags (og:description or description)."""
+    if not html:
+        return ""
+    soup = BeautifulSoup(html, "lxml")
+    for attrs in (
+        {"property": "og:description"},
+        {"name": "description"},
+        {"name": "twitter:description"},
+    ):
+        tag = soup.find("meta", attrs=attrs)
+        if tag and tag.get("content", "").strip():
+            return tag["content"].strip()[:max_len]
+    return ""
+
+
+def _extract_nextdata_description(html, max_len=_MAX_DESC_LEN):
+    """Pull description out of a CMC/CoinGecko __NEXT_DATA__ JSON blob."""
+    m = _NEXT_DATA_RE.search(html or "")
+    if not m:
+        return ""
+    try:
+        data = json.loads(m.group(1))
+    except Exception:
+        return ""
+
+    def _search(node, depth=0):
+        if depth > 12:
+            return ""
+        if isinstance(node, dict):
+            v = node.get("description", "")
+            if isinstance(v, str) and len(v) > 30:
+                return v[:max_len]
+            for child in node.values():
+                result = _search(child, depth + 1)
+                if result:
+                    return result
+        elif isinstance(node, list):
+            for item in node:
+                result = _search(item, depth + 1)
+                if result:
+                    return result
+        return ""
+
+    return _search(data)
+
 
 _HTTP_HEADERS = {
     "User-Agent": (
@@ -294,16 +345,20 @@ def enrich_project(page, project):
     project_url = project["Project URL"]
     platform = project.get("Platform", "")
     source_url = project.get("Source URL", "")
+    category = project.get("Category", "")
     name = clean_project_name(project.get("Project Name", ""))
 
     acc = _new_accumulator()
     website = ""
     email_source = None
+    contact_page_url = ""
 
-    def note_email_source(stage):
-        nonlocal email_source
+    def note_email_source(stage, url=""):
+        nonlocal email_source, contact_page_url
         if email_source is None and acc["emails"]:
             email_source = stage
+            if url and not contact_page_url:
+                contact_page_url = url
 
     # ---- STEP 1: platform project page (authoritative structured links) ----
     t0 = time.time()
@@ -321,7 +376,7 @@ def enrich_project(page, project):
         home_html = fetch_html(page, website, timeout=20000, idle_timeout=2500)
         emails, socials, _ = harvest(home_html)
         _merge(acc, emails, socials)
-        note_email_source("Website")
+        note_email_source("Website", website)
     t_website = time.time() - t1
 
     # ---- STEP 3: contact / info pages (all paths, concurrent HTTP) ----
@@ -358,12 +413,7 @@ def enrich_project(page, project):
                     continue
                 emails, socials, _ = harvest(page_html)
                 _merge(acc, emails, socials)
-                note_email_source("Contact Page")
-                # Only stop early for socials — never for email (we want all emails)
-                if not _needs_socials(acc):
-                    # Socials found; keep going to accumulate more emails but
-                    # no need to run LinkedIn/Telegram recovery later.
-                    pass
+                note_email_source("Contact Page", target)
     t_contact = time.time() - t2
 
     # ---- STEP 3.5: browser fallback for JS-rendered contact pages ----
@@ -386,7 +436,7 @@ def enrich_project(page, project):
                         if browser_html and len(browser_html) > len(static_html):
                             emails, socials, _ = harvest(browser_html)
                             _merge(acc, emails, socials)
-                            note_email_source("Contact Page (JS)")
+                            note_email_source("Contact Page (JS)", target)
                             rendered += 1
                     except Exception as exc:
                         logger.warning("browser fallback failed for %s: %s", target, exc)
@@ -444,35 +494,40 @@ def enrich_project(page, project):
         t_linkedin_recovery, t_telegram_recovery, t_email_recovery, t_total,
     )
 
-    # Build the email field: ALL useful business emails, priority-sorted.
+    # ALL useful business emails, priority-sorted, "; " joined.
     prefer = host_of(website)
     email_field = join_business_emails(acc["emails"], prefer_domain=prefer)
 
+    # Description: try platform __NEXT_DATA__ first, then website meta tag.
+    description = _extract_nextdata_description(html)
+    if not description and home_html:
+        description = _extract_description(home_html)
+
     row = {
-        "Project Name": name or "Unknown",
-        "Platform": platform,
-        "Source URL": source_url,
-        "Project Page URL": project_url,
-        "Official Website URL": website or NA,
-        "Official Email ID": email_field,
-        "Email Source": email_source or "Not Found",
-        "Email Confidence": email_confidence(email_field),
-        "LinkedIn URLs": join_urls(acc["linkedin"]),
-        "Telegram URLs": join_urls(acc["telegram"]),
-        "Twitter URLs": join_urls(acc["twitter"], limit=3),
-        "Discord URLs": join_urls(acc["discord"]),
-        "Github URLs": join_urls(acc["github"]),
+        "Company / Project Name": name or "Unknown",
+        "Official Website URL":   website or NA,
+        "Official Email IDs":     email_field,
+        "Contact Page URL":       contact_page_url or NA,
+        "LinkedIn URLs":          join_urls(acc["linkedin"]),
+        "GitHub URLs":            join_urls(acc["github"]),
+        "Twitter/X URLs":         join_urls(acc["twitter"], limit=3),
+        "Telegram URLs":          join_urls(acc["telegram"]),
+        "Discord URLs":           join_urls(acc["discord"]),
+        "Founder Name":           NA,
+        "Founder LinkedIn":       NA,
+        "Industry / Category":    category or NA,
+        "Short Description":      description or NA,
+        "Source Platform":        platform,
+        "Discovery URL":          project_url,
     }
 
-    missing = missing_fields(row)
-    row["Missing Fields"] = ", ".join(missing) if missing else "None"
-
     logger.info(
-        "Enriched %s | website=%s email=%s missing=%s",
-        row["Project Name"],
+        "Enriched %s | website=%s emails=%s linkedin=%s telegram=%s",
+        row["Company / Project Name"],
         row["Official Website URL"],
-        row["Official Email ID"],
-        row["Missing Fields"],
+        row["Official Email IDs"],
+        row["LinkedIn URLs"],
+        row["Telegram URLs"],
     )
 
     contact_pages_with_content = sum(1 for h in batch.values() if h)
@@ -486,7 +541,7 @@ def enrich_project(page, project):
         "t_telegram_recovery": round(t_telegram_recovery, 3),
         "t_email_recovery":    round(t_email_recovery, 3),
         "website_found":       bool(website),
-        "email_found":         email_field != NA,
+        "email_found":         email_field not in ("", NA),
         "linkedin_found":      bool(acc["linkedin"]),
         "telegram_found":      bool(acc["telegram"]),
         "twitter_found":       bool(acc["twitter"]),

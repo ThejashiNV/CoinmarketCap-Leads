@@ -315,7 +315,7 @@ def stream_logs():
 
 _MANDATORY = [
     "Official Website URL",
-    "Official Email ID",
+    "Official Email IDs",
     "LinkedIn URLs",
     "Telegram URLs",
 ]

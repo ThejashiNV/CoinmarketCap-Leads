@@ -3,22 +3,24 @@ import os
 import pandas as pd
 
 
-# Canonical output schema — kept stable so the frontend/exports never drift.
+# Canonical output schema — every column here appears in the CSV/XLSX export.
+# Order matches the frontend Results table.
 COLUMNS = [
-    "Project Name",
-    "Platform",
-    "Source URL",
-    "Project Page URL",
+    "Company / Project Name",
     "Official Website URL",
-    "Official Email ID",
-    "Email Source",
-    "Email Confidence",
+    "Official Email IDs",
+    "Contact Page URL",
     "LinkedIn URLs",
+    "GitHub URLs",
+    "Twitter/X URLs",
     "Telegram URLs",
-    "Twitter URLs",
     "Discord URLs",
-    "Github URLs",
-    "Missing Fields",
+    "Founder Name",
+    "Founder LinkedIn",
+    "Industry / Category",
+    "Short Description",
+    "Source Platform",
+    "Discovery URL",
 ]
 
 

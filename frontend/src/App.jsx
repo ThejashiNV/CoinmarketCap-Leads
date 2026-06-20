@@ -23,13 +23,14 @@ function validateCategoryUrl(value) {
 }
 
 function leadScore(lead) {
+  const has = (f) => lead[f] && lead[f] !== "N/A" && lead[f] !== ""
   let s = 0
-  if (lead["Official Website URL"] && lead["Official Website URL"] !== "N/A") s += 20
-  if (lead["Official Email ID"] && lead["Official Email ID"] !== "N/A") s += 35
-  if (lead["LinkedIn URLs"] && lead["LinkedIn URLs"] !== "N/A") s += 25
-  if (lead["Telegram URLs"] && lead["Telegram URLs"] !== "N/A") s += 10
-  if (lead["Twitter URLs"] && lead["Twitter URLs"] !== "N/A") s += 5
-  if (lead["Discord URLs"] && lead["Discord URLs"] !== "N/A") s += 5
+  if (has("Official Website URL"))  s += 20
+  if (has("Official Email IDs"))    s += 35
+  if (has("LinkedIn URLs"))         s += 25
+  if (has("Telegram URLs"))         s += 10
+  if (has("Twitter/X URLs"))        s += 5
+  if (has("GitHub URLs"))           s += 5
   return s
 }
 
@@ -508,15 +509,23 @@ function App() {
 
   // ── Table logic ─────────────────────────────────────────────────────────────
 
+  const hasField = (lead, f) => lead[f] && lead[f] !== "N/A" && lead[f] !== ""
+
   const filteredLeads = leads
     .filter((l) => {
       const q = tableSearch.toLowerCase()
-      if (q && !l["Project Name"]?.toLowerCase().includes(q) &&
-          !l["Official Email ID"]?.toLowerCase().includes(q)) return false
-      if (tableFilter === "email" && (!l["Official Email ID"] || l["Official Email ID"] === "N/A")) return false
-      if (tableFilter === "linkedin" && (!l["LinkedIn URLs"] || l["LinkedIn URLs"] === "N/A")) return false
-      if (tableFilter === "telegram" && (!l["Telegram URLs"] || l["Telegram URLs"] === "N/A")) return false
-      if (tableFilter === "complete" && l["Missing Fields"] !== "None") return false
+      if (q && !l["Company / Project Name"]?.toLowerCase().includes(q) &&
+          !l["Official Email IDs"]?.toLowerCase().includes(q) &&
+          !l["Industry / Category"]?.toLowerCase().includes(q)) return false
+      if (tableFilter === "email"    && !hasField(l, "Official Email IDs")) return false
+      if (tableFilter === "linkedin" && !hasField(l, "LinkedIn URLs"))      return false
+      if (tableFilter === "telegram" && !hasField(l, "Telegram URLs"))      return false
+      if (tableFilter === "complete" && (
+          !hasField(l, "Official Website URL") ||
+          !hasField(l, "Official Email IDs")   ||
+          !hasField(l, "LinkedIn URLs")         ||
+          !hasField(l, "Telegram URLs")
+      )) return false
       return true
     })
     .map((l) => ({ ...l, _score: leadScore(l) }))
@@ -546,9 +555,9 @@ function App() {
   // ── Dashboard stats ─────────────────────────────────────────────────────────
 
   const totalLeads = leads.length
-  const withEmail = leads.filter((l) => l["Official Email ID"] && l["Official Email ID"] !== "N/A").length
-  const withLinkedIn = leads.filter((l) => l["LinkedIn URLs"] && l["LinkedIn URLs"] !== "N/A").length
-  const withTelegram = leads.filter((l) => l["Telegram URLs"] && l["Telegram URLs"] !== "N/A").length
+  const withEmail    = leads.filter((l) => hasField(l, "Official Email IDs")).length
+  const withLinkedIn = leads.filter((l) => hasField(l, "LinkedIn URLs")).length
+  const withTelegram = leads.filter((l) => hasField(l, "Telegram URLs")).length
   const emailPct = totalLeads ? Math.round((withEmail / totalLeads) * 100) : 0
   const linkedinPct = totalLeads ? Math.round((withLinkedIn / totalLeads) * 100) : 0
   const telegramPct = totalLeads ? Math.round((withTelegram / totalLeads) * 100) : 0
@@ -914,14 +923,17 @@ function App() {
                   <thead className="sticky top-0 z-10 bg-[#0c0c18] border-b border-white/[0.06]">
                     <tr>
                       {[
-                        { key: "#", col: null, w: "w-10" },
-                        { key: "Project", col: "Project Name", w: "" },
-                        { key: "Website", col: "Official Website URL", w: "" },
-                        { key: "Email", col: "Official Email ID", w: "" },
-                        { key: "LinkedIn", col: "LinkedIn URLs", w: "" },
-                        { key: "Telegram", col: "Telegram URLs", w: "" },
-                        { key: "Twitter", col: "Twitter URLs", w: "" },
-                        { key: "Quality", col: "_score", w: "w-20" },
+                        { key: "#",          col: null,                       w: "w-10" },
+                        { key: "Company",    col: "Company / Project Name",   w: "min-w-[180px]" },
+                        { key: "Website",    col: "Official Website URL",     w: "" },
+                        { key: "Email IDs",  col: "Official Email IDs",       w: "min-w-[200px]" },
+                        { key: "LinkedIn",   col: "LinkedIn URLs",             w: "" },
+                        { key: "Telegram",   col: "Telegram URLs",            w: "" },
+                        { key: "GitHub",     col: "GitHub URLs",              w: "" },
+                        { key: "Twitter/X",  col: "Twitter/X URLs",           w: "" },
+                        { key: "Founder",    col: "Founder Name",             w: "" },
+                        { key: "Category",   col: "Industry / Category",      w: "" },
+                        { key: "Quality",    col: "_score",                   w: "w-20" },
                       ].map(({ key, col, w }) => (
                         <th key={key} onClick={() => col && toggleSort(col)}
                           className={`px-4 py-3 text-[11px] font-semibold uppercase tracking-wider text-slate-600 ${col ? "cursor-pointer hover:text-slate-400" : ""} ${w} whitespace-nowrap`}>
@@ -935,7 +947,7 @@ function App() {
                   <tbody>
                     {paginated.length === 0 ? (
                       <tr>
-                        <td colSpan={8} className="px-4 py-20 text-center">
+                        <td colSpan={11} className="px-4 py-20 text-center">
                           <div className="flex flex-col items-center gap-3">
                             <div className="w-12 h-12 rounded-full bg-white/[0.03] border border-white/[0.06] flex items-center justify-center text-slate-600">
                               <Ic.Table />
@@ -962,15 +974,38 @@ function App() {
                           <tr key={idx}
                             className="border-t border-white/[0.03] hover:bg-white/[0.02] transition-colors group">
                             <td className="px-4 py-2.5 text-slate-700 text-xs font-mono">{rowNum}</td>
-                            <td className="px-4 py-2.5">
-                              <span className="text-white text-sm font-semibold">{lead["Project Name"]}</span>
-                              <span className="ml-2 text-slate-600 text-[10px]">{lead["Platform"]}</span>
+                            <td className="px-4 py-2.5 max-w-[220px]">
+                              <p className="text-white text-sm font-semibold truncate">{lead["Company / Project Name"]}</p>
+                              {lead["Short Description"] && lead["Short Description"] !== "N/A" && (
+                                <p className="text-slate-600 text-[10px] truncate mt-0.5" title={lead["Short Description"]}>
+                                  {lead["Short Description"]}
+                                </p>
+                              )}
                             </td>
                             <td className="px-4 py-2.5"><LinkCell value={lead["Official Website URL"]} /></td>
-                            <td className="px-4 py-2.5"><EmailCell value={lead["Official Email ID"]} /></td>
+                            <td className="px-4 py-2.5 max-w-[220px]">
+                              <EmailCell value={lead["Official Email IDs"]} />
+                            </td>
                             <td className="px-4 py-2.5"><LinkCell value={lead["LinkedIn URLs"]} /></td>
                             <td className="px-4 py-2.5"><LinkCell value={lead["Telegram URLs"]} /></td>
-                            <td className="px-4 py-2.5"><LinkCell value={lead["Twitter URLs"]} /></td>
+                            <td className="px-4 py-2.5"><LinkCell value={lead["GitHub URLs"]} /></td>
+                            <td className="px-4 py-2.5"><LinkCell value={lead["Twitter/X URLs"]} /></td>
+                            <td className="px-4 py-2.5">
+                              {lead["Founder Name"] && lead["Founder Name"] !== "N/A" ? (
+                                <span className="text-slate-300 text-xs">{lead["Founder Name"]}</span>
+                              ) : (
+                                <span className="text-slate-700 text-xs">—</span>
+                              )}
+                            </td>
+                            <td className="px-4 py-2.5">
+                              {lead["Industry / Category"] && lead["Industry / Category"] !== "N/A" ? (
+                                <span className="text-xs text-violet-300 bg-violet-500/10 border border-violet-500/20 px-2 py-0.5 rounded-md whitespace-nowrap">
+                                  {lead["Industry / Category"]}
+                                </span>
+                              ) : (
+                                <span className="text-slate-700 text-xs">—</span>
+                              )}
+                            </td>
                             <td className="px-4 py-2.5">
                               <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-bold border ${grade.bg} ${grade.text} ${grade.border}`}>
                                 {grade.label}
@@ -1047,9 +1082,12 @@ function App() {
                     <CoverageBar label="Official Email" pct={emailPct} color="emerald" />
                     <CoverageBar label="LinkedIn" pct={linkedinPct} color="sky" />
                     <CoverageBar label="Telegram" pct={telegramPct} color="violet" />
-                    <CoverageBar label="Twitter"
-                      pct={totalLeads ? Math.round((leads.filter((l) => l["Twitter URLs"] && l["Twitter URLs"] !== "N/A").length / totalLeads) * 100) : 0}
+                    <CoverageBar label="Twitter/X"
+                      pct={totalLeads ? Math.round((leads.filter((l) => hasField(l, "Twitter/X URLs")).length / totalLeads) * 100) : 0}
                       color="indigo" />
+                    <CoverageBar label="GitHub"
+                      pct={totalLeads ? Math.round((leads.filter((l) => hasField(l, "GitHub URLs")).length / totalLeads) * 100) : 0}
+                      color="emerald" />
                     <CoverageBar label="Website"
                       pct={totalLeads ? Math.round((leads.filter((l) => l["Official Website URL"] && l["Official Website URL"] !== "N/A").length / totalLeads) * 100) : 0}
                       color="amber" />
@@ -1088,7 +1126,7 @@ function App() {
                   <h3 className="text-sm font-bold text-white mb-5">Platform Breakdown</h3>
                   {(() => {
                     const platforms = leads.reduce((acc, l) => {
-                      acc[l["Platform"] || "Unknown"] = (acc[l["Platform"] || "Unknown"] || 0) + 1
+                      acc[l["Source Platform"] || "Unknown"] = (acc[l["Source Platform"] || "Unknown"] || 0) + 1
                       return acc
                     }, {})
                     return (
@@ -1126,8 +1164,8 @@ function App() {
                               {grade.label}
                             </span>
                             <div className="flex-1 min-w-0">
-                              <p className="text-white text-xs font-semibold truncate">{lead["Project Name"]}</p>
-                              <p className="text-slate-600 text-[10px] truncate">{lead["Official Email ID"] !== "N/A" ? lead["Official Email ID"] : "No email"}</p>
+                              <p className="text-white text-xs font-semibold truncate">{lead["Company / Project Name"]}</p>
+                              <p className="text-slate-600 text-[10px] truncate">{hasField(lead, "Official Email IDs") ? lead["Official Email IDs"].split(";")[0].trim() : "No email"}</p>
                             </div>
                             <span className="text-slate-700 text-xs">{lead._score}pt</span>
                           </div>

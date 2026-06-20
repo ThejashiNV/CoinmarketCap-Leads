@@ -7,7 +7,7 @@ from utils.url_tools import normalize_url
 
 MANDATORY_FIELDS = [
     "Official Website URL",
-    "Official Email ID",
+    "Official Email IDs",
     "LinkedIn URLs",
     "Telegram URLs",
 ]

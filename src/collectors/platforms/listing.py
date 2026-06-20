@@ -19,6 +19,22 @@ PLATFORM_BASE = {
 NEXT_DATA_RE = re.compile(r'id="__NEXT_DATA__"[^>]*>(.*?)</script>', re.S)
 
 
+def _category_from_url(listing_url):
+    """Derive a human-readable category label from the listing page URL.
+
+    Examples:
+      coinmarketcap.com/view/ai-agents/        → "AI Agents"
+      coingecko.com/en/categories/real-world-assets → "Real World Assets"
+      coinranking.com/coins/defi               → "DeFi"
+    """
+    path = urlparse(listing_url).path.strip("/")
+    parts = [p for p in path.split("/") if p]
+    # Pick the last meaningful path segment (skip "view", "en", "coins", "categories")
+    skip = {"view", "en", "coins", "categories", "new", "recently_added"}
+    slug = next((p for p in reversed(parts) if p not in skip), parts[-1] if parts else "")
+    return " ".join(w.capitalize() for w in re.split(r"[-_]", slug))
+
+
 def _project_slug(platform, path):
     """Return a canonical project path for a project link, or None.
 
@@ -137,6 +153,7 @@ def _parse_recently_added_cmc(html, listing_url):
             "Project Name": clean_project_name(name) or name,
             "Project URL": f"{base}/currencies/{slug}",
             "Source URL": listing_url,
+            "Category": _category_from_url(listing_url),
             "Platform": "coinmarketcap",
             "dateAdded": date_added,
         })
@@ -206,6 +223,7 @@ def _parse_recently_added_coinranking(listing_url):
             "Project URL": base + slug_path,
             "Source URL": listing_url,
             "Platform": "coinranking",
+            "Category": _category_from_url(listing_url),
             "dateAdded": date_str,
         })
 
@@ -258,6 +276,7 @@ def _parse_recently_added_coingecko(listing_url):
             "Project URL": project_url,
             "Source URL": listing_url,
             "Platform": "coingecko",
+            "Category": _category_from_url(listing_url),
         })
 
     return projects if projects else None
@@ -375,6 +394,7 @@ def parse_projects(platform, base, html, listing_url):
                 "Project URL": project_url,
                 "Source URL": listing_url,
                 "Platform": platform,
+                "Category": _category_from_url(listing_url),
             }
         )
 
