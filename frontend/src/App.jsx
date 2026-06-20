@@ -340,11 +340,13 @@ function App() {
 
   const logsEndRef = useRef(null)
 
-  const fetchLeads = useCallback(async () => {
+  const fetchLeads = useCallback(async (partial = false) => {
     try {
-      const res = await fetch(`${API_BASE}/leads`)
+      const endpoint = partial ? `${API_BASE}/leads/partial` : `${API_BASE}/leads`
+      const res = await fetch(endpoint)
       const data = await res.json()
-      setLeads(Array.isArray(data) ? data : [])
+      if (Array.isArray(data) && data.length > 0) setLeads(data)
+      else if (!partial) setLeads([])
     } catch { /* silent */ }
   }, [])
 
@@ -445,7 +447,8 @@ function App() {
         .then((r) => r.json())
         .then((s) => {
           if (s.running) {
-            // Still running — reconnect with back-off (max 3s).
+            // Still running — show whatever has been enriched so far, then reconnect.
+            fetchLeads(true)
             const delay = Math.min(1000 * (reconnectAttempt + 1), 3000)
             setLogs((prev) => [
               { message: `Connection lost — reconnecting in ${Math.round(delay / 1000)}s…` },
@@ -453,7 +456,7 @@ function App() {
             ].slice(0, 800))
             setTimeout(() => streamLogs(reconnectAttempt + 1), delay)
           } else {
-            // Genuinely finished or crashed.
+            // Genuinely finished or crashed — load final results.
             setLoading(false)
             fetchLeads()
           }

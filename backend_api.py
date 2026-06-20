@@ -26,6 +26,7 @@ MAIN_SCRIPT = os.path.join(BASE_DIR, "main.py")
 OUTPUT_DIR = os.path.join(BASE_DIR, "output")
 LEADS_CSV = os.path.join(OUTPUT_DIR, "final_leads.csv")
 LEADS_XLSX = os.path.join(OUTPUT_DIR, "final_leads.xlsx")
+STORE_PATH = os.path.join(OUTPUT_DIR, "enrich_results.json")
 METRICS_LATEST_PATH = os.path.join(OUTPUT_DIR, "metrics_latest.json")
 
 # Hard cap on a single extraction run (45 min).
@@ -312,15 +313,66 @@ def stream_logs():
     )
 
 
+_MANDATORY = [
+    "Official Website URL",
+    "Official Email ID",
+    "LinkedIn URLs",
+    "Telegram URLs",
+]
+
+def _enrich_record(record: dict) -> dict:
+    """Add computed fields (_score, Missing Fields) that the frontend expects."""
+    found = sum(
+        1 for f in _MANDATORY
+        if record.get(f, "").strip() not in ("", "N/A")
+    )
+    record["_score"] = round((found / len(_MANDATORY)) * 100)
+    missing = [f for f in _MANDATORY if record.get(f, "").strip() in ("", "N/A")]
+    record["Missing Fields"] = ", ".join(missing) if missing else ""
+    return record
+
+
 @app.get("/leads")
 def get_leads():
     if not os.path.exists(LEADS_CSV):
         return []
     try:
         df = pd.read_csv(LEADS_CSV)
-        return df.fillna("").to_dict(orient="records")
+        records = df.fillna("").to_dict(orient="records")
+        return [_enrich_record(r) for r in records]
     except Exception:
         return []
+
+
+@app.get("/leads/partial")
+def get_leads_partial():
+    """Return whatever has been enriched so far, even mid-extraction.
+
+    Reads directly from the incremental store (enrich_results.json) so the
+    frontend can show live results while the pipeline is still running.
+    Falls back to final_leads.csv if the store is absent.
+    """
+    rows = []
+    if os.path.exists(STORE_PATH):
+        try:
+            with open(STORE_PATH, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            if isinstance(data, dict):
+                rows = [
+                    entry["row"]
+                    for entry in data.values()
+                    if isinstance(entry, dict) and "row" in entry
+                ]
+        except Exception:
+            pass
+    if not rows and os.path.exists(LEADS_CSV):
+        try:
+            import pandas as _pd
+            df = _pd.read_csv(LEADS_CSV)
+            rows = df.fillna("").to_dict(orient="records")
+        except Exception:
+            pass
+    return [_enrich_record(r) for r in rows]
 
 
 @app.get("/download/csv")
