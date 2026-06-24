@@ -23,9 +23,19 @@ import time
 from urllib.parse import quote_plus, unquote, urlparse
 
 import requests
+from bs4 import BeautifulSoup
 
 from utils.email_tools import extract_emails, _is_clean_email, EMAIL_REGEX
-from utils.social_tools import extract_linkedin, extract_telegram
+from utils.social_tools import extract_linkedin, extract_telegram, extract_github
+
+# Founder/executive title pattern — used by recover_founder_search.
+_FOUNDER_TITLE_RE = re.compile(
+    r'\b(founder|co[- ]?founder|ceo|chief\s+executive|president|'
+    r'managing\s+director|cto|coo|cfo|cpo|general\s+partner|'
+    r'chief\s+(?:technology|operating|financial|product|growth|'
+    r'marketing|revenue|people|strategy)\s+officer)\b',
+    re.IGNORECASE,
+)
 
 logger = logging.getLogger("scraper")
 
@@ -278,6 +288,160 @@ def recover_telegram(name, website="", emails=None):
             all_candidates.extend(extract_telegram(html))
 
     return _rank(all_candidates, tokens, prefer=())
+
+
+def recover_github(name, website="", emails=None):
+    """Best-effort recovery of an official GitHub organization or user URL.
+
+    Prefers org-level URLs (github.com/orgname, single path segment) over
+    individual repository URLs (github.com/orgname/repo). Returns at most 1
+    validated URL.
+    """
+    tokens = _tokens(name, website, emails)
+    if not tokens:
+        return []
+
+    queries = [
+        f"{name} official github".strip(),
+        f"{name} {website} github".strip(),
+    ]
+
+    all_candidates = []
+    for query in queries:
+        html = _search_html(query, must_contain=("github.com",))
+        if html:
+            all_candidates.extend(extract_github(html))
+
+    if not all_candidates:
+        return []
+
+    def _depth(url):
+        parts = [p for p in urlparse(url).path.strip("/").split("/") if p]
+        return len(parts)
+
+    org_level  = [u for u in all_candidates if _depth(u) <= 1]
+    repo_level = [u for u in all_candidates if _depth(u) == 2]
+
+    ranked = _rank(org_level, tokens, prefer=()) or _rank(repo_level, tokens, prefer=())
+    return ranked[:1]
+
+
+def recover_founder_linkedin(founder_name, website="", company_name=""):
+    """Search for a founder's personal LinkedIn /in/ profile URL.
+
+    Only called when the founder name is known but no LinkedIn profile URL
+    was found on any crawled page. Returns a single URL string or ''.
+    """
+    if not founder_name:
+        return ""
+
+    fn_lower = founder_name.lower()
+    fn_parts = set(p for p in re.split(r"[^a-z]+", fn_lower) if len(p) > 2)
+
+    queries = [
+        f'"{founder_name}" linkedin founder {company_name}'.strip(),
+        f'"{founder_name}" linkedin {website}'.strip(),
+    ]
+
+    LINKEDIN_IN_RE = re.compile(r"linkedin\.com/in/[^/\s?#\"'<>)\]\\]+", re.IGNORECASE)
+
+    for query in queries:
+        html = _search_html(query, must_contain=("linkedin.com/in/",))
+        if not html:
+            continue
+        raw_matches = LINKEDIN_IN_RE.findall(html)
+        for raw in raw_matches:
+            slug = raw.rstrip("/").split("/")[-1].lower()
+            # Accept if any part of the founder name appears in the profile slug.
+            if any(part in slug or slug.startswith(part[:4]) for part in fn_parts):
+                full = "https://www." + raw if not raw.startswith("http") else raw
+                return re.split(r"[?#&]", full)[0].rstrip("/")
+
+    return ""
+
+
+def recover_founder_search(company_name, website=""):
+    """Search for the founder of a company/project by name.
+
+    Returns (founder_name, linkedin_url). Both '' when nothing reliable found.
+    Used when on-site extraction found no founder information at all.
+    """
+    if not company_name:
+        return "", ""
+
+    LINKEDIN_IN_RE = re.compile(r"linkedin\.com/in/[^/\s?#\"'<>)\]\\]+", re.IGNORECASE)
+
+    queries = [
+        f"{company_name} founder CEO",
+        f"{company_name} {website} founder".strip(),
+    ]
+
+    founder_name = ""
+    founder_li = ""
+
+    # Title patterns in search result snippets
+    SNIPPET_TITLE_RE = re.compile(
+        r'([A-Z][a-z\'-]+(?:\s+[A-Z][a-z\'-]+){1,2})'
+        r'\s*[,–—\|]\s*(?:Co[-\s]?)?(?:Founder|CEO|Chief\s+Executive)',
+        re.IGNORECASE,
+    )
+    FOUNDED_BY_RE = re.compile(
+        r'(?:founded|co[- ]?founded|created|built)\s+by\s+'
+        r'([A-Z][a-z\'-]+(?:\s+[A-Z][a-z\'-]+){1,2})',
+        re.IGNORECASE,
+    )
+
+    company_tokens = set(
+        w.lower() for w in re.split(r"[^a-z0-9]+", company_name.lower()) if len(w) >= 3
+    )
+
+    for query in queries:
+        html = _search_html(query)
+        if not html:
+            continue
+
+        # Try to find a LinkedIn /in/ profile in search results
+        if not founder_li:
+            for raw in LINKEDIN_IN_RE.findall(html):
+                full = "https://www." + raw if not raw.startswith("http") else raw
+                full = re.split(r"[?#&]", full)[0].rstrip("/")
+                slug = full.split("/")[-1].lower()
+                # Accept if snippet near the URL mentions a founder title
+                idx = html.find(raw)
+                snippet = html[max(0, idx - 300): idx + 300]
+                if _FOUNDER_TITLE_RE.search(snippet) or FOUNDED_BY_RE.search(snippet):
+                    founder_li = full
+                    # Try to extract the name from snippet
+                    if not founder_name:
+                        for m in SNIPPET_TITLE_RE.finditer(snippet):
+                            fn = m.group(1).strip()
+                            fn_tokens = set(re.split(r"[^a-z]+", fn.lower()))
+                            # Slug must not match company tokens (it's a person slug)
+                            if not any(t in slug for t in company_tokens):
+                                founder_name = fn
+                                break
+                    break
+
+        # Try plain text patterns in search result HTML
+        if not founder_name:
+            soup_text = BeautifulSoup(html, "lxml").get_text(" ", strip=True)
+            for pattern in (SNIPPET_TITLE_RE, FOUNDED_BY_RE):
+                for m in pattern.finditer(soup_text):
+                    fn = m.group(1).strip()
+                    words = fn.split()
+                    # Must look like a personal name (2-3 Title-case words)
+                    if (2 <= len(words) <= 3
+                            and all(w[0].isupper() and not w.isupper() for w in words)
+                            and not any(t in fn.lower() for t in company_tokens)):
+                        founder_name = fn
+                        break
+                if founder_name:
+                    break
+
+        if founder_name and founder_li:
+            break
+
+    return founder_name, founder_li
 
 
 def _company_from_linkedin(linkedin_urls):

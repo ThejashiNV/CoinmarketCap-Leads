@@ -36,7 +36,13 @@ def browser_page(headless=True):
     browser = None
     context = None
     try:
-        browser = pw.chromium.launch(headless=headless, args=_LAUNCH_ARGS)
+        # Use system Chrome when the Playwright Chromium bundle is not installed.
+        _SYSTEM_CHROME = r"C:\Program Files\Google\Chrome\Application\chrome.exe"
+        import os as _os
+        launch_opts = dict(headless=headless, args=_LAUNCH_ARGS)
+        if _os.path.exists(_SYSTEM_CHROME):
+            launch_opts["executable_path"] = _SYSTEM_CHROME
+        browser = pw.chromium.launch(**launch_opts)
         context = browser.new_context(
             user_agent=USER_AGENT,
             viewport={"width": 1280, "height": 720},

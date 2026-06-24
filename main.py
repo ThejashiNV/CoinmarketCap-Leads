@@ -3,6 +3,10 @@ import sys
 import traceback
 from datetime import datetime
 
+# Force UTF-8 stdout so non-ASCII log lines survive Windows cp1252 encoding.
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+
 from src.enrichment.pipeline import run_pipeline, DEFAULT_WORKERS
 
 

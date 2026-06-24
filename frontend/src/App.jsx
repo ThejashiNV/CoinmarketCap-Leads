@@ -17,20 +17,22 @@ function validateCategoryUrl(value) {
   const host = parsed.hostname.replace(/^www\./, "")
   if (!SUPPORTED_DOMAINS.some((d) => host === d || host.endsWith("." + d)))
     return "Unsupported platform. Use CoinMarketCap, CoinGecko or Coinranking."
-  if (!/categor/i.test(parsed.pathname))
-    return "Enter a CATEGORY listing URL, e.g. .../cryptocurrency-category/"
+  // Accept any non-root listing path: /view/*, /cryptocurrency-category/*, /categories/*, /coins, /tags
+  if (!parsed.pathname || parsed.pathname === "/")
+    return "Enter a category listing URL, not just the homepage."
   return ""
 }
 
 function leadScore(lead) {
   const has = (f) => lead[f] && lead[f] !== "N/A" && lead[f] !== ""
   let s = 0
-  if (has("Official Website URL"))  s += 20
-  if (has("Official Email IDs"))    s += 35
-  if (has("LinkedIn URLs"))         s += 25
+  if (has("Official Website URL"))  s += 15
+  if (has("Official Email IDs"))    s += 30
+  if (has("LinkedIn URLs"))         s += 20
   if (has("Telegram URLs"))         s += 10
-  if (has("Twitter/X URLs"))        s += 5
-  if (has("GitHub URLs"))           s += 5
+  if (has("GitHub URLs"))           s += 10
+  if (has("Founder Name"))          s += 10
+  if (has("Founder LinkedIn"))      s += 5
   return s
 }
 
@@ -1082,11 +1084,17 @@ function App() {
                     <CoverageBar label="Official Email" pct={emailPct} color="emerald" />
                     <CoverageBar label="LinkedIn" pct={linkedinPct} color="sky" />
                     <CoverageBar label="Telegram" pct={telegramPct} color="violet" />
-                    <CoverageBar label="Twitter/X"
-                      pct={totalLeads ? Math.round((leads.filter((l) => hasField(l, "Twitter/X URLs")).length / totalLeads) * 100) : 0}
-                      color="indigo" />
                     <CoverageBar label="GitHub"
                       pct={totalLeads ? Math.round((leads.filter((l) => hasField(l, "GitHub URLs")).length / totalLeads) * 100) : 0}
+                      color="indigo" />
+                    <CoverageBar label="Founder Name"
+                      pct={totalLeads ? Math.round((leads.filter((l) => hasField(l, "Founder Name")).length / totalLeads) * 100) : 0}
+                      color="amber" />
+                    <CoverageBar label="Founder LinkedIn"
+                      pct={totalLeads ? Math.round((leads.filter((l) => hasField(l, "Founder LinkedIn")).length / totalLeads) * 100) : 0}
+                      color="violet" />
+                    <CoverageBar label="Twitter/X"
+                      pct={totalLeads ? Math.round((leads.filter((l) => hasField(l, "Twitter/X URLs")).length / totalLeads) * 100) : 0}
                       color="emerald" />
                     <CoverageBar label="Website"
                       pct={totalLeads ? Math.round((leads.filter((l) => l["Official Website URL"] && l["Official Website URL"] !== "N/A").length / totalLeads) * 100) : 0}

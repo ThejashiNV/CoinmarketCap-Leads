@@ -1,3 +1,4 @@
+import re
 from urllib.parse import urlparse
 
 
@@ -42,16 +43,23 @@ def is_supported(url):
 
 
 def is_category_url(url):
-    """True only for a supported platform's category listing/index URL.
+    """True only for a supported platform's category / listing URL.
 
-    Enforces the team rule that extraction starts from a category page
-    (e.g. https://coinmarketcap.com/cryptocurrency-category/), never a
-    homepage or coin-detail page.
+    Accepts:
+    - CoinMarketCap  /cryptocurrency-category/..., /view/..., /coins, etc.
+    - CoinGecko      /en/categories/..., /en/coins/..., etc.
+    - Coinranking    /coins, /tags, etc.
+    Rejects bare homepages and coin-detail pages.
     """
     if not detect_platform(url):
         return False
     try:
-        path = urlparse(url.strip()).path.lower()
+        path = urlparse(url.strip()).path.lower().rstrip("/")
     except Exception:
         return False
-    return "categor" in path
+    if not path:
+        return False
+    # Reject individual coin pages: /currencies/<slug>, /en/coins/<slug>
+    if re.search(r"/(currencies|coins|currency)/[^/]+$", path):
+        return False
+    return True

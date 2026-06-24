@@ -76,6 +76,16 @@ REJECT_EMAIL_DOMAINS = (
     "u.today",
     "cryptopotato.com",
     "cryptobriefing.com",
+    # General tech media / press — their emails surface in press-release embeds.
+    "venturebeat.com",
+    "techcrunch.com",
+    "wired.com",
+    "businessinsider.com",
+    "cnbc.com",
+    "ft.com",
+    "wsj.com",
+    "reuters.com",
+    "apnews.com",
     # Analytics / data platforms whose emails appear on partner pages.
     "chainalysis.com",
     "nansen.ai",
@@ -107,6 +117,13 @@ REJECT_EMAIL_DOMAINS = (
     "nexo.io",
     "celsius.network",
     "blockfi.com",
+    # Template / placeholder domains that appear in docs or example code.
+    "business.com",
+    "sample.com",
+    "yoursite.com",
+    "yourdomain.com",
+    "company.com",
+    "domain.org",
 )
 
 # Hard-excluded local-parts. These are NEVER returned regardless of domain or
@@ -467,3 +484,26 @@ def email_confidence(email_field):
                                    "marketing", "growth")):
         return "MEDIUM"
     return "LOW"
+
+
+def has_quality_email(emails, prefer_domain=None):
+    """Return True if emails contains at least one genuinely useful business email.
+
+    Used to decide whether to run extra recovery even when some emails were
+    already found — e.g. only a personal Gmail was harvested, or only a
+    low-value support@ address on a completely unrelated domain.
+    """
+    if not emails:
+        return False
+    pref = (prefer_domain or "").lower()
+    for email in emails:
+        s = _score(email, prefer_domain)
+        # Any on-domain email passing the positive bar is "quality"
+        if pref:
+            domain = email.split("@", 1)[1].lower()
+            if (domain == pref or domain.endswith("." + pref)) and s > 0:
+                return True
+        # Off-domain but a well-known business keyword (contact@, info@, etc.)
+        if s > 60:
+            return True
+    return False

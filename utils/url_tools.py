@@ -49,7 +49,7 @@ def normalize_url(url):
     if not netloc:
         return ""
 
-    path = parsed.path.rstrip("/")
+    path = parsed.path.rstrip("/").rstrip(".")
 
     kept = [
         (k, v)

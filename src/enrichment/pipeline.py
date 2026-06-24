@@ -122,6 +122,7 @@ def _worker(project_queue, results, prog, store, emit, collector, worker_id):
     sync_api is not thread-safe to share across threads, but separate instances
     in separate threads are fully supported.
     """
+    import os as _os
     from playwright.sync_api import sync_playwright
     from src.scraping.browser import _LAUNCH_ARGS, USER_AGENT
 
@@ -129,7 +130,11 @@ def _worker(project_queue, results, prog, store, emit, collector, worker_id):
     browser = None
     ctx = None
     try:
-        browser = pw.chromium.launch(headless=True, args=_LAUNCH_ARGS)
+        _SYSTEM_CHROME = r"C:\Program Files\Google\Chrome\Application\chrome.exe"
+        _launch_opts = dict(headless=True, args=_LAUNCH_ARGS)
+        if _os.path.exists(_SYSTEM_CHROME):
+            _launch_opts["executable_path"] = _SYSTEM_CHROME
+        browser = pw.chromium.launch(**_launch_opts)
         ctx = browser.new_context(
             user_agent=USER_AGENT,
             viewport={"width": 1280, "height": 720},
@@ -173,7 +178,7 @@ def _worker(project_queue, results, prog, store, emit, collector, worker_id):
 
                 done = prog.mark_done(elapsed)
                 eta = prog.eta_seconds()
-                eta_str = f"{int(eta // 60)}m{int(eta % 60)}s" if eta else "—"
+                eta_str = f"{int(eta // 60)}m{int(eta % 60)}s" if eta else "-"
 
                 collector.record_project({
                     "worker_id":      worker_id,
@@ -187,7 +192,7 @@ def _worker(project_queue, results, prog, store, emit, collector, worker_id):
                 emit(f"PROGRESS:{_progress_msg(prog, name)}")
                 emit(
                     f"[{done}/{prog.total}] {name} | "
-                    f"email={row['Official Email ID']} | "
+                    f"email={row['Official Email IDs']} | "
                     f"{elapsed:.1f}s | ETA {eta_str}"
                 )
                 logger.info(
@@ -329,7 +334,7 @@ def run_pipeline(listing_url, emit=print, limit=None, mode="ranked", workers=DEF
     ordered_rows = [results[i] for i in range(total) if i in results]
     df = export_leads(ordered_rows, FINAL_CSV, FINAL_XLSX)
 
-    emit(f"Exported {len(df)} leads → {FINAL_CSV}")
+    emit(f"Exported {len(df)} leads -> {FINAL_CSV}")
 
     report = collector.finalize(
         t_collect=t_collect,

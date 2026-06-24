@@ -69,12 +69,22 @@ TELEGRAM_BLOCKLIST = (
 )
 
 GITHUB_BLOCKLIST = (
+    # GitHub infrastructure / navigation pages
     "github.com/login",
     "github.com/about",
     "github.com/features",
     "github.com/topics",
     "github.com/sponsors",
     "github.com/marketplace",
+    "github.com/pricing",
+    "github.com/security",
+    "github.com/blog",
+    # Generic third-party repos that appear on many crypto project sites
+    # (forum software, CMS, UI libraries, etc.)
+    "github.com/discourse/discourse",
+    "github.com/nicehash/",
+    "github.com/nicedoc/",
+    "github.com/graphprotocol/graph-node",
 )
 
 

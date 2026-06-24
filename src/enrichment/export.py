@@ -37,7 +37,7 @@ def export_leads(rows, csv_path, xlsx_path):
     df = df[COLUMNS]
 
     df = df.fillna("N/A")
-    df = df.drop_duplicates(subset=["Project Page URL"], keep="first")
+    df = df.drop_duplicates(subset=["Discovery URL"], keep="first")
 
     df.to_csv(csv_path, index=False)
     try:
