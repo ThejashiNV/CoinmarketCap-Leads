@@ -20,6 +20,7 @@ from utils.email_tools import (
 from utils.search_recovery import (
     recover_linkedin, recover_telegram, recover_email,
     recover_github, recover_founder_linkedin, recover_founder_search,
+    recover_website,
 )
 from utils.social_tools import extract_socials, all_urls
 from utils.text_tools import clean_project_name
@@ -693,13 +694,31 @@ def enrich_project(page, project):
             if url and not contact_page_url:
                 contact_page_url = url
 
-    # ---- STEP 1: platform project page (authoritative structured links) ----
-    t0 = time.time()
-    html = fetch_html(page, project_url, timeout=25000, idle_timeout=3000)
-    website, socials = extract_platform_links(platform, html)
-    _merge(acc, [], socials)
-    name = _refine_name(html, name, website)
-    t_platform = time.time() - t0
+    # ---- STEP 0: pre-seed from collector (DeFiLlama and future API-first platforms) ----
+    # When the collector already knows the website and social URLs (e.g. from the
+    # DeFiLlama Raises API), skip the platform page browser-load entirely and
+    # pre-populate the accumulator from the supplied seed dict.  All subsequent
+    # enrichment steps (website crawl, contact pages, search recovery) run normally.
+    t_start = time.time()  # total-timer reference
+    seeds = project.get("_seeds") or {}
+    html = ""
+    t_platform = 0.0
+
+    if seeds:
+        website = normalize_url(seeds.get("website", "")) or seeds.get("website", "")
+        for key in SOCIAL_KEYS:
+            for u in (seeds.get(key) or []):
+                u_norm = normalize_url(u) if u else ""
+                if u_norm and u_norm not in acc[key]:
+                    acc[key].append(u_norm)
+    else:
+        # ---- STEP 1: platform project page (authoritative structured links) ----
+        t0 = time.time()
+        html = fetch_html(page, project_url, timeout=25000, idle_timeout=3000)
+        website, socials = extract_platform_links(platform, html)
+        _merge(acc, [], socials)
+        name = _refine_name(html, name, website)
+        t_platform = time.time() - t0
 
     # ---- STEP 2: official website homepage ----
     t1 = time.time()
@@ -713,6 +732,28 @@ def enrich_project(page, project):
         _merge(acc, footer_emails, {})
         note_email_source("Website", website)
     t_website = time.time() - t1
+
+    # ---- STEP 2.5: website search recovery ----
+    # When no website was found from seeds, platform page, or homepage crawl,
+    # search public web results for the official site by project name.
+    # This primarily benefits DeFiLlama raises without a matched protocol page.
+    t_website_recovery = 0.0
+    if not website:
+        tw0 = time.time()
+        try:
+            recovered = recover_website(name, category=category)
+            if recovered:
+                website = recovered
+                home_html = fetch_html(page, website, timeout=20000, idle_timeout=2500)
+                if home_html:
+                    emails, socials, _ = harvest(home_html)
+                    _merge(acc, emails, socials)
+                    footer_emails = _extract_footer_emails(home_html)
+                    _merge(acc, footer_emails, {})
+                    note_email_source("Website (recovered)", website)
+        except Exception as exc:
+            logger.warning("website recovery failed for %s: %s", name, exc)
+        t_website_recovery = time.time() - tw0
 
     # ---- STEP 3: contact / info pages (all paths, concurrent HTTP) ----
     # Email crawl always runs all paths — we don't stop early on email because
@@ -881,12 +922,12 @@ def enrich_project(page, project):
             logger.warning("founder search failed for %s: %s", name, exc)
     t_founder_search = time.time() - t7
 
-    t_total = time.time() - t0
+    t_total = time.time() - t_start
 
     logger.info(
-        "Timing %s | platform=%.1fs website=%.1fs contact=%.1fs browser=%.1fs "
+        "Timing %s | platform=%.1fs website=%.1fs web_rec=%.1fs contact=%.1fs browser=%.1fs "
         "li_rec=%.1fs tg_rec=%.1fs email_search=%.1fs total=%.1fs",
-        name, t_platform, t_website, t_contact, t_browser_fallback,
+        name, t_platform, t_website, t_website_recovery, t_contact, t_browser_fallback,
         t_linkedin_recovery, t_telegram_recovery, t_email_recovery, t_total,
     )
 
@@ -894,10 +935,13 @@ def enrich_project(page, project):
     prefer = host_of(website)
     email_field = join_business_emails(acc["emails"], prefer_domain=prefer)
 
-    # Description: try platform __NEXT_DATA__ first, then website meta tag.
+    # Description: try platform __NEXT_DATA__ first, then website meta tag,
+    # then pre-seeded description from the collector (e.g. DeFiLlama protocols API).
     description = _extract_nextdata_description(html)
     if not description and home_html:
         description = _extract_description(home_html)
+    if not description:
+        description = (seeds.get("description") or "").strip()
 
     row = {
         "Company / Project Name": name or "Unknown",
@@ -933,6 +977,7 @@ def enrich_project(page, project):
     stage_metrics = {
         "t_platform":             round(t_platform, 3),
         "t_website":              round(t_website, 3),
+        "t_website_recovery":     round(t_website_recovery, 3),
         "t_contact":              round(t_contact, 3),
         "t_browser_fallback":     round(t_browser_fallback, 3),
         "t_linkedin_recovery":    round(t_linkedin_recovery, 3),

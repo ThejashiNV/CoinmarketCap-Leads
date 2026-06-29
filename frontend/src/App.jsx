@@ -2,8 +2,15 @@ import { useCallback, useEffect, useRef, useState } from "react"
 
 const API_BASE = import.meta.env.VITE_API_BASE || "http://127.0.0.1:8000"
 
-const SUPPORTED_DOMAINS = ["coinmarketcap.com", "coingecko.com", "coinranking.com"]
-const PLATFORM_OPTIONS = ["CoinMarketCap", "CoinGecko", "Coinranking"]
+const SUPPORTED_DOMAINS = ["coinmarketcap.com", "coingecko.com", "coinranking.com", "defillama.com"]
+const PLATFORM_OPTIONS = ["CoinMarketCap", "CoinGecko", "Coinranking", "DeFiLlama Raises"]
+
+const PLATFORM_LISTING_URL = {
+  "DeFiLlama Raises": "https://defillama.com/raises",
+}
+
+// Platforms that expose a fixed listing URL rather than user-selectable categories.
+const LISTING_ONLY_PLATFORMS = new Set(["DeFiLlama Raises"])
 const TOP_N_OPTIONS = [10, 20, 50, 100, 250]
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -16,7 +23,13 @@ function validateCategoryUrl(value) {
   if (!/^https?:$/.test(parsed.protocol)) return "URL must start with http:// or https://"
   const host = parsed.hostname.replace(/^www\./, "")
   if (!SUPPORTED_DOMAINS.some((d) => host === d || host.endsWith("." + d)))
-    return "Unsupported platform. Use CoinMarketCap, CoinGecko or Coinranking."
+    return "Unsupported platform. Use CoinMarketCap, CoinGecko, Coinranking, or DeFiLlama Raises."
+  // DeFiLlama: only /raises is a valid listing URL
+  if (host === "defillama.com") {
+    if (!parsed.pathname.startsWith("/raises"))
+      return "For DeFiLlama, use https://defillama.com/raises"
+    return ""
+  }
   // Accept any non-root listing path: /view/*, /cryptocurrency-category/*, /categories/*, /coins, /tags
   if (!parsed.pathname || parsed.pathname === "/")
     return "Enter a category listing URL, not just the homepage."
@@ -374,6 +387,24 @@ function App() {
     if (tab === "analytics") fetchMetrics()
   }, [tab, fetchMetrics])
 
+  // When switching to a listing-only platform (e.g. DeFiLlama Raises), auto-set
+  // the fixed listing URL and clear the category selector so the flow is unblocked.
+  const isListingOnly = LISTING_ONLY_PLATFORMS.has(platformName)
+  useEffect(() => {
+    if (isListingOnly) {
+      const listingUrl = PLATFORM_LISTING_URL[platformName] || ""
+      setSelectedCategory(listingUrl)
+      setPlatformUrl(listingUrl)
+      setCategories([])
+      setUrlError("")
+    } else {
+      setSelectedCategory("")
+      setPlatformUrl("")
+      setCategories([])
+      setUrlError("")
+    }
+  }, [platformName, isListingOnly])
+
   const fetchCategories = async () => {
     const err = validateCategoryUrl(platformUrl)
     setUrlError(err)
@@ -477,7 +508,7 @@ function App() {
 
   const startExtraction = async () => {
     if (!selectedCategory) {
-      setLogs([{ message: "Select a category first." }])
+      setLogs([{ message: isListingOnly ? "Listing URL not set — try reloading." : "Select a category first." }])
       return
     }
     const topN = resolveTopN()
@@ -656,27 +687,40 @@ function App() {
                   </select>
                 </div>
 
-                {/* Category URL */}
-                <div>
-                  <label className={labelCls}>Category Index URL</label>
-                  <div className="flex gap-2">
-                    <input type="text" value={platformUrl}
-                      onChange={(e) => { setPlatformUrl(e.target.value); if (urlError) setUrlError("") }}
-                      placeholder="https://coinmarketcap.com/cryptocurrency-category/"
-                      disabled={loading} className={inputCls} />
-                    <button onClick={fetchCategories} disabled={loading || loadingCategories}
-                      className={`${btnGhost} shrink-0`}>
-                      {loadingCategories ? <Ic.Spinner /> : "Fetch"}
-                    </button>
+                {isListingOnly ? (
+                  /* DeFiLlama Raises: fixed listing URL, no category fetch needed */
+                  <div>
+                    <label className={labelCls}>Listing Source</label>
+                    <div className={`${inputCls} flex items-center gap-2 opacity-70 cursor-default`}>
+                      <span className="w-2 h-2 rounded-full bg-emerald-400 flex-shrink-0" />
+                      <span className="text-slate-300 text-xs truncate">{selectedCategory || "Loading…"}</span>
+                    </div>
+                    <p className="text-slate-600 text-[10px] mt-1">Raises data pulled from the DeFiLlama API — no URL input needed.</p>
                   </div>
-                  {urlError && (
-                    <p className="text-rose-400/80 text-xs mt-1.5 flex items-center gap-1">
-                      <span className="w-1 h-1 rounded-full bg-rose-400 inline-block" />{urlError}
-                    </p>
-                  )}
-                </div>
+                ) : (
+                  /* Category-based platforms: show URL input + Fetch button */
+                  <div>
+                    <label className={labelCls}>Category Index URL</label>
+                    <div className="flex gap-2">
+                      <input type="text" value={platformUrl}
+                        onChange={(e) => { setPlatformUrl(e.target.value); if (urlError) setUrlError("") }}
+                        placeholder="https://coinmarketcap.com/cryptocurrency-category/"
+                        disabled={loading} className={inputCls} />
+                      <button onClick={fetchCategories} disabled={loading || loadingCategories}
+                        className={`${btnGhost} shrink-0`}>
+                        {loadingCategories ? <Ic.Spinner /> : "Fetch"}
+                      </button>
+                    </div>
+                    {urlError && (
+                      <p className="text-rose-400/80 text-xs mt-1.5 flex items-center gap-1">
+                        <span className="w-1 h-1 rounded-full bg-rose-400 inline-block" />{urlError}
+                      </p>
+                    )}
+                  </div>
+                )}
 
-                {/* Category */}
+                {/* Category selector — hidden for listing-only platforms */}
+                {!isListingOnly && (
                 <div>
                   <label className={labelCls}>
                     Category {categories.length > 0 && (
@@ -690,6 +734,7 @@ function App() {
                       : categories.map((c) => <option key={c.url} value={c.url}>{c.name}</option>)}
                   </select>
                 </div>
+                )}
 
                 {/* Count + Workers */}
                 <div className="grid grid-cols-2 gap-3">
@@ -723,10 +768,16 @@ function App() {
               <div className="mt-5">
                 <label className={labelCls}>Extraction Mode</label>
                 <div className="inline-flex rounded-xl border border-white/[0.08] overflow-hidden">
-                  {[
-                    { id: "recent", label: "Recently Added", desc: "Newest coins first" },
-                    { id: "ranked", label: "Top Ranked", desc: "By market cap" },
-                  ].map(({ id, label, desc }) => (
+                  {(isListingOnly
+                    ? [
+                        { id: "recent", label: "Latest Raises",  desc: "Newest funding rounds" },
+                        { id: "ranked", label: "Largest Raises", desc: "By amount raised" },
+                      ]
+                    : [
+                        { id: "recent", label: "Recently Added", desc: "Newest coins first" },
+                        { id: "ranked", label: "Top Ranked",     desc: "By market cap" },
+                      ]
+                  ).map(({ id, label, desc }) => (
                     <button key={id} type="button" onClick={() => setMode(id)} disabled={loading}
                       className={`px-5 py-2.5 text-xs font-semibold transition-all disabled:opacity-40 ${
                         mode === id
@@ -742,7 +793,7 @@ function App() {
 
               {/* Start */}
               <div className="mt-6 flex items-center gap-3">
-                <button onClick={startExtraction} disabled={loading || categories.length === 0}
+                <button onClick={startExtraction} disabled={loading || (!isListingOnly && categories.length === 0)}
                   className={btnPrimary}>
                   {loading ? <><Ic.Spinner /><span>Running…</span></> : <><Ic.Rocket /><span>Start Extraction</span></>}
                 </button>

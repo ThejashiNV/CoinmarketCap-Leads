@@ -455,6 +455,113 @@ def _company_from_linkedin(linkedin_urls):
     return ""
 
 
+def recover_website(name, description="", category=""):
+    """Best-effort recovery of the official website URL for a project.
+
+    Used when the collector provides no website (e.g. DeFiLlama raises without
+    a matched protocol page).  Searches public web results and returns the best
+    candidate URL, or "" when nothing reliable is found.
+
+    Rejects social-media, news, exchange, and analytics domains so we don't
+    accidentally set coinmarketcap.com or twitter.com as the 'official' website.
+    """
+    if not name:
+        return ""
+
+    _REJECT_HOSTS = {
+        # Social
+        "twitter.com", "x.com", "linkedin.com", "facebook.com",
+        "instagram.com", "youtube.com", "discord.com", "t.me",
+        "telegram.org", "reddit.com", "medium.com", "substack.com",
+        "mirror.xyz",
+        # News / media
+        "coindesk.com", "cointelegraph.com", "decrypt.co", "theblock.co",
+        "blockworks.co", "benzinga.com", "businesswire.com",
+        "prnewswire.com", "globenewswire.com", "accesswire.com",
+        "venturebeat.com", "techcrunch.com", "wired.com", "forbes.com",
+        # Exchanges / aggregators
+        "coinmarketcap.com", "coingecko.com", "binance.com", "bybit.com",
+        "kraken.com", "bitget.com", "mexc.com", "okx.com",
+        "defillama.com", "dexscreener.com", "dextools.io",
+        "whentoken.io", "tokensniffer.com",
+        # Analytics / trackers
+        "messari.io", "crunchbase.com", "pitchbook.com",
+        "web3.career", "github.com", "docs.google.com", "drive.google.com",
+        # Search engines (redirect wrappers)
+        "google.com", "bing.com", "duckduckgo.com", "yahoo.com",
+        "search.yahoo.com", "yandex.com", "startpage.com", "brave.com",
+    }
+
+    tokens = _tokens(name, "", None)
+    if not tokens:
+        return ""
+
+    # Build search queries from general to specific
+    hint = category.strip()
+    queries = [
+        f"{name} official website crypto",
+        f"{name} {hint} official site".strip() if hint else f"{name} web3 official site",
+    ]
+
+    URL_RE = re.compile(
+        r'https?://(?:www\.)?([a-zA-Z0-9\-]+\.)+[a-zA-Z]{2,}(?:/[^\s"\'<>]*)?',
+        re.IGNORECASE,
+    )
+
+    # Yahoo wraps result links: extract real URL from RU= param when present
+    _YAHOO_RU_RE = re.compile(r"[?&;]RU=([^&/]+)", re.IGNORECASE)
+
+    def _unwrap(url):
+        m = _YAHOO_RU_RE.search(url)
+        if m:
+            from urllib.parse import unquote as _uq
+            return _uq(m.group(1)).rstrip("/")
+        return url
+
+    best = ""
+    for query in queries:
+        html = _search_html(query)
+        if not html:
+            continue
+
+        soup = BeautifulSoup(html, "lxml")
+        # Unwrap Yahoo redirect hrefs then combine with regex scan of raw HTML
+        anchor_hrefs = [_unwrap(a.get("href", "")) for a in soup.find_all("a", href=True)]
+        raw_html_urls = URL_RE.findall(html)
+        all_urls = anchor_hrefs + raw_html_urls
+
+        for raw_url in all_urls:
+            if not raw_url.startswith("http"):
+                continue
+            try:
+                parsed = urlparse(raw_url)
+            except Exception:
+                continue
+            netloc = parsed.netloc.lower()
+            host = netloc[4:] if netloc.startswith("www.") else netloc
+            # strip tracking query params / fragments
+            url = raw_url.split("?")[0].split("#")[0].rstrip("/")
+
+            # Reject known bad hosts
+            if any(host == bad or host.endswith("." + bad) for bad in _REJECT_HOSTS):
+                continue
+            # Must be a real domain (no localhost, no IPs, no single-label)
+            if "." not in host or host.startswith("127.") or host.startswith("192.168."):
+                continue
+            # Must have at least one project name token in the host or path
+            host_and_path = (host + parsed.path).lower()
+            if not any(tok in host_and_path for tok in tokens):
+                continue
+
+            best = url
+            break
+
+        if best:
+            break
+
+    return best
+
+
 def recover_email(name, website="", linkedin_urls=None):
     """Best-effort recovery of official email addresses via web search.
 

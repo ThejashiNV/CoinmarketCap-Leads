@@ -5,8 +5,9 @@ from urllib.parse import urlparse
 # Supported listing platforms -> the domains that identify them.
 PLATFORM_DOMAINS = {
     "coinmarketcap": ["coinmarketcap.com"],
-    "coingecko": ["coingecko.com"],
-    "coinranking": ["coinranking.com"],
+    "coingecko":     ["coingecko.com"],
+    "coinranking":   ["coinranking.com"],
+    "defillama":     ["defillama.com"],
 }
 
 SUPPORTED_PLATFORMS = list(PLATFORM_DOMAINS.keys())
@@ -49,9 +50,11 @@ def is_category_url(url):
     - CoinMarketCap  /cryptocurrency-category/..., /view/..., /coins, etc.
     - CoinGecko      /en/categories/..., /en/coins/..., etc.
     - Coinranking    /coins, /tags, etc.
+    - DeFiLlama      /raises (the raises listing page)
     Rejects bare homepages and coin-detail pages.
     """
-    if not detect_platform(url):
+    platform = detect_platform(url)
+    if not platform:
         return False
     try:
         path = urlparse(url.strip()).path.lower().rstrip("/")
@@ -59,6 +62,11 @@ def is_category_url(url):
         return False
     if not path:
         return False
+
+    # DeFiLlama: only /raises is a valid listing URL
+    if platform == "defillama":
+        return path == "/raises" or path.startswith("/raises/")
+
     # Reject individual coin pages: /currencies/<slug>, /en/coins/<slug>
     if re.search(r"/(currencies|coins|currency)/[^/]+$", path):
         return False

@@ -12,8 +12,9 @@ from utils.text_tools import clean_project_name
 
 PLATFORM_BASE = {
     "coinmarketcap": "https://coinmarketcap.com",
-    "coingecko": "https://www.coingecko.com",
-    "coinranking": "https://coinranking.com",
+    "coingecko":     "https://www.coingecko.com",
+    "coinranking":   "https://coinranking.com",
+    "defillama":     "https://defillama.com",
 }
 
 NEXT_DATA_RE = re.compile(r'id="__NEXT_DATA__"[^>]*>(.*?)</script>', re.S)
@@ -296,6 +297,11 @@ def collect_projects(listing_url, mode="ranked"):
     platform = detect_platform(listing_url)
     if not platform:
         raise ValueError(f"Unsupported platform URL: {listing_url}")
+
+    # ---- DeFiLlama: pure API-based, no browser needed ----
+    if platform == "defillama":
+        from src.collectors.platforms.defillama import fetch_raises
+        return fetch_raises(mode=mode)
 
     # ---- Recently Added mode: prefer fast structured sources ----
     if mode == "recent":

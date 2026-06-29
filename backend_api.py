@@ -167,6 +167,17 @@ PLATFORM_CAPABILITIES = {
         "supports_date_filter": True,
         "recent_source": "Public API (orderBy=listedAt, tags[] filter)",
     },
+    "defillama": {
+        "platform": "DeFiLlama Raises",
+        "supports_ranked": True,
+        "supports_recent": True,
+        "supports_category_recent": False,
+        "supports_date_filter": True,
+        "recent_source": "DeFiLlama Raises API (api.llama.fi/raises, newest first)",
+        "listing_url": "https://defillama.com/raises",
+        "listing_type": "raises",
+        "requires_category_url": False,
+    },
 }
 
 
