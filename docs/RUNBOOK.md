@@ -64,11 +64,23 @@ A run also self-terminates at `MAX_RUN_SECONDS` (45 min).
 
 ## 4. Sizing & tuning
 
-| Run size | Workers | RAM | Typical time |
-|----------|---------|-----|--------------|
-| Top 10   | 3       | 1 GB | ~4–6 min |
-| Top 50   | 3–4     | 2 GB | ~15–20 min |
-| Top 100+ | 4–6     | 4 GB | 30–45 min |
+> **Minimum RAM: 2 GB** (Render **Standard** or larger). The 512 MB Free/Starter
+> tiers OOM-crash mid-run. Chromium needs ~350 MB per worker on top of a ~300 MB
+> base, so even one worker needs roughly 1 GB to be safe.
+
+| Instance RAM | Effective workers* | Suitable for |
+|--------------|--------------------|--------------|
+| 512 MB | 1 (will likely still OOM) | ❌ not viable |
+| 1 GB | 1–2 | Top 10 |
+| 2 GB | up to 3 | Top 50 |
+| 4 GB | up to 8 | Top 100+ |
+
+\* **Automatic memory guard.** The pipeline detects the instance's memory limit
+(cgroup-aware) and **caps the worker count to fit RAM**, regardless of what the
+UI requests. If you ask for 3 workers on a 1 GB box it silently runs 1–2 and
+logs `Memory guard: capping to N worker(s)…`. This prevents OOM crashes — the run
+is slower, not dead. It cannot rescue a < ~1 GB instance, which is too small for
+even one browser.
 
 - More workers = faster but more RAM and more search-engine throttling.
 - Lower `workers` and `top_n` if you see OOM kills or heavy throttling.
@@ -79,6 +91,7 @@ A run also self-terminates at `MAX_RUN_SECONDS` (45 min).
 
 | Symptom | Cause | Action |
 |---------|-------|--------|
+| **UI: "Lost connection to server" + progress frozen at low %** | **Backend OOM-killed mid-run** (too many Chromium workers for the instance RAM) — the container restarted, so `/status` became unreachable | **Provision ≥ 2 GB RAM** (Render Standard). Short term: rerun with Workers = 1 and a small lead count. The memory guard now caps workers automatically, but < ~1 GB is still too small. |
 | `502/503` right after deploy | Container still building/starting Chromium | Wait for health check; first boot is slower |
 | `GET /` non-200 | Backend crashed or OOM | Check `docker logs`; increase RAM; restart |
 | Run stuck at `running:true` | Long/blocked enrichment | Wait (auto-kill at 45 min) or restart service |

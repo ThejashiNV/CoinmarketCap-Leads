@@ -6,6 +6,12 @@ services:
     name: crypto-leads-api
     runtime: docker
     dockerfilePath: ./Dockerfile
-    plan: starter            # 'free' works for small Top-N but may OOM on large runs (Chromium is memory-heavy)
+    # Chromium is memory-heavy: each enrichment worker needs ~350 MB on top of a
+    # ~300 MB base. The 512 MB Free/Starter tiers OOM-crash mid-run (the backend
+    # restarts and the UI shows "Lost connection to server"). Standard = 2 GB is
+    # the practical minimum for multi-worker extraction. The pipeline also caps
+    # workers to fit detected RAM, so smaller tiers degrade instead of crashing —
+    # but < ~1 GB cannot reliably run even one browser.
+    plan: standard
     healthCheckPath: /
     autoDeploy: true

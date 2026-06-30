@@ -215,13 +215,25 @@ Returns `{"status": "started", ...}`, or `{"status": "busy"}` if a run is alread
 
 ## Recommended Server Specifications
 
-| Tier | RAM | CPU | Suitable For |
-|------|-----|-----|-------------|
-| Minimum | 1 GB | 1 vCPU | Top 10 extractions |
-| Recommended | 2 GB | 1 vCPU | Top 50 extractions |
-| Production | 4 GB | 2 vCPU | Top 100+ extractions |
+> **Provision at least 2 GB RAM.** The 512 MB Free/Starter tiers (Render and
+> similar) **OOM-crash mid-run** — the backend restarts and the UI shows
+> "Lost connection to server". Chromium is the main memory consumer: each
+> enrichment worker runs its **own** headless browser (~350 MB peak) on top of a
+> ~300 MB Python base.
 
-Chromium headless is the main memory consumer. Each enrichment run uses a single browser instance reused across all projects.
+| Tier | RAM | CPU | Suitable For |
+|------|-----|-----|--------------|
+| Not viable | ≤ 512 MB | — | OOM-crashes; do not use |
+| Minimum | 1 GB | 1 vCPU | Top 10, 1–2 workers |
+| Recommended | 2 GB | 1 vCPU | Top 50, up to 3 workers |
+| Production | 4 GB | 2 vCPU | Top 100+, up to 8 workers |
+
+**Automatic memory guard.** The pipeline detects the instance's memory limit
+(cgroup-aware in containers) and caps the worker count to fit available RAM,
+regardless of the requested value — so a small instance runs fewer workers
+(slower) instead of crashing. It logs `Memory guard: capping to N worker(s)…`
+when this happens. This cannot rescue a sub-1 GB instance, which is too small to
+run even one browser reliably.
 
 ## Project Structure
 

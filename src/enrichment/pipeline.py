@@ -61,6 +61,65 @@ def _get_ram_mb():
     return -1
 
 
+# Memory budget for the memory-aware worker cap.  Each enrichment worker runs
+# its own Chromium (peaks ~350 MB under load) on top of a base Python/FastAPI/
+# pandas footprint (~300 MB).  These are deliberately conservative so a small
+# instance silently uses fewer workers instead of getting OOM-killed mid-run.
+_BASE_FOOTPRINT_MB = 300
+_PER_WORKER_MB = 350
+
+
+def _memory_limit_mb():
+    """Best-effort memory ceiling for this process, in MB (or None if unknown).
+
+    Prefers the cgroup limit — what a container is actually capped at — because
+    ``psutil.virtual_memory().total`` reports *host* RAM inside most container
+    runtimes, which would defeat the cap on a memory-limited instance. Falls
+    back to psutil host total when no cgroup limit is set.
+    """
+    candidates = []
+    # cgroup v2
+    try:
+        with open("/sys/fs/cgroup/memory.max") as f:
+            val = f.read().strip()
+        if val and val != "max":
+            candidates.append(int(val))
+    except Exception:
+        pass
+    # cgroup v1
+    try:
+        with open("/sys/fs/cgroup/memory/memory.limit_in_bytes") as f:
+            val = int(f.read().strip())
+        # v1 reports a huge sentinel value when unlimited.
+        if 0 < val < (1 << 62):
+            candidates.append(val)
+    except Exception:
+        pass
+    # Host total (also acts as a ceiling on any over-large cgroup value).
+    try:
+        import psutil
+        candidates.append(psutil.virtual_memory().total)
+    except Exception:
+        pass
+    if not candidates:
+        return None
+    return min(candidates) / (1024 * 1024)
+
+
+def _memory_safe_workers(requested):
+    """Cap ``requested`` workers so concurrent Chromium instances fit in RAM.
+
+    Returns a value in ``[1, requested]``. When the memory ceiling can't be
+    determined, the request is honoured unchanged. Also returns the detected
+    limit (MB) for logging — ``(workers, limit_mb)``.
+    """
+    limit_mb = _memory_limit_mb()
+    if not limit_mb:
+        return requested, None
+    safe = int((limit_mb - _BASE_FOOTPRINT_MB) // _PER_WORKER_MB)
+    return max(1, min(requested, safe)), limit_mb
+
+
 class _Progress:
     """Thread-safe progress tracker shared across all worker threads."""
 
@@ -284,6 +343,22 @@ def run_pipeline(listing_url, emit=print, limit=None, mode="ranked", workers=DEF
     store = ResultsStore(STORE_PATH)
     total = len(projects)
     actual_workers = min(workers, total, 8)
+
+    # Memory-aware cap: never launch more Chromium workers than the instance's
+    # RAM can hold. Prevents OOM-kills on small cloud tiers (the run just uses
+    # fewer workers and takes longer instead of crashing the backend).
+    actual_workers, _mem_limit = _memory_safe_workers(actual_workers)
+    if _mem_limit is not None and actual_workers < min(workers, total, 8):
+        emit(
+            f"Memory guard: capping to {actual_workers} worker(s) for "
+            f"~{int(_mem_limit)} MB available "
+            f"(each Chromium worker needs ~{_PER_WORKER_MB} MB)."
+        )
+        if _mem_limit < (_BASE_FOOTPRINT_MB + _PER_WORKER_MB):
+            emit(
+                "WARNING: this instance has very little memory; even one browser "
+                "may be tight. Provision >= 2 GB RAM for reliable extraction."
+            )
 
     collector = MetricsCollector(
         run_id=run_id,

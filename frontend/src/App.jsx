@@ -335,6 +335,7 @@ function App() {
 
   // Extraction state
   const [loading, setLoading] = useState(false)
+  const [connectionLost, setConnectionLost] = useState(false)
   const [logs, setLogs] = useState([])
   const [logsOpen, setLogsOpen] = useState(true)
   const [progress, setProgress] = useState({ done: 0, total: 0, pct: 0, project: "", eta: 0, workers: 0 })
@@ -496,10 +497,13 @@ function App() {
           }
         })
         .catch(() => {
-          // Can't reach API at all.
+          // Can't reach API at all — the backend likely crashed/restarted
+          // (a common cause is an out-of-memory kill when too many Chromium
+          // workers run on a small instance).
           setLoading(false)
+          setConnectionLost(true)
           setLogs((prev) => [
-            { message: "Lost connection to server. Check that the backend is running." },
+            { message: "Lost connection to server — the backend stopped responding (it may have restarted or run out of memory). Try fewer workers / a smaller lead count, or use a larger instance." },
             ...prev,
           ].slice(0, 800))
         })
@@ -517,6 +521,7 @@ function App() {
       return
     }
     setLoading(true)
+    setConnectionLost(false)
     setLogs([])
     setProgress({ done: 0, total: topN, pct: 0, project: "", eta: 0, workers })
     setTab("extract")
@@ -821,8 +826,13 @@ function App() {
                   <div className="flex-1 min-w-0 pt-1">
                     <div className="flex items-center gap-2 mb-1">
                       {loading && <span className="w-2 h-2 rounded-full bg-violet-400 animate-pulse" />}
-                      <span className="text-sm font-bold text-white">
-                        {loading ? "Extracting…" : "Extraction complete"}
+                      {connectionLost && !loading && <span className="w-2 h-2 rounded-full bg-rose-500" />}
+                      <span className={`text-sm font-bold ${connectionLost && !loading ? "text-rose-300" : "text-white"}`}>
+                        {loading
+                          ? "Extracting…"
+                          : connectionLost
+                            ? "Connection lost — backend stopped responding"
+                            : "Extraction complete"}
                       </span>
                     </div>
 
