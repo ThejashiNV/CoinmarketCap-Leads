@@ -25,7 +25,7 @@ from urllib.parse import quote_plus, unquote, urlparse
 import requests
 from bs4 import BeautifulSoup
 
-from utils.email_tools import extract_emails, _is_clean_email, EMAIL_REGEX
+from utils.email_tools import extract_emails
 from utils.social_tools import extract_linkedin, extract_telegram, extract_github
 
 # Founder/executive title pattern — used by recover_founder_search.
@@ -415,7 +415,6 @@ def recover_founder_search(company_name, website=""):
                     if not founder_name:
                         for m in SNIPPET_TITLE_RE.finditer(snippet):
                             fn = m.group(1).strip()
-                            fn_tokens = set(re.split(r"[^a-z]+", fn.lower()))
                             # Slug must not match company tokens (it's a person slug)
                             if not any(t in slug for t in company_tokens):
                                 founder_name = fn

@@ -14,7 +14,6 @@ from src.enrichment.store import NA
 from utils.email_tools import (
     extract_emails,
     join_business_emails,
-    choose_business_emails,
     has_quality_email,
 )
 from utils.search_recovery import (
@@ -678,7 +677,6 @@ def enrich_project(page, project):
     """Run the multi-source fallback pipeline for a single project."""
     project_url = project["Project URL"]
     platform = project.get("Platform", "")
-    source_url = project.get("Source URL", "")
     category = project.get("Category", "")
     name = clean_project_name(project.get("Project Name", ""))
 
