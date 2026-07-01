@@ -356,6 +356,8 @@ function App() {
   const PAGE_SIZE = 50
 
   const logsEndRef = useRef(null)
+  const pollRef = useRef(null)
+  const logCursorRef = useRef(0)
 
   const fetchLeads = useCallback(async (partial = false) => {
     try {
@@ -383,6 +385,11 @@ function App() {
   }, [])
 
   useEffect(() => { fetchLeads() }, [fetchLeads])
+
+  // Stop the run poller if the component unmounts mid-extraction.
+  useEffect(() => () => {
+    if (pollRef.current) clearInterval(pollRef.current)
+  }, [])
 
   useEffect(() => {
     if (tab === "analytics") fetchMetrics()
@@ -436,78 +443,67 @@ function App() {
     return parseInt(topNOption, 10)
   }
 
-  const streamLogs = (reconnectAttempt = 0) => {
-    const es = new EventSource(`${API_BASE}/live-logs`)
-
-    es.onmessage = (event) => {
-      const data = JSON.parse(event.data)
-
-      if (data.type === "progress") {
-        setProgress(data)
-        return
-      }
-
-      if (!data.done && !data.message) return
-
-      setLogs((prev) => [data, ...prev].slice(0, 800))
-
-      if (data.done) {
-        es.close()
-        // Confirm with /status before declaring finished — guards against
-        // SSE reconnects that emit a stale "idle" done event.
-        fetch(`${API_BASE}/status`)
-          .then((r) => r.json())
-          .then((s) => {
-            if (s.running) {
-              // Backend still going — reconnect silently.
-              setTimeout(() => streamLogs(0), 1500)
-            } else {
-              setLoading(false)
-              fetchLeads()
-              setTimeout(() => setTab("results"), 600)
-            }
-          })
-          .catch(() => {
-            setLoading(false)
-            fetchLeads()
-          })
-      }
+  const stopPolling = () => {
+    if (pollRef.current) {
+      clearInterval(pollRef.current)
+      pollRef.current = null
     }
+  }
 
-    es.onerror = () => {
-      es.close()
-      // SSE connection dropped (proxy timeout, network blip, etc.).
-      // Do NOT show "Extraction complete" — check if backend is still running.
-      fetch(`${API_BASE}/status`)
-        .then((r) => r.json())
-        .then((s) => {
-          if (s.running) {
-            // Still running — show whatever has been enriched so far, then reconnect.
-            fetchLeads(true)
-            const delay = Math.min(1000 * (reconnectAttempt + 1), 3000)
-            setLogs((prev) => [
-              { message: `Connection lost — reconnecting in ${Math.round(delay / 1000)}s…` },
-              ...prev,
-            ].slice(0, 800))
-            setTimeout(() => streamLogs(reconnectAttempt + 1), delay)
-          } else {
-            // Genuinely finished or crashed — load final results.
-            setLoading(false)
-            fetchLeads()
+  // Drive the whole extraction UI by polling /logs. This does NOT depend on a
+  // long-lived SSE connection (which some hosting networks drop repeatedly),
+  // so progress and completion stay correct even when streaming is unreliable.
+  const trackRun = () => {
+    stopPolling()
+    logCursorRef.current = 0
+    let failures = 0
+
+    const tick = async () => {
+      try {
+        const r = await fetch(`${API_BASE}/logs?since=${logCursorRef.current}`)
+        if (!r.ok) throw new Error(`HTTP ${r.status}`)
+        const data = await r.json()
+        failures = 0
+
+        // Append any new human-readable log lines (skip internal progress rows).
+        if (Array.isArray(data.logs) && data.logs.length) {
+          const incoming = data.logs.filter((l) => l && l.message)
+          if (incoming.length) {
+            setLogs((prev) => [...incoming.reverse(), ...prev].slice(0, 800))
           }
-        })
-        .catch(() => {
-          // Can't reach API at all — the backend likely crashed/restarted
-          // (a common cause is an out-of-memory kill when too many Chromium
-          // workers run on a small instance).
+        }
+        if (typeof data.next === "number") logCursorRef.current = data.next
+
+        // /status-equivalent progress is authoritative — always refresh the bar.
+        if (data.progress && typeof data.progress.pct === "number") {
+          setProgress((p) => ({ ...p, ...data.progress }))
+        }
+
+        if (!data.running) {
+          // Run finished (or was never running) — load final results and stop.
+          stopPolling()
+          setLoading(false)
+          fetchLeads()
+          setTimeout(() => setTab("results"), 600)
+        }
+      } catch {
+        // A single failed poll is not fatal — only give up after several in a
+        // row (the backend is genuinely unreachable, e.g. crashed/restarted).
+        failures += 1
+        if (failures >= 5) {
+          stopPolling()
           setLoading(false)
           setConnectionLost(true)
           setLogs((prev) => [
-            { message: "Lost connection to server — the backend stopped responding (it may have restarted or run out of memory). Try fewer workers / a smaller lead count, or use a larger instance." },
+            { message: "Lost connection to the backend — no response for ~8s. It may have restarted or run out of memory. Check the server, then retry." },
             ...prev,
           ].slice(0, 800))
-        })
+        }
+      }
     }
+
+    tick()                                   // immediate first poll
+    pollRef.current = setInterval(tick, 1500)
   }
 
   const startExtraction = async () => {
@@ -534,7 +530,7 @@ function App() {
       })
       const result = await res.json()
       if (result.status === "started") {
-        streamLogs()
+        trackRun()
       } else {
         setLogs([{ message: result.message || "Could not start extraction." }])
         setLoading(false)

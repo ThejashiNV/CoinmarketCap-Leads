@@ -290,6 +290,29 @@ def status():
     }
 
 
+@app.get("/logs")
+def get_logs(since: int = 0):
+    """Poll-friendly log tail (a reliable alternative to the SSE stream).
+
+    Returns log entries added since the `since` cursor, plus the current
+    `running` flag and `progress`, so the frontend can drive the whole UI by
+    polling a single endpoint. This avoids depending on a long-lived SSE
+    connection, which some hosting networks drop repeatedly.
+    """
+    try:
+        since = max(0, int(since))
+    except (TypeError, ValueError):
+        since = 0
+    total = len(live_logs)
+    new = live_logs[since:total] if since < total else []
+    return {
+        "logs": new,
+        "next": total,
+        "running": state["running"],
+        "progress": state["progress"],
+    }
+
+
 @app.get("/live-logs")
 def stream_logs():
     def event_stream():

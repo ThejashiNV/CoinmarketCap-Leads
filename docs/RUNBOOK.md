@@ -91,7 +91,7 @@ even one browser.
 
 | Symptom | Cause | Action |
 |---------|-------|--------|
-| **UI: "Lost connection to server" + progress frozen at low %** | **Backend OOM-killed mid-run** (too many Chromium workers for the instance RAM) — the container restarted, so `/status` became unreachable | **Provision ≥ 2 GB RAM** (Render Standard). Short term: rerun with Workers = 1 and a small lead count. The memory guard now caps workers automatically, but < ~1 GB is still too small. |
+| **UI: "Lost connection to server" + progress frozen at low %** | Historically caused by the frontend depending on the long-lived SSE stream (`/live-logs`), which some hosting networks drop repeatedly even though the backend is healthy. **Fixed:** the UI now polls `GET /logs?since=` for progress/logs/completion and no longer relies on SSE. If you still see this message, the backend is genuinely unreachable (crashed, OOM, or stopped). | First confirm the backend: `curl $API/` and `curl $API/status`. If those succeed, the UI will recover on its own (it only shows this after ~8 s of failed polls). If they fail, check `docker logs` for a restart / OOM and ensure ≥ 2 GB RAM. |
 | `502/503` right after deploy | Container still building/starting Chromium | Wait for health check; first boot is slower |
 | `GET /` non-200 | Backend crashed or OOM | Check `docker logs`; increase RAM; restart |
 | Run stuck at `running:true` | Long/blocked enrichment | Wait (auto-kill at 45 min) or restart service |
